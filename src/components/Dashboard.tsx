@@ -1,18 +1,26 @@
 import { getUser } from "../auth/token";
 import * as React from "react";
+import UserList from "./UserList.tsx";
+import {useState} from "react";
 
 type DashboardProps = {
     onLogout: () => void;
 }
 
+type View = "history" | "users";
+
 export default function Dashboard({ onLogout }: DashboardProps) {
     const username = getUser();
+
+    const [currentView, setCurrentView] = useState<View>("history")
 
     return (
         <div style={styles.container}>
             {/* HEADER */}
             <header style={styles.header}>
-                <div style={styles.logo}>Kefir System</div>
+                <div style={styles.logo} onClick={() => setCurrentView("history")}>
+                    Kefir System
+                </div>
                 <div style={styles.userSection}>
                     <span style={{ marginRight: '15px' }}>Welcome, <strong>{username}</strong></span>
                     <button onClick={onLogout} style={styles.logoutBtn}>Logout</button>
@@ -23,16 +31,27 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                 {/* CENTER - BODY: History */}
                 <section style={styles.content}>
                     <div style={styles.whiteBody}>
-                        <h2>History</h2>
-                        <p>No recent activity to show.</p>
+                        {currentView === "history" && (
+                            <>
+                                <h2 style={{ color: '#2c3e50' }}>History</h2>
+                                <p style={{ color: '#7f8c8d' }}>No recent activity to show.</p>
+                            </>
+                        )}
+                        {currentView === "users" && <UserList />}
                     </div>
                 </section>
 
-                {/* RIGHT: Módulos */}
+                {/* RIGHT: Modules */}
                 <aside style={styles.sidebar}>
                     <h3 style={{ borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>Modules</h3>
-                    <button style={styles.moduleBtn}>
-                        <i className="fa fa-users"></i> Users
+                    <button
+                        style={{
+                            ...styles.moduleBtn,
+                            backgroundColor: currentView === "users" ? '#2980b9' : '#3498db'
+                        }}
+                        onClick={() => setCurrentView("users")}
+                    >
+                        Users
                     </button>
                 </aside>
             </div>
