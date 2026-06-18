@@ -1,6 +1,7 @@
 import { useState } from "react"
 import LoginPage from "./pages/LoginPage"
-import { getToken } from "./auth/token"
+import Dashboard from "./components/Dashboard.tsx";
+import {clearToken, getToken, removeUser} from "./auth/token"
 
 export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!getToken())
@@ -9,22 +10,19 @@ export default function App() {
         setIsLoggedIn(true)
     }
 
-    if (isLoggedIn) {
-        return (
-            <div style={{ textAlign: "center", marginTop: "50px" }}>
-                <h1>Login successful!</h1>
-                <p>The token has been stored successfully.</p>
-                <button
-                    onClick={() => {
-                        localStorage.removeItem("accessToken");
-                        setIsLoggedIn(false);
-                    }}
-                >
-                    Log Out
-                </button>
-            </div>
-        )
+    const handleLogout = () => {
+        clearToken();
+        removeUser();
+        setIsLoggedIn(false)
     }
 
-    return <LoginPage onLoginSuccess={handleLoginSuccess} />
+    return (
+        <>
+            {isLoggedIn ? (
+                <Dashboard onLogout={handleLogout}/>
+            ): (
+                <LoginPage onLoginSuccess={handleLoginSuccess}/>
+            )}
+        </>
+    )
 }
