@@ -1,13 +1,15 @@
 import { getUser } from "../auth/token";
 import * as React from "react";
 import UserList from "./UserList.tsx";
+import CustomerList from "./CustomerList.tsx";
+import LoansList from "./LoanList.tsx";
 import {useState} from "react";
 
 type DashboardProps = {
     onLogout: () => void;
 }
 
-type View = "history" | "users";
+type View = "history" | "users" | "customers" | "loans";
 
 export default function Dashboard({ onLogout }: DashboardProps) {
     const username = getUser();
@@ -38,6 +40,8 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                             </>
                         )}
                         {currentView === "users" && <UserList />}
+                        {currentView === "customers" && <CustomerList />}
+                        {currentView === "loans" && <LoansList />}
                     </div>
                 </section>
 
@@ -52,6 +56,24 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                         onClick={() => setCurrentView("users")}
                     >
                         Users
+                    </button>
+                    <button
+                        style={{
+                            ...styles.moduleBtn,
+                            backgroundColor: currentView === "customers" ? '#2980b9' : '#3498db'
+                        }}
+                        onClick={() => setCurrentView("customers")}
+                    >
+                        Customers
+                    </button>
+                    <button
+                        style={{
+                            ...styles.moduleBtn,
+                            backgroundColor: currentView === "loans" ? '#2980b9' : '#3498db'
+                        }}
+                        onClick={() => setCurrentView("loans")}
+                    >
+                        Loans
                     </button>
                 </aside>
             </div>

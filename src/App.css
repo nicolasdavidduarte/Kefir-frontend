@@ -182,3 +182,31 @@
     border-right-color: var(--border);
   }
 }
+
+/* CustomerTable.css */
+
+.table-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 8px; /* Espacio para que la barra no tape el contenido */
+}
+
+/* Forzar visibilidad en Chrome, Safari y Edge */
+.table-scroll-container::-webkit-scrollbar {
+  height: 8px;
+  display: block !important;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
