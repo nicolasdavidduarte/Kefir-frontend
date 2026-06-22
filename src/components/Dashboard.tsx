@@ -4,17 +4,34 @@ import UserList from "./UserList.tsx";
 import CustomerList from "./CustomerList.tsx";
 import LoansList from "./LoanList.tsx";
 import {useState} from "react";
+import { useHistory } from "../hooks/useHistory";
+import AccountList from "./AccountList.tsx";
 
 type DashboardProps = {
     onLogout: () => void;
 }
 
-type View = "history" | "users" | "customers" | "loans";
+type View = "history" | "users" | "customers" | "loans" | "accounts";
 
 export default function Dashboard({ onLogout }: DashboardProps) {
     const username = getUser();
 
-    const [currentView, setCurrentView] = useState<View>("history")
+    const [currentView, setCurrentView] = useState<View>("history");
+
+    const { history, logActivity } = useHistory();
+
+    const navigateTo = (view: View, label: string) => {
+        setCurrentView(view);
+        if (view !== "history") {
+            const moduleMap: Record<string, "Users" | "Customers" | "Loans" | "Accounts"> = {
+                users: "Users",
+                customers: "Customers",
+                loans: "Loans",
+                accounts: "Accounts"
+            };
+            logActivity(`Accessed ${label} module`, moduleMap[view]);
+        }
+    };
 
     return (
         <div style={styles.container}>
@@ -35,13 +52,67 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                     <div style={styles.whiteBody}>
                         {currentView === "history" && (
                             <>
-                                <h2 style={{ color: '#2c3e50' }}>History</h2>
-                                <p style={{ color: '#7f8c8d' }}>No recent activity to show.</p>
+                                <h2 style={{ color: '#2c3e50', marginBottom: '20px' }}>History</h2>
+
+                                {history.length === 0 ? (
+                                    <p style={{ color: '#7f8c8d' }}>No recent activity to show.</p>
+                                ) : (
+                                    /* Scrollable container with fixed constraints */
+                                    <div style={{
+                                        maxHeight: '400px',
+                                        overflowY: 'auto',
+                                        paddingRight: '8px'
+                                    }}>
+                                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                                            {history.slice(0, 10).map((log) => (
+                                                <li key={log.id} style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    padding: '12px 8px',
+                                                    borderBottom: '1px solid #f1f2f6',
+                                                    fontSize: '14px',
+                                                    color: '#2c3e50'
+                                                }}>
+                                                    {/* Fixed-width Timestamp aligned left */}
+                                                    <span style={{
+                                                        color: '#95a5a6',
+                                                        fontFamily: 'monospace',
+                                                        marginRight: '16px',
+                                                        minWidth: '65px'
+                                                    }}>
+                                                        [{log.timestamp}]
+                                                    </span>
+
+                                                    {/* Module Badge */}
+                                                    <span style={{
+                                                        backgroundColor: '#e1f5fe',
+                                                        color: '#0288d1',
+                                                        padding: '3px 8px',
+                                                        borderRadius: '4px',
+                                                        fontSize: '11px',
+                                                        fontWeight: 'bold',
+                                                        marginRight: '16px',
+                                                        minWidth: '85px',
+                                                        textAlign: 'center'
+                                                    }}>
+                                                        {log.module.toUpperCase()}
+                                                    </span>
+
+                                                    {/* Action text aligned left */}
+                                                    <span style={{ flexGrow: 1, color: '#34495e', textAlign: 'left' }}>
+                                                        {log.action}
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
                             </>
                         )}
                         {currentView === "users" && <UserList />}
                         {currentView === "customers" && <CustomerList />}
                         {currentView === "loans" && <LoansList />}
+                        {currentView === "accounts" && <AccountList />}
                     </div>
                 </section>
 
@@ -53,7 +124,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                             ...styles.moduleBtn,
                             backgroundColor: currentView === "users" ? '#2980b9' : '#3498db'
                         }}
-                        onClick={() => setCurrentView("users")}
+                        onClick={() => navigateTo("users", "Users")}
                     >
                         Users
                     </button>
@@ -62,7 +133,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                             ...styles.moduleBtn,
                             backgroundColor: currentView === "customers" ? '#2980b9' : '#3498db'
                         }}
-                        onClick={() => setCurrentView("customers")}
+                        onClick={() => navigateTo("customers", "Customers")}
                     >
                         Customers
                     </button>
@@ -71,9 +142,18 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                             ...styles.moduleBtn,
                             backgroundColor: currentView === "loans" ? '#2980b9' : '#3498db'
                         }}
-                        onClick={() => setCurrentView("loans")}
+                        onClick={() => navigateTo("loans", "Loans")}
                     >
                         Loans
+                    </button>
+                    <button
+                        style={{
+                            ...styles.moduleBtn,
+                            backgroundColor: currentView === "accounts" ? '#2980b9' : '#3498db'
+                        }}
+                        onClick={() => navigateTo("accounts", "Accounts")}
+                    >
+                        Accounts
                     </button>
                 </aside>
             </div>
@@ -103,7 +183,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     logo: {
         fontSize: '22px',
         fontWeight: 'bold',
-        letterSpacing: '0.5px'
+        letterSpacing: '0.5px',
+        cursor: 'pointer'
     },
     userSection: {
         display: 'flex',
