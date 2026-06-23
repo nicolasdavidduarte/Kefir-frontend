@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import * as React from "react";
-import type { Account } from "../types/Account.ts";
-import {fetchAccounts} from "../api/accountsApi.ts";
-import AccountTable from "./AccountTable.tsx";
+import { fetchUsers } from "../../api/usersApi.ts";
+import type { User } from "../../types/User.ts";
+import UserTable from "./UserTable.tsx";
 
-export default function AccountList() {
-    const [accounts, setAccounts] = useState<Account[]>([]);
+export default function UserList() {
+    const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchAccounts()
+        fetchUsers()
             .then((data) => {
-                setAccounts(data);
+                setUsers(data);
                 setLoading(false);
             })
             .catch((err) => {
@@ -22,7 +22,7 @@ export default function AccountList() {
     }, []);
 
     if (loading) {
-        return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading accounts...</div>;
+        return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading system users...</div>;
     }
 
     if (error) {
@@ -35,17 +35,18 @@ export default function AccountList() {
 
     return (
         <div style={styles.container}>
+            {/* Header del módulo: Título a la izquierda, Botón a la derecha */}
             <div style={styles.tableHeader}>
-                <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>Accounts</h2>
-                <button style={styles.addBtn}>+ New Account</button>
+                <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>System Users</h2>
+                <button style={styles.addBtn}>+ New User</button>
             </div>
 
-            {accounts.length === 0 ? (
+            {users.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
-                    No accounts found in the database.
+                    No users found in the database.
                 </div>
             ) : (
-                <AccountTable accounts={accounts} />
+                <UserTable users={users} />
             )}
         </div>
     );

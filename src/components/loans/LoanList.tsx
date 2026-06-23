@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import * as React from "react";
-import type { Loan } from "../types/Loan.ts";
-import {fetchLoans} from "../api/loansApi.ts";
+import type { Loan } from "../../types/Loan.ts";
+import {fetchLoans} from "../../api/loansApi.ts";
 import LoanTable from "./LoanTable.tsx";
+import LoanDetail from "./LoanDetail.tsx";
 
 export default function LoansList() {
     const [loans, setLoans] = useState<Loan[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    const [selectedLoanId, setSelectedLoanId] = useState<number | null>(null);
 
     useEffect(() => {
         fetchLoans()
@@ -33,6 +36,15 @@ export default function LoansList() {
         );
     }
 
+    if (selectedLoanId !== null) {
+        return (
+            <LoanDetail
+                loanId={selectedLoanId}
+                onBack={() => setSelectedLoanId(null)}
+            />
+        );
+    }
+
     return (
         <div style={styles.container}>
             <div style={styles.tableHeader}>
@@ -45,7 +57,7 @@ export default function LoansList() {
                     No loans found in the database.
                 </div>
             ) : (
-                <LoanTable loans={loans} />
+                <LoanTable loans={loans} onSelectLoan={(id) => setSelectedLoanId(id)} />
             )}
         </div>
     );

@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import * as React from "react";
-import type { Customer } from "../types/Customer.ts";
-import {fetchCustomers} from "../api/customersApi.ts";
-import CustomerTable from "./CustomerTable.tsx";
+import type { Account } from "../../types/Account.ts";
+import {fetchAccounts} from "../../api/accountsApi.ts";
+import AccountTable from "./AccountTable.tsx";
 
-export default function CustomerList() {
-    const [customers, setCustomers] = useState<Customer[]>([]);
+export default function AccountList() {
+    const [accounts, setAccounts] = useState<Account[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchCustomers()
+        fetchAccounts()
             .then((data) => {
-                setCustomers(data);
+                setAccounts(data);
                 setLoading(false);
             })
             .catch((err) => {
@@ -22,7 +22,7 @@ export default function CustomerList() {
     }, []);
 
     if (loading) {
-        return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading customers...</div>;
+        return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading accounts...</div>;
     }
 
     if (error) {
@@ -36,16 +36,16 @@ export default function CustomerList() {
     return (
         <div style={styles.container}>
             <div style={styles.tableHeader}>
-                <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>Customers</h2>
-                <button style={styles.addBtn}>+ New Customer</button>
+                <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>Accounts</h2>
+                <button style={styles.addBtn}>+ New Account</button>
             </div>
 
-            {customers.length === 0 ? (
+            {accounts.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
-                    No customers found in the database.
+                    No accounts found in the database.
                 </div>
             ) : (
-                <CustomerTable customers={customers} />
+                <AccountTable accounts={accounts} />
             )}
         </div>
     );

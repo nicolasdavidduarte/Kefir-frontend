@@ -1,4 +1,4 @@
-import type { User } from "../types/User";
+import type { User } from "../../types/User.ts";
 import * as React from "react";
 
 type Props = {

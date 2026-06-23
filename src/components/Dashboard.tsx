@@ -1,11 +1,11 @@
 import { getUser } from "../auth/token";
 import * as React from "react";
-import UserList from "./UserList.tsx";
-import CustomerList from "./CustomerList.tsx";
-import LoansList from "./LoanList.tsx";
+import UserList from "./users/UserList.tsx";
+import CustomerList from "./customers/CustomerList.tsx";
+import LoansList from "./loans/LoanList.tsx";
 import {useState} from "react";
 import { useHistory } from "../hooks/useHistory";
-import AccountList from "./AccountList.tsx";
+import AccountList from "./accounts/AccountList.tsx";
 
 type DashboardProps = {
     onLogout: () => void;

@@ -1,5 +1,5 @@
-import type { Account } from "../types/Account";
-import '../App.css'
+import type { Account } from "../../types/Account.ts";
+import '../../App.css'
 import * as React from "react";
 
 type Props = {

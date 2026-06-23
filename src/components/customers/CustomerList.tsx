@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import * as React from "react";
-import { fetchUsers } from "../api/usersApi.ts";
-import type { User } from "../types/User.ts";
-import UserTable from "./UserTable.tsx";
+import type { Customer } from "../../types/Customer.ts";
+import {fetchCustomers} from "../../api/customersApi.ts";
+import CustomerTable from "./CustomerTable.tsx";
+import CustomerDetail from "./CustomerDetail.tsx";
 
-export default function UserList() {
-    const [users, setUsers] = useState<User[]>([]);
+export default function CustomerList() {
+    const [customers, setCustomers] = useState<Customer[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
     useEffect(() => {
-        fetchUsers()
+        fetchCustomers()
             .then((data) => {
-                setUsers(data);
+                setCustomers(data);
                 setLoading(false);
             })
             .catch((err) => {
@@ -22,7 +24,7 @@ export default function UserList() {
     }, []);
 
     if (loading) {
-        return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading system users...</div>;
+        return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading customers...</div>;
     }
 
     if (error) {
@@ -33,20 +35,31 @@ export default function UserList() {
         );
     }
 
+    if (selectedCustomer !== null) {
+        return (
+            <CustomerDetail
+                customer={selectedCustomer}
+                onBack={() => setSelectedCustomer(null)}
+            />
+        );
+    }
+
     return (
         <div style={styles.container}>
-            {/* Header del módulo: Título a la izquierda, Botón a la derecha */}
             <div style={styles.tableHeader}>
-                <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>System Users</h2>
-                <button style={styles.addBtn}>+ New User</button>
+                <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>Customers</h2>
+                <button style={styles.addBtn}>+ New Customer</button>
             </div>
 
-            {users.length === 0 ? (
+            {customers.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
-                    No users found in the database.
+                    No customers found in the database.
                 </div>
             ) : (
-                <UserTable users={users} />
+                <CustomerTable
+                    customers={customers}
+                    onSelectCustomer={(customer) => setSelectedCustomer(customer)}
+                />
             )}
         </div>
     );
