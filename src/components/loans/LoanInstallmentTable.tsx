@@ -67,10 +67,44 @@ export default function LoanInstallmentTable({ installments }: Props) {
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
-    table: { width: '100%', borderCollapse: 'collapse', textAlign: 'left', boxSizing: 'border-box' },
-    theadTr: { borderBottom: '2px solid #34495e' },
-    th: { padding: '12px 16px', color: '#7f8c8d', fontWeight: '600', fontSize: '14px' },
-    tbodyTr: { borderBottom: '1px solid #ecf0f1' },
-    td: { padding: '16px 16px', color: '#2c3e50', fontSize: '15px', verticalAlign: 'middle' },
-    stateBadge: { color: 'white', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', display: 'inline-block', textAlign: 'center', minWidth: '80px' }
+    tableWrapper: {
+        width: '100%',
+        overflowX: 'auto',
+        boxSizing: 'border-box'
+    },
+    table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        textAlign: 'left',
+        boxSizing: 'border-box'
+    },
+    theadTr: {
+        borderBottom: '2px solid #e2e8f0'
+    },
+    th: {
+        padding: '10px 12px',
+        color: '#7f8c8d',
+        fontWeight: '600',
+        fontSize: '13px',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px'
+    },
+    tbodyTr: {
+        borderBottom: '1px solid #f1f2f6'
+    },
+    td: {
+        padding: '12px 12px',
+        color: '#2c3e50',
+        fontSize: '14px',
+        verticalAlign: 'middle'
+    },
+    stateBadge: {
+        color: 'white',
+        padding: '4px 10px',
+        borderRadius: '4px',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        display: 'inline-block',
+        textAlign: 'center',
+        minWidth: '80px' }
 };
