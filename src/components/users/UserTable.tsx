@@ -1,11 +1,32 @@
 import type { User } from "../../types/User.ts";
 import * as React from "react";
+import { useState } from "react";
+import { updateUserStatus } from "../../api/usersApi.ts";
+import { FaPowerOff } from "react-icons/fa";
 
 type Props = {
     users: User[];
+    onUserUpdated?: () => void;
 };
 
-export default function UserTable({ users }: Props) {
+export default function UserTable({ users, onUserUpdated }: Props) {
+    const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+
+    async function handleToggleStatus(id: number, currentStatus: boolean) {
+        try {
+            setActionLoadingId(id);
+            await updateUserStatus(id, !currentStatus);
+            if (onUserUpdated) {
+                onUserUpdated();
+            }
+        } catch (error) {
+            console.error("Failed to update user status:", error);
+            alert("Could not update user status. Verify permissions.");
+        } finally {
+            setActionLoadingId(null);
+        }
+    }
+
     return (
         <table style={styles.table}>
             <thead>
@@ -49,6 +70,38 @@ export default function UserTable({ users }: Props) {
                             }}>
                                 {user.enabled ? "ACTIVE" : "INACTIVE"}
                             </span>
+                    </td>
+                    <td style={{ ...styles.td, textAlign: 'center' }}>
+                        <button
+                            onClick={() => handleToggleStatus(user.id, user.enabled)}
+                            disabled={actionLoadingId === user.id}
+                            title={user.enabled ? "Deactivate" : "Activate"}
+                            style={{
+                                ...styles.iconBtn,
+                                opacity: actionLoadingId === user.id ? 0.4 : 1
+                            }}
+                        >
+                            {actionLoadingId === user.id ? (
+                                <span style={styles.spinner}>⏳</span>
+                            ) : (
+                                <div
+                                    style={{
+                                        width: "40px",
+                                        height: "40px",
+                                        borderRadius: "50%",
+                                        backgroundColor: user.enabled ? "#e74c3c" : "#2ecc71",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <FaPowerOff
+                                        size={20}
+                                        color="white"
+                                    />
+                                </div>
+                            )}
+                        </button>
                     </td>
                 </tr>
             ))}
@@ -103,5 +156,16 @@ const styles: { [key: string]: React.CSSProperties } = {
         display: 'inline-block',
         textAlign: 'center',
         minWidth: '70px'
+    },
+    iconBtn: {
+        background: 'none',
+        border: 'none',
+        padding: '6px',
+        cursor: 'pointer',
+        transition: 'transform 0.15s ease'
+    },
+    spinner: {
+        fontSize: '16px',
+        display: 'inline-block'
     }
 };

@@ -11,3 +11,10 @@ export function createUser(user: UserRequest): Promise<User> {
         body: JSON.stringify(user)
     })
 }
+
+export function updateUserStatus(id: number, enabled: boolean): Promise<User> {
+    return apiFetch<User>(`/api/users/${id}/status`, {
+        method: "POST",
+        body: JSON.stringify({ enabled })
+    })
+}

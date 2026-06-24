@@ -86,7 +86,7 @@ export default function UserList() {
                     No users found in the database.
                 </div>
             ) : (
-                <UserTable users={users} />
+                <UserTable users={users} onUserUpdated={() => loadUsers(true)} />
             )}
         </div>
     );
