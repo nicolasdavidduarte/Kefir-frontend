@@ -10,7 +10,7 @@ export type Loan = {
     monthlyInterestRate: number
     totalPrincipal: string
     totalInterest: string
-    totalOperationAmount: string
+    totalOperationAmount: number
     openingDate: string
     expirationDate: string
     status: string

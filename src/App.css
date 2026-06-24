@@ -210,3 +210,15 @@
 .table-scroll-container::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.dashboard-wrapper {
+  height: 100vh;
+  overflow: hidden; /* Prohíbe terminantemente que la pantalla completa scrollee */
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content-area {
+  flex: 1;
+  overflow-y: auto; /* El scroll muere y nace acá, manteniendo el header siempre a la vista */
+}

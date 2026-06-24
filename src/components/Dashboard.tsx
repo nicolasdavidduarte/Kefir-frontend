@@ -65,110 +65,109 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                 </div>
             </header>
 
-            <div style={styles.mainArea}>
-                <section style={styles.content}>
-                    <div style={styles.whiteBody}>
+            {/* Eliminamos la grilla duplicada mainArea y dejamos que los hijos directos ocupen las celdas del container */}
+            <main style={styles.content}>
+                <div style={styles.whiteBody}>
 
-                        {currentView === "history" && (
-                            <>
-                                <div style={styles.cardHeader}>
-                                    <h2 style={styles.cardTitle}>System Activity History</h2>
-                                    <p style={styles.cardSubtitle}>Real-time audit log of recently accessed modules</p>
-                                </div>
+                    {currentView === "history" && (
+                        <>
+                            <div style={styles.cardHeader}>
+                                <h2 style={styles.cardTitle}>System Activity History</h2>
+                                <p style={styles.cardSubtitle}>Real-time audit log of recently accessed modules</p>
+                            </div>
 
-                                {history.length === 0 ? (
-                                    <p style={{ color: '#7f8c8d', padding: '10px 0' }}>No recent activity to show.</p>
-                                ) : (
-                                    <div style={styles.scrollableTimeline}>
-                                        {history.slice(0, 10).map((log, index) => {
-                                            const modStyle = getModuleStyle(log.module);
-                                            return (
-                                                <div key={log.id} style={styles.timelineItem}>
-                                                    <div style={styles.timeColumn}>
-                                                        {log.timestamp}
-                                                    </div>
-
-                                                    <div style={styles.lineColumn}>
-                                                        <div style={{...styles.timelineDot, backgroundColor: modStyle.text}} />
-                                                        {index !== Math.min(history.length, 10) - 1 && (
-                                                            <div style={styles.timelineLine} />
-                                                        )}
-                                                    </div>
-
-                                                    <div style={styles.logContent}>
-                                                        <span style={{
-                                                            ...styles.moduleBadge,
-                                                            backgroundColor: modStyle.bg,
-                                                            color: modStyle.text,
-                                                            borderColor: modStyle.border
-                                                        }}>
-                                                            {log.module.toUpperCase()}
-                                                        </span>
-                                                        <span style={styles.logDescription}>
-                                                            {log.action}
-                                                        </span>
-                                                    </div>
+                            {history.length === 0 ? (
+                                <p style={{ color: '#7f8c8d', padding: '10px 0' }}>No recent activity to show.</p>
+                            ) : (
+                                <div style={styles.scrollableTimeline}>
+                                    {history.slice(0, 10).map((log, index) => {
+                                        const modStyle = getModuleStyle(log.module);
+                                        return (
+                                            <div key={log.id} style={styles.timelineItem}>
+                                                <div style={styles.timeColumn}>
+                                                    {log.timestamp}
                                                 </div>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </>
-                        )}
 
-                        {currentView === "users" && <UserList />}
-                        {currentView === "customers" && <CustomerList />}
-                        {currentView === "loans" && <LoansList />}
-                        {currentView === "accounts" && <AccountList />}
-                    </div>
-                </section>
+                                                <div style={styles.lineColumn}>
+                                                    <div style={{...styles.timelineDot, backgroundColor: modStyle.text}} />
+                                                    {index !== Math.min(history.length, 10) - 1 && (
+                                                        <div style={styles.timelineLine} />
+                                                    )}
+                                                </div>
 
-                <aside style={styles.sidebar}>
-                    <h3 style={styles.sidebarTitle}>Modules</h3>
+                                                <div style={styles.logContent}>
+                                                    <span style={{
+                                                        ...styles.moduleBadge,
+                                                        backgroundColor: modStyle.bg,
+                                                        color: modStyle.text,
+                                                        borderColor: modStyle.border
+                                                    }}>
+                                                        {log.module.toUpperCase()}
+                                                    </span>
+                                                    <span style={styles.logDescription}>
+                                                        {log.action}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </>
+                    )}
 
-                    <div style={styles.navMenu}>
-                        <button
-                            style={{
-                                ...styles.moduleBtn,
-                                ...(currentView === "users" ? styles.moduleBtnActive : {})
-                            }}
-                            onClick={() => navigateTo("users", "Users")}
-                        >
-                            <span style={styles.navIcon}>👥</span> Users
-                        </button>
+                    {currentView === "users" && <UserList />}
+                    {currentView === "customers" && <CustomerList />}
+                    {currentView === "loans" && <LoansList />}
+                    {currentView === "accounts" && <AccountList />}
+                </div>
+            </main>
 
-                        <button
-                            style={{
-                                ...styles.moduleBtn,
-                                ...(currentView === "customers" ? styles.moduleBtnActive : {})
-                            }}
-                            onClick={() => navigateTo("customers", "Customers")}
-                        >
-                            <span style={styles.navIcon}>💳</span> Customers
-                        </button>
+            <aside style={styles.sidebar}>
+                <h3 style={styles.sidebarTitle}>Modules</h3>
 
-                        <button
-                            style={{
-                                ...styles.moduleBtn,
-                                ...(currentView === "loans" ? styles.moduleBtnActive : {})
-                            }}
-                            onClick={() => navigateTo("loans", "Loans")}
-                        >
-                            <span style={styles.navIcon}>💰</span> Loans
-                        </button>
+                <div style={styles.navMenu}>
+                    <button
+                        style={{
+                            ...styles.moduleBtn,
+                            ...(currentView === "users" ? styles.moduleBtnActive : {})
+                        }}
+                        onClick={() => navigateTo("users", "Users")}
+                    >
+                        <span style={styles.navIcon}>👥</span> Users
+                    </button>
 
-                        <button
-                            style={{
-                                ...styles.moduleBtn,
-                                ...(currentView === "accounts" ? styles.moduleBtnActive : {})
-                            }}
-                            onClick={() => navigateTo("accounts", "Accounts")}
-                        >
-                            <span style={styles.navIcon}>📊</span> Accounts
-                        </button>
-                    </div>
-                </aside>
-            </div>
+                    <button
+                        style={{
+                            ...styles.moduleBtn,
+                            ...(currentView === "customers" ? styles.moduleBtnActive : {})
+                        }}
+                        onClick={() => navigateTo("customers", "Customers")}
+                    >
+                        <span style={styles.navIcon}>💳</span> Customers
+                    </button>
+
+                    <button
+                        style={{
+                            ...styles.moduleBtn,
+                            ...(currentView === "loans" ? styles.moduleBtnActive : {})
+                        }}
+                        onClick={() => navigateTo("loans", "Loans")}
+                    >
+                        <span style={styles.navIcon}>💰</span> Loans
+                    </button>
+
+                    <button
+                        style={{
+                            ...styles.moduleBtn,
+                            ...(currentView === "accounts" ? styles.moduleBtnActive : {})
+                        }}
+                        onClick={() => navigateTo("accounts", "Accounts")}
+                    >
+                        <span style={styles.navIcon}>📊</span> Accounts
+                    </button>
+                </div>
+            </aside>
         </div>
     );
 }
@@ -176,23 +175,25 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         display: 'grid',
-        gridTemplateRows: '64px 1fr',
+        gridTemplateColumns: '1fr 280px', // Columna 1: Vista activa, Columna 2: Sidebar
+        gridTemplateRows: '70px calc(100vh - 70px)', // Fila 1: Header con alto fijo, Fila 2: Cuerpo rígido
         height: '100vh',
-        width: '100%',
-        backgroundColor: '#f4f6f9',
-        fontFamily: 'system-ui, -apple-system, sans-serif',
+        maxHeight: '100vh',
+        backgroundColor: '#f8f9fa',
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
         boxSizing: 'border-box'
     },
     header: {
+        gridColumn: 'span 2',
+        backgroundColor: '#2c3e50',
+        color: '#ffffff',
+        padding: '16px 24px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '0 24px',
-        backgroundColor: '#2c3e50',
-        color: '#ffffff',
-        borderBottom: '1px solid #1a252f',
-        boxSizing: 'border-box',
-        zIndex: 10
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        zIndex: 10,
+        boxSizing: 'border-box'
     },
     logoWrapper: {
         display: 'flex',
@@ -205,23 +206,11 @@ const styles: { [key: string]: React.CSSProperties } = {
         height: '42px',
         width: 'auto',
         objectFit: 'contain',
-
         mixBlendMode: 'screen',
         filter: 'contrast(160%) brightness(120%)',
-
         transform: 'scale(1.5)',
         marginRight: '8px',
         marginTop: '-2px'
-    },
-    logoBadge: {
-        fontSize: '11px',
-        backgroundColor: '#34495e',
-        color: '#ffffff',
-        padding: '2px 6px',
-        borderRadius: '4px',
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        marginLeft: '4px'
     },
     userSection: {
         display: 'flex',
@@ -243,18 +232,18 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontSize: '13px',
         transition: 'background-color 0.15s ease'
     },
-    mainArea: {
-        display: 'grid',
-        gridTemplateColumns: '1fr 280px',
-        height: '100%',
-        boxSizing: 'border-box'
-    },
     content: {
         padding: '32px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        overflowY: 'auto'
+        overflowY: 'auto', // Forzamos a que el eje vertical siempre declare el contenedor como scrollable
+        height: '100%',
+        boxSizing: 'border-box',
+
+        // Firefox
+        scrollbarWidth: 'thin',
+        scrollbarColor: '#cbd5e1 #f8f9fa'
     },
     whiteBody: {
         backgroundColor: 'white',
@@ -264,7 +253,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         padding: '28px',
         boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
         boxSizing: 'border-box',
-        border: '1px solid #e2e8f0'
+        border: '1px solid #e2e8f0',
+        marginBottom: '20px'
     },
     cardHeader: {
         marginBottom: '24px',
@@ -293,7 +283,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     scrollableTimeline: {
         maxHeight: '420px',
-        overflowY: 'auto',
         paddingRight: '8px',
         display: 'flex',
         flexDirection: 'column'
@@ -363,6 +352,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         padding: '24px',
         display: 'flex',
         flexDirection: 'column',
+
+        height: '100%',
         boxSizing: 'border-box'
     },
     sidebarTitle: {

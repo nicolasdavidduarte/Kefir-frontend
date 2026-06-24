@@ -92,10 +92,17 @@ export default function UserList() {
     );
 }
 
+// Al final de UserList.tsx
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        // Restamos la cabecera del módulo para que el contenedor hijo no empuje el dashboard
+        maxHeight: 'calc(100vh - 140px)',
+        display: 'flex',
+        flexDirection: 'column',
+        // Evitamos scroll innecesario si la tabla es corta
+        overflowY: 'auto'
     },
     tableHeader: {
         display: 'flex',
@@ -103,7 +110,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         alignItems: 'center',
         width: '100%',
         marginBottom: '24px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        flexShrink: 0 // Impide que la cabecera se achique o se desplace
     },
     addBtn: {
         backgroundColor: '#2ecc71',
@@ -112,8 +120,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         padding: '10px 18px',
         borderRadius: '4px',
         cursor: 'pointer',
-        fontWeight: 'bold',
-        fontSize: '14px',
-        transition: 'background-color 0.2s'
+        fontWeight: '600',
+        fontSize: '14px'
     }
 };

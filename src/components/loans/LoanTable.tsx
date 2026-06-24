@@ -17,26 +17,14 @@ const statusColors: Record<string, string> = {
 export default function LoanTable({ loans, onSelectLoan }: Props) {
     return (
         <div style={{ width: '100%', overflowX: 'auto' }} className="table-scroll-container">
-            <table style={{ ...styles.table, minWidth: '1400px', width: '100%' }}>
+            <table style={styles.table}>
                 <thead>
                 <tr style={styles.theadTr}>
                     <th style={styles.th}>Id</th>
-                    <th style={styles.th}>External Id</th>
                     <th style={styles.th}>Customer</th>
-                    <th style={styles.th}>Loan type</th>
-                    <th style={styles.th}>Amortization type</th>
                     <th style={styles.th}>Currency</th>
-                    <th style={styles.th}>Number of installments</th>
-                    <th style={styles.th}>Annual interest rate</th>
-                    <th style={styles.th}>Monthly interest rate</th>
-                    <th style={styles.th}>Total principal</th>
-                    <th style={styles.th}>Total interest</th>
-                    <th style={styles.th}>Total operation amount</th>
-                    <th style={styles.th}>Opening date</th>
-                    <th style={styles.th}>Expiration date</th>
+                    <th style={styles.th}>Amount</th>
                     <th style={styles.th}>Status</th>
-                    <th style={styles.th}>Created At</th>
-                    <th style={styles.th}>User</th>
                 </tr>
                 </thead>
 
@@ -48,19 +36,9 @@ export default function LoanTable({ loans, onSelectLoan }: Props) {
                         onClick={() => onSelectLoan(loan.id)}
                     >
                         <td style={styles.td}>{loan.id}</td>
-                        <td style={styles.td}>{loan.externalId}</td>
                         <td style={styles.td}>{loan.customer}</td>
-                        <td style={styles.td}>{loan.loanType}</td>
-                        <td style={styles.td}>{loan.amortizationType}</td>
                         <td style={styles.td}>{loan.currency}</td>
-                        <td style={styles.td}>{loan.numberOfInstallments}</td>
-                        <td style={styles.td}>{loan.annualInterestRate}%</td>
-                        <td style={styles.td}>{loan.monthlyInterestRate}%</td>
-                        <td style={styles.td}>${loan.totalPrincipal.toLocaleString()}</td>
-                        <td style={styles.td}>${loan.totalInterest.toLocaleString()}</td>
                         <td style={styles.td}>${loan.totalOperationAmount.toLocaleString()}</td>
-                        <td style={styles.td}>{loan.openingDate}</td>
-                        <td style={styles.td}>{loan.expirationDate}</td>
                         <td style={styles.td}>
                                 <span style={{
                                     ...styles.statusBadge,
@@ -69,8 +47,6 @@ export default function LoanTable({ loans, onSelectLoan }: Props) {
                                     {loan.status}
                                 </span>
                         </td>
-                        <td style={styles.td}>{loan.createdAt || "N/A"}</td>
-                        <td style={styles.td}>{loan.user}</td>
                     </tr>
                 ))}
                 </tbody>
@@ -90,7 +66,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderBottom: '2px solid #34495e',
     },
     th: {
-        padding: '12px 16px',
+        padding: '12px 12px',
         color: '#7f8c8d',
         fontWeight: '600',
         fontSize: '14px',
@@ -102,7 +78,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         transition: 'background-color 0.2s'
     },
     td: {
-        padding: '12px 16px',
+        padding: '10px 12px',
         color: '#2c3e50',
         fontSize: '15px',
         boxSizing: 'border-box',

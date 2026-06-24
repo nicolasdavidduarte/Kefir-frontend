@@ -82,7 +82,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderBottom: '2px solid #e2e8f0'
     },
     th: {
-        padding: '12px 16px',
+        padding: '10px 12px',
         color: '#7f8c8d',
         fontWeight: '600',
         fontSize: '13px',
@@ -92,7 +92,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderBottom: '1px solid #f1f2f6'
     },
     td: {
-        padding: '12px 12px',
+        padding: '10px 10px',
         color: '#2c3e50',
         fontSize: '14px',
         verticalAlign: 'middle'

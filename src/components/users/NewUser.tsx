@@ -182,8 +182,24 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#2c3e50'
     },
     subtitle: { margin: '4px 0 0 0', fontSize: '13px', color: '#95a5a6' },
-    formCard: { backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '32px', maxWidth: '600px', width: '100%', boxSizing: 'border-box', textAlign: 'left' },
-    form: { display: 'flex', flexDirection: 'column', gap: '20px' },
+    formCard: {
+        backgroundColor: '#ffffff',
+        borderRadius: '8px',
+        border: '1px solid #e2e8f0',
+        padding: '32px',
+        maxWidth: '600px',
+        width: '100%',
+        boxSizing: 'border-box',
+        textAlign: 'left',
+        // Asegura que el formulario no crezca más allá de la pantalla limpia
+        maxHeight: '100%',
+        overflow: 'hidden'
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px'
+    },
     inputGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
     label: { fontSize: '13px', color: '#34495e', fontWeight: '600' },
     input: { padding: '10px 14px', borderRadius: '6px', border: '1px solid #dcdde1', fontSize: '14px', color: '#2c3e50', backgroundColor: '#fcfcfc', outline: 'none', boxSizing: 'border-box', width: '100%' },
