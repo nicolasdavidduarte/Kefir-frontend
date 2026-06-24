@@ -1,0 +1,180 @@
+import { useState } from "react";
+import * as React from "react";
+import type { UserRequest } from "../../types/User.ts";
+
+type NewUserProps = {
+    onBack: () => void;
+    onSave: (userData: UserRequest) => Promise<void>;
+};
+
+export default function NewUser({ onBack, onSave }: NewUserProps) {
+    const [username, setUsername] = useState("");
+    const [fullname, setFullname] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [role, setRole] = useState("OPR");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) {
+        event.preventDefault();
+        setError("");
+
+        if (!username || !fullname || !password) {
+            setError("All fields are required");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            await onSave({
+                username,
+                fullname,
+                password,
+                roles: [role]
+            });
+
+            onBack();
+        } catch (err) {
+            const errorResponse = err as { message?: string };
+            setError(errorResponse.message || "Failed to create user");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <div style={styles.container}>
+            <div style={styles.header}>
+                <button onClick={onBack} style={styles.backBtn} type="button">
+                    ← Back
+                </button>
+                <div style={styles.titleArea}>
+                    <h2 style={styles.title}>Create New User</h2>
+                    <p style={styles.subtitle}>Register a new user in the system</p>
+                </div>
+            </div>
+
+            {error && (
+                <div style={styles.errorContainer}>
+                    {error}
+                </div>
+            )}
+
+            <div style={styles.formCard}>
+                <form onSubmit={handleSubmit} style={styles.form}>
+
+                    {/* Username */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Username</label>
+                        <input
+                            type="text"
+                            style={styles.input}
+                            placeholder="e.g. jdoe"
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    {/* Full Name (Nuevo Input) */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Full Name</label>
+                        <input
+                            type="text"
+                            style={styles.input}
+                            placeholder="e.g. John Doe"
+                            value={fullname}
+                            onChange={e => setFullname(e.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    {/* System Role */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>System Role</label>
+                        <select
+                            style={styles.select}
+                            value={role}
+                            onChange={e => setRole(e.target.value)}
+                            disabled={loading}
+                        >
+                            <option value="ADMIN">Administrator</option>
+                            <option value="OPR">Operator</option>
+                            <option value="VIEWER">Viewer</option>
+                        </select>
+                    </div>
+
+                    {/* Password */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Password</label>
+                        <input
+                            type="password"
+                            style={styles.input}
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    {/* Confirm Password */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Confirm Password</label>
+                        <input
+                            type="password"
+                            style={styles.input}
+                            placeholder="••••••••"
+                            value={confirmPassword}
+                            onChange={e => setConfirmPassword(e.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <div style={styles.actionRow}>
+                        <button
+                            type="button"
+                            onClick={onBack}
+                            style={styles.cancelBtn}
+                            disabled={loading}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            style={styles.submitBtn}
+                            disabled={loading}
+                        >
+                            {loading ? "Saving..." : "Save User"}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+const styles: { [key: string]: React.CSSProperties } = {
+    container: { width: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: '24px' },
+    header: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '4px' },
+    backBtn: { backgroundColor: '#7f8c8d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' },
+    titleArea: { display: 'flex', flexDirection: 'column', textAlign: 'left' },
+    title: { margin: 0, color: '#2c3e50', fontSize: '22px', fontWeight: '700' },
+    subtitle: { margin: '4px 0 0 0', fontSize: '13px', color: '#95a5a6' },
+    formCard: { backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '32px', maxWidth: '600px', width: '100%', boxSizing: 'border-box', textAlign: 'left' },
+    form: { display: 'flex', flexDirection: 'column', gap: '20px' },
+    inputGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
+    label: { fontSize: '13px', color: '#34495e', fontWeight: '600' },
+    input: { padding: '10px 14px', borderRadius: '6px', border: '1px solid #dcdde1', fontSize: '14px', color: '#2c3e50', backgroundColor: '#fcfcfc', outline: 'none', boxSizing: 'border-box', width: '100%' },
+    select: { padding: '10px 14px', borderRadius: '6px', border: '1px solid #dcdde1', fontSize: '14px', color: '#2c3e50', backgroundColor: '#fcfcfc', outline: 'none', width: '100%' },
+    errorContainer: { backgroundColor: '#fdf1f0', color: '#e74c3c', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', border: '1px solid #fadbd8' },
+    actionRow: { display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' },
+    cancelBtn: { backgroundColor: '#f4f6f7', color: '#7f8c8d', border: '1px solid #d5dbdb', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '14px' },
+    submitBtn: { backgroundColor: '#3498db', color: 'white', border: 'none', padding: '10px 24px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '14px', boxShadow: '0 4px 10px rgba(52, 152, 219, 0.2)' }
+};

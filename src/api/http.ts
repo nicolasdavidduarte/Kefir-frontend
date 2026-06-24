@@ -19,7 +19,16 @@ export async function apiFetch<T>(
     })
 
     if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`)
+        let errorMessage = `HTTP error ${response.status}`
+
+        try {
+            const errorData = await response.json()
+            errorMessage = errorData.message || errorMessage
+        } catch(parseError) {
+            console.error("Failed to parse error response body:", parseError)
+        }
+
+        throw new Error(errorMessage)
     }
 
     return response.json()

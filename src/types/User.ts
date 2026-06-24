@@ -5,3 +5,10 @@ export type User = {
     createdAt: string
     roles: string[]
 }
+
+export type UserRequest = {
+    username: string
+    fullname: string
+    password: string
+    roles: string[]
+}

@@ -50,7 +50,6 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 
     return (
         <div style={styles.container}>
-            {}
             <header style={styles.header}>
                 <div style={styles.logoWrapper} onClick={() => setCurrentView("history")}>
                     <img

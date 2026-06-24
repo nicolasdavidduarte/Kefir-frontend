@@ -1,13 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"; // Modificado: Agregado useEffect
 import * as React from "react";
-import { fetchUsers } from "../../api/usersApi.ts";
-import type { User } from "../../types/User.ts";
+import { fetchUsers, createUser } from "../../api/usersApi.ts";
+import type { User, UserRequest } from "../../types/User.ts";
 import UserTable from "./UserTable.tsx";
+import NewUser from "./NewUser.tsx";
 
 export default function UserList() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [isCreating, setIsCreating] = useState<boolean>(false);
+
+    const loadUsers = (isReload: boolean) => {
+        if(isReload) {
+            setLoading(true)
+        }
+        fetchUsers()
+            .then((data) => {
+                setUsers(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message || "Something went wrong");
+                setLoading(false);
+            });
+    };
 
     useEffect(() => {
         fetchUsers()
@@ -20,6 +37,25 @@ export default function UserList() {
                 setLoading(false);
             });
     }, []);
+    const handleSaveUser = async (userData: UserRequest) => {
+        try {
+            await createUser(userData);
+            setIsCreating(false);
+            loadUsers(true);
+        } catch (err) {
+            const errorResponse = err as { message?: string };
+            throw new Error(errorResponse.message || "Failed to create user", { cause: err });
+        }
+    };
+
+    if (isCreating) {
+        return (
+            <NewUser
+                onBack={() => setIsCreating(false)}
+                onSave={handleSaveUser}
+            />
+        );
+    }
 
     if (loading) {
         return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading system users...</div>;
@@ -35,10 +71,14 @@ export default function UserList() {
 
     return (
         <div style={styles.container}>
-            {/* Header del módulo: Título a la izquierda, Botón a la derecha */}
             <div style={styles.tableHeader}>
                 <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>System Users</h2>
-                <button style={styles.addBtn}>+ New User</button>
+                <button
+                    onClick={() => setIsCreating(true)}
+                    style={styles.addBtn}
+                >
+                    + New User
+                </button>
             </div>
 
             {users.length === 0 ? (

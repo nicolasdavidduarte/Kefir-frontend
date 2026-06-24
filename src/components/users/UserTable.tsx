@@ -22,7 +22,15 @@ export default function UserTable({ users }: Props) {
                 <tr key={user.id} style={styles.tbodyTr}>
                     <td style={styles.td}>{user.id}</td>
                     <td style={{ ...styles.td, fontWeight: 'bold' }}>{user.username}</td>
-                    <td style={styles.td}>{user.createdAt || "N/A"}</td>
+                    <td style={styles.td}>
+                        {new Date(user.createdAt).toLocaleDateString("es-AR", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit"
+                        })}
+                    </td>
                     <td style={styles.td}>
                         {user.roles && user.roles.length > 0 ? (
                             user.roles.map((role) => (
