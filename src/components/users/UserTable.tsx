@@ -131,7 +131,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderBottom: '1px solid #ecf0f1',
     },
     td: {
-        padding: '16px 16px',
+        padding: '12px 16px',
         color: '#2c3e50',
         fontSize: '15px',
         boxSizing: 'border-box',
@@ -159,9 +159,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     iconBtn: {
         background: 'none',
-        backgroundColor: 'transparent', // Sin fondos circulares automáticos
+        backgroundColor: 'transparent',
         border: 'none',
-        padding: '4px',                 // Padding mínimo para que el área de clic sea cómoda
+        padding: '4px',
         cursor: 'pointer',
         display: 'inline-flex',
         alignItems: 'center',

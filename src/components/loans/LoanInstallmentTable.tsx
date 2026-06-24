@@ -82,11 +82,10 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderBottom: '2px solid #e2e8f0'
     },
     th: {
-        padding: '10px 12px',
+        padding: '12px 16px',
         color: '#7f8c8d',
         fontWeight: '600',
         fontSize: '13px',
-        textTransform: 'uppercase',
         letterSpacing: '0.5px'
     },
     tbodyTr: {

@@ -58,7 +58,7 @@ export default function NewUser({ onBack, onSave }: NewUserProps) {
                     <span> Back</span>
                 </button>
                 <h2 style={styles.title}>
-                    <h2 >Create New User</h2>
+                    Create New User
                 </h2>
             </div>
 

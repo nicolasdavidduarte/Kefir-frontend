@@ -3,6 +3,7 @@ import * as React from "react";
 import { fetchLoanInstallments } from "../../api/loanInstallmentsApi.ts";
 import type { LoanInstallment } from "../../types/LoanInstallment.ts";
 import LoanInstallmentTable from "./LoanInstallmentTable.tsx";
+import {FaArrowLeft} from "react-icons/fa";
 
 type LoanDetailProps = {
     loanId: number;
@@ -41,10 +42,11 @@ export default function LoanDetail({ loanId, onBack }: LoanDetailProps) {
     return (
         <div style={styles.container}>
             <div style={styles.header}>
-                <button onClick={onBack} style={styles.backBtn}>
-                    ← Back
+                <button onClick={onBack} style={styles.backButton}>
+                    <FaArrowLeft />
+                    <span> Back</span>
                 </button>
-                <h2 style={{ margin: 0, color: '#2c3e50' }}>
+                <h2 style={styles.title}>
                     Installment Details - Loan #{loanId}
                 </h2>
             </div>
@@ -66,10 +68,10 @@ const styles: { [key: string]: React.CSSProperties } = {
         boxSizing: 'border-box'
     },
     header: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '20px',
-        marginBottom: '24px'
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: "16px"
     },
     backBtn: {
         backgroundColor: '#7f8c8d',

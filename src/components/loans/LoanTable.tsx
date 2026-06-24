@@ -20,7 +20,7 @@ export default function LoanTable({ loans, onSelectLoan }: Props) {
             <table style={{ ...styles.table, minWidth: '1400px', width: '100%' }}>
                 <thead>
                 <tr style={styles.theadTr}>
-                    <th style={{ ...styles.th, width: '60px' }}>ID</th>
+                    <th style={styles.th}>Id</th>
                     <th style={styles.th}>External Id</th>
                     <th style={styles.th}>Customer</th>
                     <th style={styles.th}>Loan type</th>
@@ -102,7 +102,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         transition: 'background-color 0.2s'
     },
     td: {
-        padding: '16px 16px',
+        padding: '12px 16px',
         color: '#2c3e50',
         fontSize: '15px',
         boxSizing: 'border-box',

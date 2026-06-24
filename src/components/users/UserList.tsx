@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; // Modificado: Agregado useEffect
+import { useState, useEffect } from "react";
 import * as React from "react";
 import { fetchUsers, createUser } from "../../api/usersApi.ts";
 import type { User, UserRequest } from "../../types/User.ts";

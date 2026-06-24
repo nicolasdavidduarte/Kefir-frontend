@@ -66,7 +66,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         transition: 'background-color 0.2s'
     },
     td: {
-        padding: '16px 16px',
+        padding: '12 16px',
         color: '#2c3e50',
         fontSize: '15px',
         boxSizing: 'border-box',
