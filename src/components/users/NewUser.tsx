@@ -1,6 +1,7 @@
 import { useState } from "react";
 import * as React from "react";
 import type { UserRequest } from "../../types/User.ts";
+import {FaArrowLeft} from "react-icons/fa";
 
 type NewUserProps = {
     onBack: () => void;
@@ -52,13 +53,13 @@ export default function NewUser({ onBack, onSave }: NewUserProps) {
     return (
         <div style={styles.container}>
             <div style={styles.header}>
-                <button onClick={onBack} style={styles.backBtn} type="button">
-                    ← Back
+                <button onClick={onBack} style={styles.backButton}>
+                    <FaArrowLeft />
+                    <span> Back</span>
                 </button>
-                <div style={styles.titleArea}>
-                    <h2 style={styles.title}>Create New User</h2>
-                    <p style={styles.subtitle}>Register a new user in the system</p>
-                </div>
+                <h2 style={styles.title}>
+                    <h2 >Create New User</h2>
+                </h2>
             </div>
 
             {error && (
@@ -161,11 +162,25 @@ export default function NewUser({ onBack, onSave }: NewUserProps) {
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
-    container: { width: '100%', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: '24px' },
-    header: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '4px' },
+    container: {
+        width: '100%',
+        boxSizing: 'border-box',
+        padding: '10px'
+    },
+    header: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: "16px"
+    },
     backBtn: { backgroundColor: '#7f8c8d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' },
     titleArea: { display: 'flex', flexDirection: 'column', textAlign: 'left' },
-    title: { margin: 0, color: '#2c3e50', fontSize: '22px', fontWeight: '700' },
+    title:{
+        margin: '0 0 40px 0',
+        fontSize: '28px',
+        fontWeight: 500,
+        color: '#2c3e50'
+    },
     subtitle: { margin: '4px 0 0 0', fontSize: '13px', color: '#95a5a6' },
     formCard: { backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '32px', maxWidth: '600px', width: '100%', boxSizing: 'border-box', textAlign: 'left' },
     form: { display: 'flex', flexDirection: 'column', gap: '20px' },

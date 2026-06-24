@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { Customer } from "../../types/Customer.ts";
+import { FaArrowLeft } from "react-icons/fa";
 
 type CustomerDetailProps = {
     customer: Customer;
@@ -29,7 +30,6 @@ export default function CustomerDetail({ customer, onBack }: CustomerDetailProps
         { label: "Document number", value: customer.documentNumber },
         { label: "Customer type", value: customer.customerType },
         { label: "Created by user", value: customer.createdByUser },
-        { label: "Created by user", value: customer.createdByUser },
         {
             label: "Creation date",
             value: customer.creationDate
@@ -55,10 +55,11 @@ export default function CustomerDetail({ customer, onBack }: CustomerDetailProps
     return (
         <div style={styles.container}>
             <div style={styles.header}>
-                <button onClick={onBack} style={styles.backBtn}>
-                    ← Back
+                <button onClick={onBack} style={styles.backButton}>
+                    <FaArrowLeft />
+                    <span> Back</span>
                 </button>
-                <h2 style={{ margin: 0, color: '#2c3e50' }}>
+                <h2 style={styles.title}>
                     Customer Details - Customer #{customer.id}
                 </h2>
             </div>
@@ -96,20 +97,16 @@ const styles: { [key: string]: React.CSSProperties } = {
         padding: '10px'
     },
     header: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '20px',
-        marginBottom: '32px'
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: "16px"
     },
-    backBtn: {
-        backgroundColor: '#7f8c8d',
-        color: 'white',
-        border: 'none',
-        padding: '8px 14px',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontWeight: 'bold',
-        fontSize: '14px'
+    title:{
+        margin: '0 0 40px 0',
+        fontSize: '28px',
+        fontWeight: 500,
+        color: '#2c3e50'
     },
     formGrid: {
         display: 'grid',
@@ -157,5 +154,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         display: 'inline-block',
         textAlign: 'center',
         minWidth: '80px'
+    },
+    backButton: {
+
     }
 };

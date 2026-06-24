@@ -96,8 +96,8 @@ export default function UserTable({ users, onUserUpdated }: Props) {
                                     }}
                                 >
                                     <FaPowerOff
-                                        size={20}
-                                        color="white"
+                                        size={23}
+                                        style={{ display: 'block'}}
                                     />
                                 </div>
                             )}
@@ -159,10 +159,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     iconBtn: {
         background: 'none',
+        backgroundColor: 'transparent', // Sin fondos circulares automáticos
         border: 'none',
-        padding: '6px',
+        padding: '4px',                 // Padding mínimo para que el área de clic sea cómoda
         cursor: 'pointer',
-        transition: 'transform 0.15s ease'
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxSizing: 'border-box',
+        outline: 'none',
+        transition: 'transform 0.1s'
     },
     spinner: {
         fontSize: '16px',
