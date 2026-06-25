@@ -3,11 +3,13 @@ import * as React from "react";
 import type { Account } from "../../types/Account.ts";
 import {fetchAccounts} from "../../api/accountsApi.ts";
 import AccountTable from "./AccountTable.tsx";
+import AccountDetail from "./AccountDetail.tsx";
 
 export default function AccountList() {
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 
     useEffect(() => {
         fetchAccounts()
@@ -33,6 +35,15 @@ export default function AccountList() {
         );
     }
 
+    if (selectedAccount !== null) {
+        return (
+            <AccountDetail
+                account={selectedAccount}
+                onBack={() => setSelectedAccount(null)}
+            />
+        );
+    }
+
     return (
         <div style={styles.container}>
             <div style={styles.tableHeader}>
@@ -45,7 +56,9 @@ export default function AccountList() {
                     No accounts found in the database.
                 </div>
             ) : (
-                <AccountTable accounts={accounts} />
+                <AccountTable accounts={accounts}
+                              onSelectAccount={(account) => setSelectedAccount(account)}
+                />
             )}
         </div>
     );
