@@ -57,7 +57,6 @@ export default function CustomerDetail({ customer, onBack }: CustomerDetailProps
                 <h1 style={styles.title}>Customer Details</h1>
             </div>
 
-            {/* Este es el contenedor que ahora distribuye todo en 2 columnas */}
             <div style={styles.formGrid}>
                 {fields.map((field, index) => (
                     <div key={index} style={styles.fieldBox}>
@@ -66,7 +65,6 @@ export default function CustomerDetail({ customer, onBack }: CustomerDetailProps
                     </div>
                 ))}
 
-                {/* Caja de estado para que mantenga el mismo diseño alineado */}
                 <div style={styles.fieldBox}>
                     <span style={styles.label}>Status</span>
                     <span style={{
@@ -101,8 +99,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     formGrid: {
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr', // Fuerza las dos columnas simétricas idénticas siempre
-        gap: '16px 24px',               // Ajustamos un poco los márgenes para dar más aire al texto
+        gridTemplateColumns: '1fr 1fr',
+        gap: '16px 24px',
         width: '100%',
         boxSizing: 'border-box'
     },

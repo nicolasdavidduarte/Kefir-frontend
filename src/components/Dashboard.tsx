@@ -282,6 +282,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     scrollableTimeline: {
         maxHeight: '420px',
+        overflowY: 'hidden',
         paddingRight: '8px',
         display: 'flex',
         flexDirection: 'column'
