@@ -183,15 +183,12 @@
   }
 }
 
-/* CustomerTable.css */
-
 .table-scroll-container {
   width: 100%;
   overflow-x: auto;
-  padding-bottom: 8px; /* Espacio para que la barra no tape el contenido */
+  padding-bottom: 8px;
 }
 
-/* Forzar visibilidad en Chrome, Safari y Edge */
 .table-scroll-container::-webkit-scrollbar {
   height: 8px;
   display: block !important;
@@ -213,12 +210,12 @@
 
 .dashboard-wrapper {
   height: 100vh;
-  overflow: hidden; /* Prohíbe terminantemente que la pantalla completa scrollee */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .main-content-area {
   flex: 1;
-  overflow-y: auto; /* El scroll muere y nace acá, manteniendo el header siempre a la vista */
+  overflow-y: auto;
 }

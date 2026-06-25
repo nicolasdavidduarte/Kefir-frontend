@@ -1,9 +1,9 @@
 export type Account = {
     id: number,
-    customer: number,
+    customer: string,
     type: string,
     currencyIsoCode: string,
-    bank: number,
+    bank: string,
     cbu: string,
     balance: number,
     status: string
