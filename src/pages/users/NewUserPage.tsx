@@ -8,7 +8,7 @@ type NewUserProps = {
     onSave: (userData: UserRequest) => Promise<void>;
 };
 
-export default function NewUser({ onBack, onSave }: NewUserProps) {
+export default function NewUserPage({ onBack, onSave }: NewUserProps) {
     const [username, setUsername] = useState("");
     const [fullname, setFullname] = useState("");
     const [password, setPassword] = useState("");

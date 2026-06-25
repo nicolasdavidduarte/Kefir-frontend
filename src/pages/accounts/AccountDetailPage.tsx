@@ -7,7 +7,7 @@ type CustomerDetailProps = {
     onBack: () => void;
 };
 
-export default function AccountDetail({ account, onBack }: CustomerDetailProps) {
+export default function AccountDetailPage({ account, onBack }: CustomerDetailProps) {
     const getStateColor = (state: string) => {
         switch (state) {
             case "OPENED": return "#2ecc71";

@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import * as React from "react";
 import { fetchUsers, createUser } from "../../api/usersApi.ts";
 import type { User, UserRequest } from "../../types/User.ts";
-import UserTable from "./UserTable.tsx";
-import NewUser from "./NewUser.tsx";
+import UserTable from "../../components/users/UserTable.tsx";
+import NewUserPage from "./NewUserPage.tsx";
 
-export default function UserList() {
+export default function UserListPage() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -50,7 +50,7 @@ export default function UserList() {
 
     if (isCreating) {
         return (
-            <NewUser
+            <NewUserPage
                 onBack={() => setIsCreating(false)}
                 onSave={handleSaveUser}
             />

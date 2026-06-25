@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react"
 import LoginPage from "./pages/LoginPage"
-import Dashboard from "./components/Dashboard.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
 import {clearToken, getToken, removeUser, isTokenExpired, getTokenRemainingTime} from "./auth/token"
 
 export default function App() {

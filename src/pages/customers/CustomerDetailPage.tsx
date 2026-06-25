@@ -20,7 +20,7 @@ function formatDateTime(dateString: string): string {
     return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
 
-export default function CustomerDetail({ customer, onBack }: CustomerDetailProps) {
+export default function CustomerDetailPage({ customer, onBack }: CustomerDetailProps) {
     const getStateColor = (state: string) => {
         switch (state) {
             case "ACTIVE": return "#2ecc71";
@@ -37,7 +37,6 @@ export default function CustomerDetail({ customer, onBack }: CustomerDetailProps
         { label: "Lastname 1", value: customer.lastname1 },
         { label: "Lastname 2", value: customer.lastname2 || "-" },
         { label: "Lastname 3", value: customer.lastname3 || "-" },
-        { label: "Fullname", value: customer.fullname },
         { label: "Person type", value: customer.personType },
         { label: "Document type", value: customer.documentType },
         { label: "Document number", value: customer.documentNumber },
@@ -54,7 +53,7 @@ export default function CustomerDetail({ customer, onBack }: CustomerDetailProps
                     <FaArrowLeft />
                     <span> Back</span>
                 </button>
-                <h1 style={styles.title}>Customer Details</h1>
+                <h1 style={styles.title}>Details of customer {customer.fullname}</h1>
             </div>
 
             <div style={styles.formGrid}>

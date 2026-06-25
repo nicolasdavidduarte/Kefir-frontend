@@ -3,7 +3,7 @@ import * as React from "react";
 import { fetchLoanInstallments } from "../../api/loanInstallmentsApi.ts";
 import type { LoanInstallment } from "../../types/LoanInstallment.ts";
 import type { Loan } from "../../types/Loan.ts";
-import LoanInstallmentTable from "./LoanInstallmentTable.tsx";
+import LoanInstallmentTable from "../../components/loans/LoanInstallmentTable.tsx";
 import { FaArrowLeft } from "react-icons/fa";
 
 type LoanDetailProps = {
@@ -11,7 +11,7 @@ type LoanDetailProps = {
     onBack: () => void;
 };
 
-export default function LoanDetail({ loan, onBack }: LoanDetailProps) {
+export default function LoanDetailPage({ loan, onBack }: LoanDetailProps) {
     const [installments, setInstallments] = useState<LoanInstallment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);

@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import * as React from "react";
 import type { Customer } from "../../types/Customer.ts";
 import {fetchCustomers} from "../../api/customersApi.ts";
-import CustomerTable from "./CustomerTable.tsx";
-import CustomerDetail from "./CustomerDetail.tsx";
+import CustomerTable from "../../components/customers/CustomerTable.tsx";
+import CustomerDetailPage from "./CustomerDetailPage.tsx";
 
-export default function CustomerList() {
+export default function CustomerListPage() {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -37,7 +37,7 @@ export default function CustomerList() {
 
     if (selectedCustomer !== null) {
         return (
-            <CustomerDetail
+            <CustomerDetailPage
                 customer={selectedCustomer}
                 onBack={() => setSelectedCustomer(null)}
             />

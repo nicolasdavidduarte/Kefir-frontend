@@ -1,11 +1,11 @@
-import { getUser } from "../auth/token";
+import { getUser } from "../auth/token.ts";
 import * as React from "react";
-import UserList from "./users/UserList.tsx";
-import CustomerList from "./customers/CustomerList.tsx";
-import LoansList from "./loans/LoanList.tsx";
+import UserListPage from "./users/UserListPage.tsx";
+import CustomerListPage from "./customers/CustomerListPage.tsx";
+import LoansList from "./loans/LoanListPage.tsx";
 import { useState } from "react";
-import { useHistory } from "../hooks/useHistory";
-import AccountList from "./accounts/AccountList.tsx";
+import { useHistory } from "../hooks/useHistory.ts";
+import AccountListPage from "./accounts/AccountListPage.tsx";
 import logo from "../assets/kefir_logo.png";
 
 type DashboardProps = {
@@ -115,10 +115,10 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                         </>
                     )}
 
-                    {currentView === "users" && <UserList />}
-                    {currentView === "customers" && <CustomerList />}
+                    {currentView === "users" && <UserListPage />}
+                    {currentView === "customers" && <CustomerListPage />}
                     {currentView === "loans" && <LoansList />}
-                    {currentView === "accounts" && <AccountList />}
+                    {currentView === "accounts" && <AccountListPage />}
                 </div>
             </main>
 

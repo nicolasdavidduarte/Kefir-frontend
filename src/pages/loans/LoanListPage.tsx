@@ -1,20 +1,21 @@
 import { useState, useEffect } from "react";
 import * as React from "react";
-import type { Account } from "../../types/Account.ts";
-import {fetchAccounts} from "../../api/accountsApi.ts";
-import AccountTable from "./AccountTable.tsx";
-import AccountDetail from "./AccountDetail.tsx";
+import type { Loan } from "../../types/Loan.ts";
+import {fetchLoans} from "../../api/loansApi.ts";
+import LoanTable from "../../components/loans/LoanTable.tsx";
+import LoanDetailPage from "./LoanDetailPage.tsx";
 
-export default function AccountList() {
-    const [accounts, setAccounts] = useState<Account[]>([]);
+export default function LoansList() {
+    const [loans, setLoans] = useState<Loan[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+
+    const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
 
     useEffect(() => {
-        fetchAccounts()
+        fetchLoans()
             .then((data) => {
-                setAccounts(data);
+                setLoans(data);
                 setLoading(false);
             })
             .catch((err) => {
@@ -24,7 +25,7 @@ export default function AccountList() {
     }, []);
 
     if (loading) {
-        return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading accounts...</div>;
+        return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading loans...</div>;
     }
 
     if (error) {
@@ -35,11 +36,11 @@ export default function AccountList() {
         );
     }
 
-    if (selectedAccount !== null) {
+    if (selectedLoan !== null) {
         return (
-            <AccountDetail
-                account={selectedAccount}
-                onBack={() => setSelectedAccount(null)}
+            <LoanDetailPage
+                loan={selectedLoan}
+                onBack={() => setSelectedLoan(null)}
             />
         );
     }
@@ -47,17 +48,21 @@ export default function AccountList() {
     return (
         <div style={styles.container}>
             <div style={styles.tableHeader}>
-                <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>Accounts</h2>
-                <button style={styles.addBtn}>+ New Account</button>
+                <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>Loans</h2>
+                <button style={styles.addBtn}>+ New Loan</button>
             </div>
 
-            {accounts.length === 0 ? (
+            {loans.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
-                    No accounts found in the database.
+                    No loans found in the database.
                 </div>
             ) : (
-                <AccountTable accounts={accounts}
-                              onSelectAccount={(account) => setSelectedAccount(account)}
+                <LoanTable
+                    loans={loans}
+                    onSelectLoan={(id) => {
+                        const found = loans.find(l => l.id === id);
+                        if (found) setSelectedLoan(found);
+                    }}
                 />
             )}
         </div>
