@@ -65,7 +65,6 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                 </div>
             </header>
 
-            {/* Eliminamos la grilla duplicada mainArea y dejamos que los hijos directos ocupen las celdas del container */}
             <main style={styles.content}>
                 <div style={styles.whiteBody}>
 
@@ -175,10 +174,11 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         display: 'grid',
-        gridTemplateColumns: '1fr 280px', // Columna 1: Vista activa, Columna 2: Sidebar
-        gridTemplateRows: '70px calc(100vh - 70px)', // Fila 1: Header con alto fijo, Fila 2: Cuerpo rígido
+        gridTemplateColumns: '1fr 280px',
+        gridTemplateRows: '70px 1fr',
         height: '100vh',
         maxHeight: '100vh',
+        overflow: 'hidden',
         backgroundColor: '#f8f9fa',
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
         boxSizing: 'border-box'
@@ -237,10 +237,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        overflowY: 'auto', // Forzamos a que el eje vertical siempre declare el contenedor como scrollable
-        height: '100%',
+        overflowY: 'auto',
         boxSizing: 'border-box',
-
+        minHeight: 0,
         // Firefox
         scrollbarWidth: 'thin',
         scrollbarColor: '#cbd5e1 #f8f9fa'

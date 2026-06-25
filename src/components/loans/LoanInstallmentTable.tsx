@@ -56,7 +56,7 @@ export default function LoanInstallmentTable({ installments }: Props) {
                                 ...styles.stateBadge,
                                 backgroundColor: getStateColor(inst.status)
                             }}>
-                                {inst.status}
+                                {inst.status.replace(/_/g, ' ')}
                             </span>
                     </td>
                 </tr>
@@ -76,7 +76,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         width: '100%',
         borderCollapse: 'collapse',
         textAlign: 'left',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
     },
     theadTr: {
         borderBottom: '2px solid #e2e8f0'
@@ -86,7 +86,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#7f8c8d',
         fontWeight: '600',
         fontSize: '13px',
-        letterSpacing: '0.5px'
+        letterSpacing: '0.5px',
     },
     tbodyTr: {
         borderBottom: '1px solid #f1f2f6'
@@ -95,7 +95,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         padding: '10px 10px',
         color: '#2c3e50',
         fontSize: '14px',
-        verticalAlign: 'middle'
+        verticalAlign: 'middle',
+        whiteSpace: "nowrap"
     },
     stateBadge: {
         color: 'white',

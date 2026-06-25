@@ -10,7 +10,6 @@ export default function LoansList() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Cambiado: Ahora guardamos el objeto completo del préstamo seleccionado
     const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
 
     useEffect(() => {
@@ -40,7 +39,7 @@ export default function LoansList() {
     if (selectedLoan !== null) {
         return (
             <LoanDetail
-                loan={selectedLoan} // Pasamos el préstamo completo
+                loan={selectedLoan}
                 onBack={() => setSelectedLoan(null)}
             />
         );
@@ -58,7 +57,6 @@ export default function LoansList() {
                     No loans found in the database.
                 </div>
             ) : (
-                // Buscamos el objeto Loan correspondiente al ID seleccionado
                 <LoanTable
                     loans={loans}
                     onSelectLoan={(id) => {

@@ -13,7 +13,7 @@ export function useHistory() {
 
     const logActivity = (action: string, module: ActivityLog['module']) => {
         const newLog: ActivityLog = {
-            id: crypto.randomUUID(), // ID único para usar como key en el map
+            id: crypto.randomUUID(),
             action,
             module,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })

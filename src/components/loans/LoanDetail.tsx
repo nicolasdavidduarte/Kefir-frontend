@@ -28,14 +28,12 @@ export default function LoanDetail({ loan, onBack }: LoanDetailProps) {
             });
     }, [loan.id]);
 
-    // Función auxiliar para parsear y formatear montos de manera segura
     const formatCurrency = (amount: number | string | undefined) => {
         if (amount === undefined || amount === null) return "0,00";
         const num = typeof amount === "string" ? parseFloat(amount) : amount;
         return isNaN(num) ? "0,00" : num.toLocaleString("es-AR", { minimumFractionDigits: 2 });
     };
 
-    // Función auxiliar para formatear fechas ISO a formato local
     const formatDate = (dateString: string | undefined) => {
         if (!dateString) return "N/A";
         return new Date(dateString).toLocaleDateString("es-AR", {
@@ -43,6 +41,13 @@ export default function LoanDetail({ loan, onBack }: LoanDetailProps) {
             month: "2-digit",
             year: "numeric"
         });
+    };
+
+    const statusColors: Record<string, string> = {
+        pending: "#f39c12",
+        active: "#2ecc71",
+        inactive: "#95a5a6",
+        closed: "#e74c3c",
     };
 
     if (loading) {
@@ -65,14 +70,12 @@ export default function LoanDetail({ loan, onBack }: LoanDetailProps) {
                     <span> Back</span>
                 </button>
                 <h2 style={styles.title}>
-                    Installment Details - Loan #{loan.id}
+                    Details of loan #{loan.id}
                 </h2>
             </div>
 
-            {/* Panel de Información Completa del Préstamo */}
             <div style={styles.summaryCard}>
 
-                {/* SECCIÓN 1: Identificación y Clasificación */}
                 <h3 style={styles.sectionTitle}>General Information</h3>
                 <div style={styles.summaryGrid}>
                     <div>
@@ -92,18 +95,26 @@ export default function LoanDetail({ loan, onBack }: LoanDetailProps) {
                         <span style={styles.summaryValue}>{loan.amortizationType}</span>
                     </div>
                     <div>
-                        <span style={styles.summaryLabel}>Status</span>
-                        <span style={styles.summaryValue}>{loan.status}</span>
+                        <span style={styles.summaryLabel}>Opening Date</span>
+                        <span style={styles.summaryValue}>{formatDate(loan.openingDate)}</span>
                     </div>
                     <div>
-                        <span style={styles.summaryLabel}>Operator / User</span>
-                        <span style={styles.summaryValue}>{loan.user || "N/A"}</span>
+                        <span style={styles.summaryLabel}>Expiration Date</span>
+                        <span style={styles.summaryValue}>{formatDate(loan.expirationDate)}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Status</span>
+                        <span style={{
+                            ...styles.statusBadge,
+                            backgroundColor: statusColors[loan.status.toLowerCase()] || "#95a5a6"
+                        }}>
+                                    {loan.status}
+                        </span>
                     </div>
                 </div>
 
                 <hr style={styles.divider} />
 
-                {/* SECCIÓN 2: Condiciones Financieras y Tasas */}
                 <h3 style={styles.sectionTitle}>Financial Terms</h3>
                 <div style={styles.summaryGrid}>
                     <div>
@@ -126,7 +137,6 @@ export default function LoanDetail({ loan, onBack }: LoanDetailProps) {
 
                 <hr style={styles.divider} />
 
-                {/* SECCIÓN 3: Desglose de Montos */}
                 <h3 style={styles.sectionTitle}>Financial Totals</h3>
                 <div style={styles.summaryGrid}>
                     <div>
@@ -147,24 +157,26 @@ export default function LoanDetail({ loan, onBack }: LoanDetailProps) {
 
                 <hr style={styles.divider} />
 
-                {/* SECCIÓN 4: Fechas e Historial */}
-                <h3 style={styles.sectionTitle}>Dates & Lifecycle</h3>
+                <h3 style={styles.sectionTitle}>Audit Data</h3>
                 <div style={styles.summaryGrid}>
                     <div>
-                        <span style={styles.summaryLabel}>Opening Date</span>
-                        <span style={styles.summaryValue}>{formatDate(loan.openingDate)}</span>
-                    </div>
-                    <div>
-                        <span style={styles.summaryLabel}>Expiration Date</span>
-                        <span style={styles.summaryValue}>{formatDate(loan.expirationDate)}</span>
-                    </div>
-                    <div>
-                        <span style={styles.summaryLabel}>Created At</span>
+                        <span style={styles.summaryLabel}>Creation Date</span>
                         <span style={styles.summaryValue}>{formatDate(loan.createdAt)}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Created by</span>
+                        <span style={styles.summaryValue}>{loan.user || "N/A"}</span>
                     </div>
                 </div>
 
             </div>
+
+            <span style={{display:"flex", justifyContent: "left", marginBottom:"20px"}}>
+            <h2 style={styles.title}>
+                Installments details
+            </h2>
+            </span>
+
 
             {installments.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
@@ -180,10 +192,8 @@ export default function LoanDetail({ loan, onBack }: LoanDetailProps) {
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
-        // Bajamos la altura máxima para asegurar que quepa en el "rectángulo central"
-        // sin importar los paddings que tenga tu layout padre.
         maxHeight: 'calc(100vh - 180px)',
-        overflowY: 'auto', // Genera el scroll dentro del rectángulo blanco
+        overflowY: 'auto',
         overflowX: 'hidden',
         paddingRight: '8px',
         boxSizing: 'border-box'
@@ -199,19 +209,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         margin: 0,
         color: '#2c3e50',
         fontSize: '22px'
-    },
-    backButton: {
-        backgroundColor: '#7f8c8d',
-        color: 'white',
-        border: 'none',
-        padding: '8px 14px',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontWeight: 'bold',
-        fontSize: '14px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px'
     },
     summaryCard: {
         backgroundColor: '#ffffff',
@@ -258,5 +255,16 @@ const styles: { [key: string]: React.CSSProperties } = {
         border: 'none',
         borderTop: '1px solid #f1f5f9',
         margin: '20px 0'
-    }
+    },
+    statusBadge: {
+        color: 'white',
+        padding: '4px 10px',
+        borderRadius: '4px',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        display: 'inline-block',
+        textAlign: 'center',
+        minWidth: '70px'
+    },
+    backBtn: { backgroundColor: '#7f8c8d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' }
 };

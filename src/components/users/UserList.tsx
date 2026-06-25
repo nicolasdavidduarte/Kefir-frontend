@@ -92,16 +92,13 @@ export default function UserList() {
     );
 }
 
-// Al final de UserList.tsx
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
         boxSizing: 'border-box',
-        // Restamos la cabecera del módulo para que el contenedor hijo no empuje el dashboard
         maxHeight: 'calc(100vh - 140px)',
         display: 'flex',
         flexDirection: 'column',
-        // Evitamos scroll innecesario si la tabla es corta
         overflowY: 'auto'
     },
     tableHeader: {
@@ -111,7 +108,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         width: '100%',
         marginBottom: '24px',
         boxSizing: 'border-box',
-        flexShrink: 0 // Impide que la cabecera se achique o se desplace
+        flexShrink: 0
     },
     addBtn: {
         backgroundColor: '#2ecc71',

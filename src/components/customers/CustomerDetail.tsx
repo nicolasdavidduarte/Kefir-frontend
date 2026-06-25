@@ -7,6 +7,19 @@ type CustomerDetailProps = {
     onBack: () => void;
 };
 
+function formatDateTime(dateString: string): string {
+    const date = new Date(dateString);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
 export default function CustomerDetail({ customer, onBack }: CustomerDetailProps) {
     const getStateColor = (state: string) => {
         switch (state) {
@@ -30,60 +43,38 @@ export default function CustomerDetail({ customer, onBack }: CustomerDetailProps
         { label: "Document number", value: customer.documentNumber },
         { label: "Customer type", value: customer.customerType },
         { label: "Created by user", value: customer.createdByUser },
-        {
-            label: "Creation date",
-            value: customer.creationDate
-                ? new Date(customer.creationDate).toLocaleDateString("es-AR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric"
-                })
-                : "N/A"
-        },
-        {
-            label: "Update date",
-            value: customer.updateDate
-                ? new Date(customer.updateDate).toLocaleDateString("es-AR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric"
-                })
-                : "N/A"
-        },
+        { label: "Created at", value: formatDateTime(customer.creationDate) },
+        { label: "Updated at", value: formatDateTime(customer.updateDate) }
     ];
 
     return (
         <div style={styles.container}>
             <div style={styles.header}>
-                <button onClick={onBack} style={styles.backButton}>
+                <button onClick={onBack}>
                     <FaArrowLeft />
                     <span> Back</span>
                 </button>
-                <h2 style={styles.title}>
-                    Customer Details - Customer #{customer.id}
-                </h2>
+                <h1 style={styles.title}>Customer Details</h1>
             </div>
 
+            {/* Este es el contenedor que ahora distribuye todo en 2 columnas */}
             <div style={styles.formGrid}>
                 {fields.map((field, index) => (
                     <div key={index} style={styles.fieldBox}>
-                        <label style={styles.label}>{field.label}</label>
-                        <div style={styles.inputFallback}>
-                            {field.value}
-                        </div>
+                        <span style={styles.label}>{field.label}</span>
+                        <span style={styles.inputFallback}>{field.value}</span>
                     </div>
                 ))}
 
+                {/* Caja de estado para que mantenga el mismo diseño alineado */}
                 <div style={styles.fieldBox}>
-                    <label style={styles.label}>Status</label>
-                    <div style={styles.inputFallback}>
-                        <span style={{
-                            ...styles.stateBadge,
-                            backgroundColor: getStateColor(customer.status)
-                        }}>
-                            {customer.status}
-                        </span>
-                    </div>
+                    <span style={styles.label}>Status</span>
+                    <span style={{
+                        ...styles.statusBadge,
+                        backgroundColor: getStateColor(customer.status)
+                    }}>
+                        {customer.status}
+                    </span>
                 </div>
             </div>
         </div>
@@ -102,7 +93,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         alignItems: "flex-start",
         gap: "16px"
     },
-    title:{
+    title: {
         margin: '0 0 40px 0',
         fontSize: '28px',
         fontWeight: 500,
@@ -110,8 +101,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     formGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
-        gap: '20px',
+        gridTemplateColumns: '1fr 1fr', // Fuerza las dos columnas simétricas idénticas siempre
+        gap: '16px 24px',               // Ajustamos un poco los márgenes para dar más aire al texto
         width: '100%',
         boxSizing: 'border-box'
     },
@@ -129,33 +120,27 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#7f8c8d',
         fontWeight: '600',
         fontSize: '14px',
-        width: '130px',
+        flex: '0 0 90px',
         flexShrink: 0,
         borderRight: '1px solid #f1f2f6',
         marginRight: '14px',
-        paddingRight: '8px'
+        paddingRight: '8px',
+        textAlign: 'left'
     },
     inputFallback: {
         color: '#2c3e50',
         fontSize: '15px',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
+        fontWeight: '500',
         whiteSpace: 'nowrap',
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center'
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     },
-    stateBadge: {
+    statusBadge: {
         color: 'white',
-        padding: '4px 10px',
+        padding: '4px 12px',
         borderRadius: '4px',
-        fontSize: '12px',
+        fontSize: '13px',
         fontWeight: 'bold',
-        display: 'inline-block',
-        textAlign: 'center',
-        minWidth: '80px'
-    },
-    backButton: {
-
+        textTransform: 'uppercase'
     }
 };

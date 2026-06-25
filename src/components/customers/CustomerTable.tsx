@@ -13,12 +13,12 @@ export default function CustomerTable({ customers, onSelectCustomer }: Props) {
             <table style={{ ...styles.table}}>
             <thead>
             <tr style={styles.theadTr}>
-                <th style={{ ...styles.th, width: '60px' }}>ID</th>
-                <th style={styles.th}>Fullname</th>
-                <th style={styles.th}>Person type</th>
-                <th style={styles.th}>Document type</th>
-                <th style={styles.th}>Document number</th>
-                <th style={styles.th}>Customer type</th>
+                <th style={{ ...styles.th, width: '8%' }}>Id</th>
+                <th style={{ ...styles.th, width: '28%' }}>Fullname</th>
+                <th style={{ ...styles.th, width: '16%' }}>Person type</th>
+                <th style={{ ...styles.th, width: '16%' }}>Document type</th>
+                <th style={{ ...styles.th, width: '16%' }}>Document number</th>
+                <th style={{ ...styles.th, width: '16%' }}>Customer type</th>
             </tr>
             </thead>
             <tbody>
@@ -28,12 +28,12 @@ export default function CustomerTable({ customers, onSelectCustomer }: Props) {
                     style={styles.tbodyTr}
                     onClick={() => onSelectCustomer(customer)}
                 >
-                    <td style={styles.td}>{customer.id}</td>
-                    <td style={{ ...styles.td }}>{customer.fullname}</td>
-                    <td style={{ ...styles.td }}>{customer.personType}</td>
-                    <td style={{ ...styles.td }}>{customer.documentType}</td>
-                    <td style={{ ...styles.td }}>{customer.documentNumber}</td>
-                    <td style={{ ...styles.td }}>{customer.customerType}</td>
+                    <td style={{ ...styles.td, width: '8%' }}>{customer.id}</td>
+                    <td style={{ ...styles.td, width: '28%', ...styles.ellipsis }}>{customer.fullname}</td>
+                    <td style={{ ...styles.td, width: '16%' }}>{customer.personType}</td>
+                    <td style={{ ...styles.td, width: '16%' }}>{customer.documentType}</td>
+                    <td style={{ ...styles.td, width: '16%' }}>{customer.documentNumber}</td>
+                    <td style={{ ...styles.td, width: '16%' }}>{customer.customerType}</td>
                 </tr>
             ))}
             </tbody>
@@ -48,7 +48,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         width: '100%',
         borderCollapse: 'collapse',
         textAlign: 'left',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        tableLayout: 'fixed'
     },
     theadTr: {
         borderBottom: '2px solid #34495e',
@@ -66,7 +67,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         transition: 'background-color 0.2s'
     },
     td: {
-        padding: '12 16px',
+        padding: '12px 16px',
         color: '#2c3e50',
         fontSize: '15px',
         boxSizing: 'border-box',

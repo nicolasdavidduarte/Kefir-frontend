@@ -84,7 +84,7 @@ export default function NewUser({ onBack, onSave }: NewUserProps) {
                         />
                     </div>
 
-                    {/* Full Name (Nuevo Input) */}
+                    {/* Full Name */}
                     <div style={styles.inputGroup}>
                         <label style={styles.label}>Full Name</label>
                         <input
@@ -165,7 +165,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
         boxSizing: 'border-box',
-        padding: '10px'
+        padding: '10px',
     },
     header: {
         display: "flex",
@@ -191,7 +191,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         width: '100%',
         boxSizing: 'border-box',
         textAlign: 'left',
-        // Asegura que el formulario no crezca más allá de la pantalla limpia
         maxHeight: '100%',
         overflow: 'hidden'
     },
