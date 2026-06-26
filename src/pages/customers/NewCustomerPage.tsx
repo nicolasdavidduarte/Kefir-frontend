@@ -133,7 +133,6 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         <input
                             type="text"
                             style={styles.input}
-                            placeholder="e.g. Sue"
                             value={lastname2}
                             onChange={e => setLastname2(e.target.value)}
                             disabled={loading}
@@ -147,7 +146,6 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         <input
                             type="text"
                             style={styles.input}
-                            placeholder="e.g. Sue"
                             value={lastname3}
                             onChange={e => setLastname3(e.target.value)}
                             disabled={loading}

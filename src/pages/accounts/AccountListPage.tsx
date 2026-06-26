@@ -1,15 +1,44 @@
 import { useState, useEffect } from "react";
 import * as React from "react";
 import type { Account } from "../../types/Account.ts";
-import {fetchAccounts} from "../../api/accountsApi.ts";
+import {createAccount, fetchAccounts} from "../../api/accountsApi.ts";
 import AccountTable from "../../components/accounts/AccountTable.tsx";
 import AccountDetailPage from "./AccountDetailPage.tsx";
+import NewAccountPage from "../accounts/NewAccountPage.tsx";
+import type {AccountRequest} from "../../types/Account.ts";
 
 export default function AccountListPage() {
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+    const [isCreating, setIsCreating] = useState<boolean>(false);
+
+    const loadAccounts = (isReload: boolean) => {
+        if(isReload) {
+            setLoading(true)
+        }
+        fetchAccounts()
+            .then((data) => {
+                setAccounts(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message || "Something went wrong");
+                setLoading(false);
+            });
+    };
+
+    const handleSaveAccount = async (accountData: AccountRequest) => {
+        try {
+            await createAccount(accountData);
+            setIsCreating(false);
+            loadAccounts(true);
+        } catch (err) {
+            const errorResponse = err as { message?: string };
+            throw new Error(errorResponse.message || "Failed to create account", { cause: err });
+        }
+    };
 
     useEffect(() => {
         fetchAccounts()
@@ -22,6 +51,15 @@ export default function AccountListPage() {
                 setLoading(false);
             });
     }, []);
+
+    if (isCreating) {
+        return (
+            <NewAccountPage
+                onBack={() => setIsCreating(false)}
+                onSave={handleSaveAccount}
+            />
+        );
+    }
 
     if (loading) {
         return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading accounts...</div>;
@@ -39,7 +77,8 @@ export default function AccountListPage() {
         return (
             <AccountDetailPage
                 account={selectedAccount}
-                onBack={() => setSelectedAccount(null)}
+                onBack={() => { setSelectedAccount(null);
+                                      loadAccounts(true)}}
             />
         );
     }
@@ -48,7 +87,12 @@ export default function AccountListPage() {
         <div style={styles.container}>
             <div style={styles.tableHeader}>
                 <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>Accounts</h2>
-                <button style={styles.addBtn}>+ New Account</button>
+                <button
+                    onClick={() => setIsCreating(true)}
+                    style={styles.addBtn}
+                >
+                    + New Account
+                </button>
             </div>
 
             {accounts.length === 0 ? (

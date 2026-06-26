@@ -1,10 +1,17 @@
 import { apiFetch } from "./http"
-import type { Account } from "../types/Account"
+import type { Account, AccountRequest } from "../types/Account"
 
 const accountPath = "/api/accounts";
 
 export function fetchAccounts(): Promise<Account[]> {
     return apiFetch<Account[]>(accountPath)
+}
+
+export function createAccount(accountRequest: AccountRequest): Promise<Account>{
+    return apiFetch<Account>(accountPath , {
+        method: "POST",
+        body: JSON.stringify(accountRequest)
+    })
 }
 
 export function activateAccount(id: number): Promise<Account> {

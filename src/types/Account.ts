@@ -8,3 +8,12 @@ export type Account = {
     balance: number,
     status: string
 }
+
+export type AccountRequest = {
+    type: string,
+    customerId: number,
+    currencyIsoCode: string,
+    bankId: number,
+    bankBranchId: number,
+    initialBalance: number
+}
