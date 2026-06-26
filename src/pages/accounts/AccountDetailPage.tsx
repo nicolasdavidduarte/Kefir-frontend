@@ -1,13 +1,17 @@
 import * as React from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import type {Account} from "../../types/Account.ts";
+import {activateAccount, deactivateAccount} from "../../api/accountsApi.ts";
 
-type CustomerDetailProps = {
+type AccountDetailProps = {
     account: Account;
     onBack: () => void;
 };
 
-export default function AccountDetailPage({ account, onBack }: CustomerDetailProps) {
+export default function AccountDetailPage({ account: initialAccount, onBack }: AccountDetailProps) {
+    const [account, setAccount] = React.useState<Account>(initialAccount);
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
     const getStateColor = (state: string) => {
         switch (state) {
             case "OPENED": return "#2ecc71";
@@ -27,6 +31,29 @@ export default function AccountDetailPage({ account, onBack }: CustomerDetailPro
         { label: "Balance", value: account.balance },
     ];
 
+    const handleStatusChange = async (action: "activate" | "deactivate") => {
+        const actionText = action === "activate" ? "activate" : "deactivate";
+        const confirmChange = window.confirm(`¿Are you sure you want to ${actionText} account ${account.id}?`);
+
+        if (!confirmChange) return;
+
+        setIsLoading(true);
+
+        try {
+            const updatedAccount =
+                action === "activate"
+                    ? await activateAccount(account.id)
+                    : await deactivateAccount(account.id);
+
+            setAccount(updatedAccount)
+
+        } catch (error) {
+            alert(error instanceof Error ? error.message : "An unexpected error occurred.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div style={styles.container}>
             <div style={styles.header}>
@@ -45,14 +72,37 @@ export default function AccountDetailPage({ account, onBack }: CustomerDetailPro
                     </div>
                 ))}
 
-                <div style={styles.fieldBox}>
-                    <span style={styles.label}>Status</span>
-                    <span style={{
-                        ...styles.statusBadge,
-                        backgroundColor: getStateColor(account.status)
-                    }}>
-                        {account.status}
-                    </span>
+                <div style={{ ...styles.fieldBox, justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <span style={styles.label}>Status</span>
+                        <span style={{
+                            ...styles.statusBadge,
+                            backgroundColor: getStateColor(account.status)
+                        }}>
+                            {account.status}
+                        </span>
+                    </div>
+
+                    <div style={styles.actionContainer}>
+                        {(account.status === "PENDING" || account.status === "CLOSED") && (
+                            <button
+                                style={{ ...styles.btnAction, ...styles.btnActivate }}
+                                onClick={() => handleStatusChange("activate")}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? "Processing..." : "Activate"}
+                            </button>
+                        )}
+                        {(account.status === "OPENED") && (
+                            <button
+                                style={{ ...styles.btnAction, ...styles.btnDeactivate }}
+                                onClick={() => handleStatusChange("deactivate")}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? "Processing..." : "Deactivate"}
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,5 +170,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontSize: '13px',
         fontWeight: 'bold',
         textTransform: 'uppercase'
-    }
+    },
+    actionContainer: { display: 'flex', gap: '8px' },
+    btnAction: { padding: '6px 12px', borderRadius: '4px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', border: 'none', color: '#fff', transition: 'background-color 0.2s' },
+    btnActivate: { backgroundColor: '#2ecc71' },
+    btnDeactivate: { backgroundColor: '#e74c3c' }
 };

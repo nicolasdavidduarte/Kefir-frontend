@@ -109,7 +109,7 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
                                 {isLoading ? "Processing..." : "Activate"}
                             </button>
                         )}
-                        {(customer.status === "PENDING" || customer.status === "ACTIVE") && (
+                        {(customer.status === "ACTIVE") && (
                             <button
                                 style={{ ...styles.btnAction, ...styles.btnDeactivate }}
                                 onClick={() => handleStatusChange("deactivate")}
