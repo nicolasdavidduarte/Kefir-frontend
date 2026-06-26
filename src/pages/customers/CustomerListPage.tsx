@@ -1,15 +1,43 @@
 import { useState, useEffect } from "react";
 import * as React from "react";
-import type { Customer } from "../../types/Customer.ts";
-import {fetchCustomers} from "../../api/customersApi.ts";
+import type {Customer, CustomerCreationRequest} from "../../types/Customer.ts";
+import {fetchCustomers, createCustomer} from "../../api/customersApi.ts";
 import CustomerTable from "../../components/customers/CustomerTable.tsx";
 import CustomerDetailPage from "./CustomerDetailPage.tsx";
+import NewCustomerPage from "../customers/NewCustomerPage.tsx";
 
 export default function CustomerListPage() {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+    const [isCreating, setIsCreating] = useState<boolean>(false);
+
+    const loadCustomers = (isReload: boolean) => {
+        if(isReload) {
+            setLoading(true)
+        }
+        fetchCustomers()
+            .then((data) => {
+                setCustomers(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message || "Something went wrong");
+                setLoading(false);
+            });
+    };
+
+    const handleSaveCustomer = async (customerData: CustomerCreationRequest) => {
+        try {
+            await createCustomer(customerData);
+            setIsCreating(false);
+            loadCustomers(true);
+        } catch (err) {
+            const errorResponse = err as { message?: string };
+            throw new Error(errorResponse.message || "Failed to create customer", { cause: err });
+        }
+    };
 
     useEffect(() => {
         fetchCustomers()
@@ -22,6 +50,15 @@ export default function CustomerListPage() {
                 setLoading(false);
             });
     }, []);
+
+    if (isCreating) {
+        return (
+            <NewCustomerPage
+                onBack={() => setIsCreating(false)}
+                onSave={handleSaveCustomer}
+            />
+        );
+    }
 
     if (loading) {
         return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading customers...</div>;
@@ -39,7 +76,8 @@ export default function CustomerListPage() {
         return (
             <CustomerDetailPage
                 customer={selectedCustomer}
-                onBack={() => setSelectedCustomer(null)}
+                onBack={() => {setSelectedCustomer(null);
+                                    loadCustomers(true)}}
             />
         );
     }
@@ -48,7 +86,12 @@ export default function CustomerListPage() {
         <div style={styles.container}>
             <div style={styles.tableHeader}>
                 <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>Customers</h2>
-                <button style={styles.addBtn}>+ New Customer</button>
+                <button
+                    onClick={() => setIsCreating(true)}
+                    style={styles.addBtn}
+                >
+                    + New Customer
+                </button>
             </div>
 
             {customers.length === 0 ? (

@@ -1,6 +1,27 @@
 import { apiFetch } from "./http"
-import type { Customer } from "../types/Customer"
+import type { Customer, CustomerCreationRequest } from "../types/Customer"
+
+const customerPath = "/api/customers";
 
 export function fetchCustomers(): Promise<Customer[]> {
-    return apiFetch<Customer[]>("/api/customers")
+    return apiFetch<Customer[]>(customerPath)
+}
+
+export function createCustomer(customerCreationRequest: CustomerCreationRequest): Promise<Customer>{
+    return apiFetch<Customer>(customerPath , {
+        method: "POST",
+        body: JSON.stringify(customerCreationRequest)
+    })
+}
+
+export function activateCustomer(id: number): Promise<Customer> {
+    return apiFetch<Customer>(`${customerPath}/${id}/status/activate`, {
+        method: "POST"
+    });
+}
+
+export function deactivateCustomer(id: number): Promise<Customer> {
+    return apiFetch<Customer>(`${customerPath}/${id}/status/deactivate`, {
+        method: "POST"
+    });
 }

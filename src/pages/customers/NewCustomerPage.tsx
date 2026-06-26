@@ -1,19 +1,24 @@
 import { useState } from "react";
 import * as React from "react";
-import type { UserRequest } from "../../types/User.ts";
+import type { CustomerCreationRequest } from "../../types/Customer.ts";
 import {FaArrowLeft} from "react-icons/fa";
 
-type NewUserProps = {
+type NewCustomerProps = {
     onBack: () => void;
-    onSave: (userData: UserRequest) => Promise<void>;
+    onSave: (customerData: CustomerCreationRequest) => Promise<void>;
 };
 
-export default function NewUserPage({ onBack, onSave }: NewUserProps) {
-    const [username, setUsername] = useState("");
-    const [fullname, setFullname] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [role, setRole] = useState("OPR");
+export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
+    const [name1, setName1] = useState("");
+    const [name2, setName2] = useState("");
+    const [name3, setName3] = useState("");
+    const [lastname1, setLastname1] = useState("");
+    const [lastname2, setLastname2] = useState("");
+    const [lastname3, setLastname3] = useState("");
+    const [personType, setPersonType] = useState("NATURAL");
+    const [documentType, setDocumentType] = useState("DNI");
+    const [documentNumber, setDocumentNumber] = useState("");
+    const [customerType, setCustomerType] = useState("RETAIL");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -21,13 +26,8 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
         event.preventDefault();
         setError("");
 
-        if (!username || !fullname || !password) {
+        if (!name1 || !lastname1 || !personType || !documentType|| !documentNumber || !customerType) {
             setError("All fields are required");
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setError("Passwords do not match");
             return;
         }
 
@@ -35,10 +35,16 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
             setLoading(true);
 
             await onSave({
-                username,
-                fullname,
-                password,
-                roles: [role]
+                name1,
+                name2,
+                name3,
+                lastname1,
+                lastname2,
+                lastname3,
+                personType,
+                documentType,
+                documentNumber,
+                customerType
             });
 
             onBack();
@@ -58,7 +64,7 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
                     <span> Back</span>
                 </button>
                 <h2 style={styles.title}>
-                    Create New User
+                    Create New Customer
                 </h2>
             </div>
 
@@ -71,71 +77,136 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
 
-                    {/* Username */}
+                    {/* Name1 */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Username</label>
+                        <label style={styles.label}>Name 1</label>
                         <input
                             type="text"
                             style={styles.input}
-                            placeholder="e.g. jdoe"
-                            value={username}
-                            onChange={e => setUsername(e.target.value)}
+                            placeholder="e.g. Mary"
+                            value={name1}
+                            onChange={e => setName1(e.target.value)}
                             disabled={loading}
                         />
                     </div>
 
-                    {/* Full Name */}
+                    {/* Name2 */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Full Name</label>
+                        <label style={styles.label}>Name 2</label>
                         <input
                             type="text"
                             style={styles.input}
-                            placeholder="e.g. John Doe"
-                            value={fullname}
-                            onChange={e => setFullname(e.target.value)}
+                            value={name2}
+                            onChange={e => setName2(e.target.value)}
                             disabled={loading}
                         />
                     </div>
 
-                    {/* System Role */}
+                    {/* Name3 */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>System Role</label>
+                        <label style={styles.label}>Name 3</label>
+                        <input
+                            type="text"
+                            style={styles.input}
+                            value={name3}
+                            onChange={e => setName3(e.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    {/* Lastname1 */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Lastname 1</label>
+                        <input
+                            type="text"
+                            style={styles.input}
+                            placeholder="e.g. Sue"
+                            value={lastname1}
+                            onChange={e => setLastname1(e.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    {/* Lastname2 */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Lastname 2</label>
+                        <input
+                            type="text"
+                            style={styles.input}
+                            placeholder="e.g. Sue"
+                            value={lastname2}
+                            onChange={e => setLastname2(e.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+
+
+                    {/* Lastname3 */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Lastname 3</label>
+                        <input
+                            type="text"
+                            style={styles.input}
+                            placeholder="e.g. Sue"
+                            value={lastname3}
+                            onChange={e => setLastname3(e.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    {/* Person Type */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Person Type</label>
                         <select
                             style={styles.select}
-                            value={role}
-                            onChange={e => setRole(e.target.value)}
+                            value={personType}
+                            onChange={e => setPersonType(e.target.value)}
                             disabled={loading}
                         >
-                            <option value="ADMIN">Administrator</option>
-                            <option value="OPR">Operator</option>
-                            <option value="VIEWER">Viewer</option>
+                            <option value="NATURAL">Natural </option>
+                            <option value="JURIDICIAL">Juridicial</option>
                         </select>
                     </div>
 
-                    {/* Password */}
+                    {/* Document Type */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Password</label>
+                        <label style={styles.label}>Document Type</label>
+                        <select
+                            style={styles.select}
+                            value={documentType}
+                            onChange={e => setDocumentType(e.target.value)}
+                            disabled={loading}
+                        >
+                            <option value="DNI">DNI</option>
+                            <option value="PASSPORT">Passport</option>
+                        </select>
+                    </div>
+
+                    {/* Document Number */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Document Number</label>
                         <input
-                            type="password"
+                            type="text"
                             style={styles.input}
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
+                            placeholder="e.g. 34345545"
+                            value={documentNumber}
+                            onChange={e => setDocumentNumber(e.target.value)}
                             disabled={loading}
                         />
                     </div>
 
-                    {/* Confirm Password */}
+                    {/* Customer Type */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Confirm Password</label>
-                        <input
-                            type="password"
-                            style={styles.input}
-                            placeholder="••••••••"
-                            value={confirmPassword}
-                            onChange={e => setConfirmPassword(e.target.value)}
+                        <label style={styles.label}>Customer Type</label>
+                        <select
+                            style={styles.select}
+                            value={customerType}
+                            onChange={e => setCustomerType(e.target.value)}
                             disabled={loading}
-                        />
+                        >
+                            <option value="RETAIL">Retail</option>
+                            <option value="CORPORATE">Corporate</option>
+                        </select>
                     </div>
 
                     <div style={styles.actionRow}>
