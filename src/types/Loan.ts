@@ -17,3 +17,13 @@ export type Loan = {
     createdAt: string
     user: string
 }
+
+export type LoanRequest = {
+    customerId: number,
+    loanType: string,
+    amortizationType: string,
+    principalAmount: number,
+    currencyIsoCode: string,
+    numberOfInstallments: number,
+    externalId: number
+}

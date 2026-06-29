@@ -1,20 +1,21 @@
 import { useState } from "react";
 import * as React from "react";
-import type { AccountRequest } from "../../types/Account.ts";
-import {FaArrowLeft} from "react-icons/fa";
+import type { LoanRequest } from "../../types/Loan.ts";
+import { FaArrowLeft } from "react-icons/fa";
 
-type NewAccountProps = {
+type NewLoanProps = {
     onBack: () => void;
-    onSave: (accountData: AccountRequest) => Promise<void>;
+    onSave: (loanData: LoanRequest) => Promise<void>;
 };
 
-export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
-    const [type, setType] = useState("SAVINGS_ACCOUNT");
+export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
     const [customerId, setCustomerId] = useState<number | null>(null);
+    const [loanType, setLoanType] = useState("PERSONAL");
+    const [amortizationType, setAmortizationType] = useState("FRENCH");
+    const [principalAmount, setPrincipalAmount] = useState<number>(0);
     const [currencyIsoCode, setCurrencyIsoCode] = useState("USD");
-    const [bankId, setBank] = useState<number | null>(null);
-    const [bankBranchId, setBranch] = useState<number | null>(null);
-    const [initialBalance, setInitialBalance] = useState<number>(0);
+    const [numberOfInstallments, setNumberOfInstallments] = useState<number>(0);
+    const [externalId, setExternalId] = useState<number>(0);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -22,8 +23,9 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
         event.preventDefault();
         setError("");
 
-        if (!type || !customerId || !currencyIsoCode || !bankId|| !bankBranchId) {
-            setError("Fields marked with * are required");
+        if (!loanType || !customerId || !currencyIsoCode || !amortizationType || !principalAmount
+            || !numberOfInstallments || !externalId) {
+            setError("All fields are required");
             return;
         }
 
@@ -31,18 +33,19 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
             setLoading(true);
 
             await onSave({
-                type,
+                loanType,
                 customerId,
                 currencyIsoCode,
-                bankId,
-                bankBranchId,
-                initialBalance
+                amortizationType,
+                principalAmount,
+                numberOfInstallments,
+                externalId
             });
 
             onBack();
         } catch (err) {
             const errorResponse = err as { message?: string };
-            setError(errorResponse.message || "Failed to create account");
+            setError(errorResponse.message || "Failed to create loan");
         } finally {
             setLoading(false);
         }
@@ -56,7 +59,7 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
                     <span> Back</span>
                 </button>
                 <h2 style={styles.title}>
-                    Create New Account
+                    Create New Loan
                 </h2>
             </div>
 
@@ -69,23 +72,9 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
 
-                    {/* Account Type */}
+                    {/* Customer ID */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Account Type (*)</label>
-                        <select
-                            style={styles.select}
-                            value={type}
-                            onChange={e => setType(e.target.value)}
-                            disabled={loading}
-                        >
-                            <option value="SAVINGS_ACCOUNT">Savings Account</option>
-                            <option value="CHECKING_ACCOUNT">Checking Account</option>
-                        </select>
-                    </div>
-
-                    {/* Customer Id */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Customer Id (*)</label>
+                        <label style={styles.label}>Customer Id</label>
                         <input
                             type="number"
                             style={styles.input}
@@ -97,9 +86,26 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
                         />
                     </div>
 
+                    {/* Loan Type */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Loan Type</label>
+                        <select
+                            style={styles.select}
+                            value={loanType}
+                            onChange={e => setLoanType(e.target.value)}
+                            disabled={loading}
+                        >
+                            <option value="PERSONAL">Personal</option>
+                            <option value="MORTGAGE">Mortgage</option>
+                            <option value="LEASING">Leasing</option>
+                            <option value="AUTO">Auto</option>
+                            <option value="BUSINESS">Business</option>
+                        </select>
+                    </div>
+
                     {/* Currency */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Currency (*)</label>
+                        <label style={styles.label}>Currency</label>
                         <select
                             style={styles.select}
                             value={currencyIsoCode}
@@ -112,44 +118,59 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
                         </select>
                     </div>
 
-                    {/* Bank */}
+                    {/* Amortization Type */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Bank Id (*)</label>
+                        <label style={styles.label}>Amortization Type</label>
+                        <select
+                            style={styles.select}
+                            value={amortizationType}
+                            onChange={e => setAmortizationType(e.target.value)}
+                            disabled={loading}
+                        >
+                            <option value="FRENCH">French</option>
+                            <option value="GERMAN">German</option>
+                            <option value="AMERICAN">American</option>
+                        </select>
+                    </div>
+
+                    {/* Principal Amount */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Principal Amount</label>
                         <input
                             type="number"
                             style={styles.input}
-                            value={bankId ?? ""}
+                            value={principalAmount}
                             onChange={e => {
                                 const val = e.target.value;
-                                setBank(val === "" ? null : parseInt(val, 10));}}
+                                setPrincipalAmount(parseInt(val, 10));}}
                             disabled={loading}
                         />
                     </div>
 
-                    {/* Branch Id*/}
+                    {/* Number of Installments */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Bank Branch Id (*)</label>
+                        <label style={styles.label}>Number of Installments</label>
                         <input
                             type="number"
                             style={styles.input}
-                            value={bankBranchId ?? ""}
+                            value={numberOfInstallments}
                             onChange={e => {
                                 const val = e.target.value;
-                                setBranch(val === "" ? null : parseInt(val, 10));}}
+                                setNumberOfInstallments(parseInt(val, 10));}}
                             disabled={loading}
                         />
                     </div>
 
-                    {/* Initial Balance */}
+                    {/* External ID */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Initial Balance</label>
+                        <label style={styles.label}>External Id</label>
                         <input
                             type="number"
                             style={styles.input}
-                            value={initialBalance}
+                            value={externalId}
                             onChange={e => {
                                 const val = e.target.value;
-                                setInitialBalance(parseInt(val, 10));}}
+                                setExternalId(parseInt(val, 10));}}
                             disabled={loading}
                         />
                     </div>
