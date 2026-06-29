@@ -76,7 +76,9 @@ export default function LoansList() {
         return (
             <LoanDetailPage
                 loan={selectedLoan}
-                onBack={() => setSelectedLoan(null)}
+                onBack={() => {setSelectedLoan(null);
+                                    loadLoans(true);
+            }}
             />
         );
     }

@@ -5,13 +5,15 @@ import type { LoanInstallment } from "../../types/LoanInstallment.ts";
 import type { Loan } from "../../types/Loan.ts";
 import LoanInstallmentTable from "../../components/loans/LoanInstallmentTable.tsx";
 import { FaArrowLeft } from "react-icons/fa";
+import { approveLoan, closeLoan } from "../../api/loansApi.ts";
 
 type LoanDetailProps = {
     loan: Loan;
     onBack: () => void;
 };
 
-export default function LoanDetailPage({ loan, onBack }: LoanDetailProps) {
+export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetailProps) {
+    const [loan, setLoan] = React.useState<Loan>(initialLoan);
     const [installments, setInstallments] = useState<LoanInstallment[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -48,6 +50,28 @@ export default function LoanDetailPage({ loan, onBack }: LoanDetailProps) {
         active: "#2ecc71",
         inactive: "#95a5a6",
         closed: "#e74c3c",
+    };
+
+    const handleStatusChange = async (action: "approve" | "close") => {
+        const confirmChange = window.confirm(`¿Are you sure you want to ${action} loan ${loan.id}?`);
+
+        if (!confirmChange) return;
+
+        setLoading(true);
+
+        try {
+            const updatedLoan =
+                action === "approve"
+                    ? await approveLoan(loan.id)
+                    : await closeLoan(loan.id);
+
+            setLoan(updatedLoan)
+
+        } catch (error) {
+            alert(error instanceof Error ? error.message : "An unexpected error occurred.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (loading) {
@@ -185,7 +209,32 @@ export default function LoanDetailPage({ loan, onBack }: LoanDetailProps) {
             ) : (
                 <LoanInstallmentTable installments={installments} />
             )}
+
+            <span style={{display:"flex", justifyContent: "right", marginTop: "25px"}}>
+
+
+                        {(loan.status === "PENDING" || loan.status === "INACTIVE") && (
+                            <button
+                                style={{ ...styles.btnAction, ...styles.btnActivate }}
+                                onClick={() => handleStatusChange("approve")}
+                                disabled={loading}
+                            >
+                                {loading ? "Processing..." : "Approve"}
+                            </button>
+                        )}
+                {(loan.status === "ACTIVE") && (
+                    <button
+                        style={{ ...styles.btnAction, ...styles.btnDeactivate }}
+                        onClick={() => handleStatusChange("close")}
+                        disabled={loading}
+                    >
+                        {loading ? "Processing..." : "Close"}
+                    </button>
+                )}
+
+            </span>
         </div>
+
     );
 }
 
@@ -266,5 +315,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         textAlign: 'center',
         minWidth: '70px'
     },
-    backBtn: { backgroundColor: '#7f8c8d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' }
+    backBtn: { backgroundColor: '#7f8c8d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' },
+    btnAction: { padding: '6px 12px', borderRadius: '4px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', border: 'none', color: '#fff', transition: 'background-color 0.2s' },
+    btnActivate: { backgroundColor: '#2ecc71' },
+    btnDeactivate: { backgroundColor: '#e74c3c' }
 };
