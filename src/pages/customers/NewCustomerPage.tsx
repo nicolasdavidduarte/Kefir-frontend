@@ -15,10 +15,10 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
     const [lastname1, setLastname1] = useState("");
     const [lastname2, setLastname2] = useState("");
     const [lastname3, setLastname3] = useState("");
-    const [personType, setPersonType] = useState("NATURAL");
-    const [documentType, setDocumentType] = useState("DNI");
+    const [personType, setPersonType] = useState("");
+    const [documentType, setDocumentType] = useState("");
     const [documentNumber, setDocumentNumber] = useState("");
-    const [customerType, setCustomerType] = useState("RETAIL");
+    const [customerType, setCustomerType] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -161,6 +161,7 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                             onChange={e => setPersonType(e.target.value)}
                             disabled={loading}
                         >
+                            <option value="">Select...</option>
                             <option value="NATURAL">Natural </option>
                             <option value="JURIDICIAL">Juridicial</option>
                         </select>
@@ -175,6 +176,7 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                             onChange={e => setDocumentType(e.target.value)}
                             disabled={loading}
                         >
+                            <option value="">Select...</option>
                             <option value="DNI">DNI</option>
                             <option value="PASSPORT">Passport</option>
                         </select>
@@ -202,6 +204,7 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                             onChange={e => setCustomerType(e.target.value)}
                             disabled={loading}
                         >
+                            <option value="">Select...</option>
                             <option value="RETAIL">Retail</option>
                             <option value="CORPORATE">Corporate</option>
                         </select>

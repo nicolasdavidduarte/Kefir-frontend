@@ -13,7 +13,7 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
     const [fullname, setFullname] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [role, setRole] = useState("OPR");
+    const [role, setRole] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -106,6 +106,7 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
                             onChange={e => setRole(e.target.value)}
                             disabled={loading}
                         >
+                            <option value="">Select...</option>
                             <option value="ADMIN">Administrator</option>
                             <option value="OPR">Operator</option>
                             <option value="VIEWER">Viewer</option>

@@ -10,11 +10,11 @@ type NewAccountProps = {
 };
 
 export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
-    const [type, setType] = useState("SAVINGS_ACCOUNT");
+    const [type, setType] = useState("");
     const [customerId, setCustomerId] = useState<number | null>(null);
-    const [currencyIsoCode, setCurrencyIsoCode] = useState("USD");
-    const [bankId, setBank] = useState<number | null>(null);
-    const [bankBranchId, setBranch] = useState<number | null>(null);
+    const [currencyIsoCode, setCurrencyIsoCode] = useState("");
+    const [bankId, setBank] = useState<number | null>(1);
+    const [bankBranchId, setBranch] = useState<number | null>(1);
     const [initialBalance, setInitialBalance] = useState<number>(0);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -79,6 +79,7 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
                             onChange={e => setType(e.target.value)}
                             disabled={loading}
                         >
+                            <option value="">Select...</option>
                             <option value="SAVINGS_ACCOUNT">Savings Account</option>
                             <option value="CHECKING_ACCOUNT">Checking Account</option>
                         </select>
@@ -104,6 +105,7 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
                             onChange={e => setCurrencyIsoCode(e.target.value)}
                             disabled={loading}
                         >
+                            <option value="">Select...</option>
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
                             <option value="ARS">ARS</option>
@@ -112,30 +114,33 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
 
                     {/* Bank */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Bank Id (*)</label>
-                        <input
-                            type="number"
-                            style={styles.input}
+                        <label style={styles.label}>Bank (*)</label>
+                        <select
+                            style={styles.select}
                             value={bankId ?? ""}
                             onChange={e => {
                                 const val = e.target.value;
-                                setBank(val === "" ? null : parseInt(val, 10));}}
+                                setBank(val === "" ? null : parseInt(val, 10));
+                            }}
                             disabled={loading}
-                        />
+                        >
+                            <option value="1">KEFIR BANK</option>
+                        </select>
                     </div>
 
                     {/* Branch Id*/}
                     <div style={styles.inputGroup}>
                         <label style={styles.label}>Bank Branch Id (*)</label>
-                        <input
-                            type="number"
-                            style={styles.input}
+                        <select
+                            style={styles.select}
                             value={bankBranchId ?? ""}
                             onChange={e => {
                                 const val = e.target.value;
                                 setBranch(val === "" ? null : parseInt(val, 10));}}
                             disabled={loading}
-                        />
+                        >
+                            <option value="1">MAIN BRANCH</option>
+                        </select>
                     </div>
 
                     {/* Initial Balance */}

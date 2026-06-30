@@ -2,6 +2,7 @@ import { useState } from "react";
 import * as React from "react";
 import type { LoanRequest } from "../../types/Loan.ts";
 import { FaArrowLeft } from "react-icons/fa";
+import CustomerAutocomplete from "../../components/customers/CustomerAutocomplete.tsx";
 
 type NewLoanProps = {
     onBack: () => void;
@@ -10,10 +11,10 @@ type NewLoanProps = {
 
 export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
     const [customerId, setCustomerId] = useState<number | null>(null);
-    const [loanType, setLoanType] = useState("PERSONAL");
-    const [amortizationType, setAmortizationType] = useState("FRENCH");
+    const [loanType, setLoanType] = useState("");
+    const [amortizationType, setAmortizationType] = useState("");
     const [principalAmount, setPrincipalAmount] = useState<number>(0);
-    const [currencyIsoCode, setCurrencyIsoCode] = useState("USD");
+    const [currencyIsoCode, setCurrencyIsoCode] = useState("");
     const [numberOfInstallments, setNumberOfInstallments] = useState<number>(0);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -70,16 +71,13 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
 
-                    {/* Customer ID */}
+                    {/* Customer */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Customer Id</label>
-                        <input
-                            type="number"
-                            style={styles.input}
-                            value={customerId ?? ""}
-                            onChange={e => {
-                                const val = e.target.value;
-                                setCustomerId(val === "" ? null : parseInt(val, 10));}}
+                        <label style={styles.label}>Customer</label>
+                        <CustomerAutocomplete
+                            onSelect={(id: string | number | null) => {
+                                setCustomerId(id ? Number(id) : null);
+                            }}
                             disabled={loading}
                         />
                     </div>
@@ -93,6 +91,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                             onChange={e => setLoanType(e.target.value)}
                             disabled={loading}
                         >
+                            <option value="">Select...</option>
                             <option value="PERSONAL">Personal</option>
                             <option value="MORTGAGE">Mortgage</option>
                             <option value="LEASING">Leasing</option>
@@ -110,6 +109,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                             onChange={e => setCurrencyIsoCode(e.target.value)}
                             disabled={loading}
                         >
+                            <option value="">Select...</option>
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
                             <option value="ARS">ARS</option>
@@ -125,6 +125,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                             onChange={e => setAmortizationType(e.target.value)}
                             disabled={loading}
                         >
+                            <option value="">Select...</option>
                             <option value="FRENCH">French</option>
                             <option value="GERMAN">German</option>
                             <option value="AMERICAN">American</option>
