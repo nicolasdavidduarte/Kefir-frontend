@@ -25,5 +25,4 @@ export type LoanRequest = {
     principalAmount: number,
     currencyIsoCode: string,
     numberOfInstallments: number,
-    externalId: number
 }

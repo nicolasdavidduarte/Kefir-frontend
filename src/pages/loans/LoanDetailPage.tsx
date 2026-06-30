@@ -5,7 +5,7 @@ import type { LoanInstallment } from "../../types/LoanInstallment.ts";
 import type { Loan } from "../../types/Loan.ts";
 import LoanInstallmentTable from "../../components/loans/LoanInstallmentTable.tsx";
 import { FaArrowLeft } from "react-icons/fa";
-import { approveLoan, closeLoan } from "../../api/loansApi.ts";
+import { approveLoan, chargeOffLoan } from "../../api/loansApi.ts";
 
 type LoanDetailProps = {
     loan: Loan;
@@ -49,10 +49,10 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
         pending: "#f39c12",
         active: "#2ecc71",
         inactive: "#95a5a6",
-        closed: "#e74c3c",
+        charge_off: "#e74c3c",
     };
 
-    const handleStatusChange = async (action: "approve" | "close") => {
+    const handleStatusChange = async (action: "approve" | "charge-off") => {
         const confirmChange = window.confirm(`¿Are you sure you want to ${action} loan ${loan.id}?`);
 
         if (!confirmChange) return;
@@ -63,7 +63,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
             const updatedLoan =
                 action === "approve"
                     ? await approveLoan(loan.id)
-                    : await closeLoan(loan.id);
+                    : await chargeOffLoan(loan.id);
 
             setLoan(updatedLoan)
 
@@ -225,10 +225,10 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                 {(loan.status === "ACTIVE") && (
                     <button
                         style={{ ...styles.btnAction, ...styles.btnDeactivate }}
-                        onClick={() => handleStatusChange("close")}
+                        onClick={() => handleStatusChange("charge-off")}
                         disabled={loading}
                     >
-                        {loading ? "Processing..." : "Close"}
+                        {loading ? "Processing..." : "Charge-Off"}
                     </button>
                 )}
 

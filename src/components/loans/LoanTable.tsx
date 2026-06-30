@@ -11,7 +11,7 @@ const statusColors: Record<string, string> = {
     pending: "#f39c12",
     active: "#2ecc71",
     inactive: "#95a5a6",
-    closed: "#e74c3c",
+    charge_off: "#e74c3c",
 };
 
 export default function LoanTable({ loans, onSelectLoan }: Props) {
@@ -44,7 +44,7 @@ export default function LoanTable({ loans, onSelectLoan }: Props) {
                                     ...styles.statusBadge,
                                     backgroundColor: statusColors[loan.status.toLowerCase()] || "#95a5a6"
                                 }}>
-                                    {loan.status}
+                                    {loan.status.replace(/_/g, ' ')}
                                 </span>
                         </td>
                     </tr>

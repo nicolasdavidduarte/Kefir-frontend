@@ -20,7 +20,7 @@ export function approveLoan(id: number): Promise<Loan> {
     });
 }
 
-export function closeLoan(id: number): Promise<Loan> {
+export function chargeOffLoan(id: number): Promise<Loan> {
     return apiFetch<Loan>(`${loanPath}/${id}/close`, {
         method: "PATCH"
     });

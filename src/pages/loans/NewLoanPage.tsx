@@ -15,7 +15,6 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
     const [principalAmount, setPrincipalAmount] = useState<number>(0);
     const [currencyIsoCode, setCurrencyIsoCode] = useState("USD");
     const [numberOfInstallments, setNumberOfInstallments] = useState<number>(0);
-    const [externalId, setExternalId] = useState<number>(0);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -24,7 +23,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
         setError("");
 
         if (!loanType || !customerId || !currencyIsoCode || !amortizationType || !principalAmount
-            || !numberOfInstallments || !externalId) {
+            || !numberOfInstallments) {
             setError("All fields are required");
             return;
         }
@@ -38,8 +37,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                 currencyIsoCode,
                 amortizationType,
                 principalAmount,
-                numberOfInstallments,
-                externalId
+                numberOfInstallments
             });
 
             onBack();
@@ -157,20 +155,6 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                             onChange={e => {
                                 const val = e.target.value;
                                 setNumberOfInstallments(parseInt(val, 10));}}
-                            disabled={loading}
-                        />
-                    </div>
-
-                    {/* External ID */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>External Id</label>
-                        <input
-                            type="number"
-                            style={styles.input}
-                            value={externalId}
-                            onChange={e => {
-                                const val = e.target.value;
-                                setExternalId(parseInt(val, 10));}}
                             disabled={loading}
                         />
                     </div>
