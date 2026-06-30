@@ -7,6 +7,12 @@ export function fetchCustomers(): Promise<Customer[]> {
     return apiFetch<Customer[]>(customerPath)
 }
 
+export function fetchCustomersByNameOrDocument(customerQuery: string): Promise<Customer[]> {
+    return apiFetch<Customer[]>(
+        `${customerPath}/search/${encodeURIComponent(customerQuery)}`
+    );
+}
+
 export function createCustomer(customerCreationRequest: CustomerCreationRequest): Promise<Customer>{
     return apiFetch<Customer>(customerPath , {
         method: "POST",

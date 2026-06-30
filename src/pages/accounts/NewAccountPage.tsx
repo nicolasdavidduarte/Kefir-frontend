@@ -2,6 +2,7 @@ import { useState } from "react";
 import * as React from "react";
 import type { AccountRequest } from "../../types/Account.ts";
 import {FaArrowLeft} from "react-icons/fa";
+import CustomerAutocomplete from "../../components/customers/CustomerAutocomplete.tsx"
 
 type NewAccountProps = {
     onBack: () => void;
@@ -83,16 +84,13 @@ export default function NewUserPage({ onBack, onSave }: NewAccountProps) {
                         </select>
                     </div>
 
-                    {/* Customer Id */}
+                    {/* Customer */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Customer Id (*)</label>
-                        <input
-                            type="number"
-                            style={styles.input}
-                            value={customerId ?? ""}
-                            onChange={e => {
-                                const val = e.target.value;
-                                setCustomerId(val === "" ? null : parseInt(val, 10));}}
+                        <label style={styles.label}>Customer (*)</label>
+                        <CustomerAutocomplete
+                            onSelect={(id: string | number | null) => {
+                                setCustomerId(id ? Number(id) : null);
+                            }}
                             disabled={loading}
                         />
                     </div>
