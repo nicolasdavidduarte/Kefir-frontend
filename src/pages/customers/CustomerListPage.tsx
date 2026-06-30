@@ -12,6 +12,8 @@ export default function CustomerListPage() {
     const [error, setError] = useState<string | null>(null);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
     const [isCreating, setIsCreating] = useState<boolean>(false);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const itemsPerPage = 7;
 
     const loadCustomers = (isReload: boolean) => {
         if(isReload) {
@@ -82,6 +84,11 @@ export default function CustomerListPage() {
         );
     }
 
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentCustomers = customers.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(customers.length / itemsPerPage);
+
     return (
         <div style={styles.container}>
             <div style={styles.tableHeader}>
@@ -99,10 +106,42 @@ export default function CustomerListPage() {
                     No customers found in the database.
                 </div>
             ) : (
-                <CustomerTable
-                    customers={customers}
-                    onSelectCustomer={(customer) => setSelectedCustomer(customer)}
-                />
+                <>
+                    <CustomerTable
+                        customers={currentCustomers}
+                        onSelectCustomer={(customer) => setSelectedCustomer(customer)}
+                    />
+
+                    {totalPages > 1 && (
+                        <div style={styles.paginationContainer}>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                style={{
+                                    ...styles.pageBtn,
+                                    ...(currentPage === 1 ? styles.disabledBtn : {})
+                                }}
+                            >
+                                Previous
+                            </button>
+
+                            <span style={styles.pageInfo}>
+                                Page <strong>{currentPage}</strong> of {totalPages}
+                            </span>
+
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                style={{
+                                    ...styles.pageBtn,
+                                    ...(currentPage === totalPages ? styles.disabledBtn : {})
+                                }}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );
@@ -131,5 +170,36 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontWeight: 'bold',
         fontSize: '14px',
         transition: 'background-color 0.2s'
+    },
+    paginationContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '16px',
+        marginTop: '24px',
+        padding: '10px 0',
+        width: '100%'
+    },
+    pageBtn: {
+        backgroundColor: '#ffffff',
+        color: '#2c3e50',
+        border: '1px solid #dcdde1',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        fontSize: '13px',
+        outline: 'none',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+    },
+    disabledBtn: {
+        backgroundColor: '#f5f6fa',
+        color: '#7f8c8d',
+        cursor: 'not-allowed',
+        boxShadow: 'none'
+    },
+    pageInfo: {
+        fontSize: '14px',
+        color: '#2c3e50'
     }
 };

@@ -12,6 +12,8 @@ export default function LoansList() {
     const [error, setError] = useState<string | null>(null);
     const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
     const [isCreating, setIsCreating] = useState<boolean>(false);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const itemsPerPage = 7;
 
     const loadLoans = (isReload: boolean) => {
         if(isReload) {
@@ -72,6 +74,11 @@ export default function LoansList() {
         );
     }
 
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentLoans = loans.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(loans.length / itemsPerPage);
+
     if (selectedLoan !== null) {
         return (
             <LoanDetailPage
@@ -100,13 +107,45 @@ export default function LoansList() {
                     No loans found in the database.
                 </div>
             ) : (
-                <LoanTable
-                    loans={loans}
-                    onSelectLoan={(id) => {
-                        const found = loans.find(l => l.id === id);
-                        if (found) setSelectedLoan(found);
-                    }}
-                />
+                <>
+                    <LoanTable
+                        loans={currentLoans}
+                        onSelectLoan={(id) => {
+                            const found = loans.find(l => l.id === id);
+                            if (found) setSelectedLoan(found);
+                        }}
+                    />
+
+                    {totalPages > 1 && (
+                        <div style={styles.paginationContainer}>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                style={{
+                                    ...styles.pageBtn,
+                                    ...(currentPage === 1 ? styles.disabledBtn : {})
+                                }}
+                            >
+                                Previous
+                            </button>
+
+                            <span style={styles.pageInfo}>
+                                Page <strong>{currentPage}</strong> of {totalPages}
+                            </span>
+
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                style={{
+                                    ...styles.pageBtn,
+                                    ...(currentPage === totalPages ? styles.disabledBtn : {})
+                                }}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );
@@ -135,5 +174,36 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontWeight: 'bold',
         fontSize: '14px',
         transition: 'background-color 0.2s'
+    },
+    paginationContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '16px',
+        marginTop: '24px',
+        padding: '10px 0',
+        width: '100%'
+    },
+    pageBtn: {
+        backgroundColor: '#ffffff',
+        color: '#2c3e50',
+        border: '1px solid #dcdde1',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        fontSize: '13px',
+        outline: 'none',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+    },
+    disabledBtn: {
+        backgroundColor: '#f5f6fa',
+        color: '#7f8c8d',
+        cursor: 'not-allowed',
+        boxShadow: 'none'
+    },
+    pageInfo: {
+        fontSize: '14px',
+        color: '#2c3e50'
     }
 };
