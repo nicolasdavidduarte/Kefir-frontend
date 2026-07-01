@@ -104,7 +104,7 @@ export default function LoansList() {
 
             {loans.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
-                    No loans found in the database.
+                    Loans data not found
                 </div>
             ) : (
                 <>

@@ -1,6 +1,6 @@
 import { getToken } from "../auth/token"
 
-const BASE_URL = "http://localhost:8080"
+const BASE_URL = "/api";
 
 export async function apiFetch<T>(
     path: string,

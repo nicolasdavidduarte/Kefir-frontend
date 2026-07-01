@@ -1,73 +1,44 @@
-# React + TypeScript + Vite
+# Kefir - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the web client for Kefir, a simplified core banking system. Built as a modular Single Page Application (SPA), it enables the management of users, customers, accounts, and loans by interacting directly with the backend REST API.
 
-Currently, two official plugins are available:
+## Technology Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+* React
+* TypeScript
+* React Icons
+* ESLint (Strict configuration to prevent cascading re-renders and enforce best practices)
 
-## React Compiler
+## Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **System User Management:** List, create, and update system users with frontend pagination support.
+* **Customer Management:** Register natural or corporate customers with document type validation (DNI, Passport).
+* **Account Management:** Open savings and checking accounts (USD, EUR, ARS), featuring an asynchronous Autocomplete search component for seamless customer assignment.
+* **Loan Modules:** View loan details and track amortization schedules.
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* Node.js (v18 or higher recommended)
+* npm or yarn
+* The Kefir backend service running locally (defaults to http://localhost:8080)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Installation & Setup
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. Clone the repository:
+   git clone <frontend-repository-url>
+   cd kefir-frontend
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2. Install the project dependencies:
+   npm install
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Frontend Architecture
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+The codebase follows a modular structure, decoupling UI views from infrastructure and API services:
+
+src/
+├── api/           # HTTP clients and API endpoint wrappers (accountsApi, usersApi, etc.)
+├── components/    # Reusable UI components (Tables, Autocomplete selectors, layouts)
+├── views/         # Main module pages (UserListPage, AccountListPage, NewAccountPage)
+├── types/         # TypeScript type and interface definitions (Account, User, Customer)
+└── App.tsx        # Application orchestrator and routing handler

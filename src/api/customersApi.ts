@@ -1,7 +1,7 @@
 import { apiFetch } from "./http"
 import type { Customer, CustomerCreationRequest } from "../types/Customer"
 
-const customerPath = "/api/customers";
+const customerPath = "/customers";
 
 export function fetchCustomers(): Promise<Customer[]> {
     return apiFetch<Customer[]>(customerPath)

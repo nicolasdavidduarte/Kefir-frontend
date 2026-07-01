@@ -1,7 +1,7 @@
 import { apiFetch } from "./http"
 import type { Account, AccountRequest } from "../types/Account"
 
-const accountPath = "/api/accounts";
+const accountPath = "/accounts";
 
 export function fetchAccounts(): Promise<Account[]> {
     return apiFetch<Account[]>(accountPath)

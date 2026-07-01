@@ -1,7 +1,7 @@
 import { apiFetch } from "./http"
 import type { Loan, LoanRequest } from "../types/Loan.ts"
 
-const loanPath = "/api/loans";
+const loanPath = "/loans";
 
 export function fetchLoans(): Promise<Loan[]> {
     return apiFetch<Loan[]>(loanPath)

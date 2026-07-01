@@ -90,7 +90,7 @@ export default function UserListPage() {
 
             {users.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
-                    No users found in the database.
+                    Users data not found
                 </div>
             ) : (
                 <>

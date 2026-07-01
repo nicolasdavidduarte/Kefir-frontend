@@ -104,7 +104,7 @@ export default function AccountListPage() {
 
             {accounts.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
-                    No accounts found in the database.
+                    Accounts data not found
                 </div>
             ) : (
                 <>

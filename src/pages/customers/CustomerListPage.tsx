@@ -103,7 +103,7 @@ export default function CustomerListPage() {
 
             {customers.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
-                    No customers found in the database.
+                    Customers data not found
                 </div>
             ) : (
                 <>
