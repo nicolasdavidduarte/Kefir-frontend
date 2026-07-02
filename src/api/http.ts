@@ -1,6 +1,7 @@
 import { getToken } from "../auth/token"
 
-const BASE_URL = "/api";
+const API_BASE = import.meta.env.VITE_API_URL ?? "";
+const BASE_URL = `${API_BASE}/api`;
 
 export async function apiFetch<T>(
     path: string,
@@ -14,7 +15,7 @@ export async function apiFetch<T>(
         headers: {
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            ...options.headers
+            ...(options.headers || {})
         }
     })
 
@@ -24,7 +25,7 @@ export async function apiFetch<T>(
         try {
             const errorData = await response.json()
             errorMessage = errorData.message || errorMessage
-        } catch(parseError) {
+        } catch (parseError) {
             console.error("Failed to parse error response body:", parseError)
         }
 
