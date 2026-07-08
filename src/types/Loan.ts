@@ -2,6 +2,7 @@ export type Loan = {
     id: number
     externalId: string
     customer: string
+    account: number,
     loanType: string
     amortizationType: string
     currency: string
@@ -20,6 +21,7 @@ export type Loan = {
 
 export type LoanRequest = {
     customerId: number,
+    accountId: number,
     loanType: string,
     amortizationType: string,
     principalAmount: number,

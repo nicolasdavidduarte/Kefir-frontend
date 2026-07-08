@@ -7,6 +7,10 @@ export function fetchAccounts(): Promise<Account[]> {
     return apiFetch<Account[]>(accountPath)
 }
 
+export function fetchAccountsByCustomerId(customerId: number): Promise<Account[]> {
+    return apiFetch<Account[]>(`${accountPath}?customerId=${customerId}`);
+}
+
 export function createAccount(accountRequest: AccountRequest): Promise<Account>{
     return apiFetch<Account>(accountPath , {
         method: "POST",

@@ -3,6 +3,8 @@ import * as React from "react";
 import type { LoanRequest } from "../../types/Loan.ts";
 import { FaArrowLeft } from "react-icons/fa";
 import CustomerAutocomplete from "../../components/customers/CustomerAutocomplete.tsx";
+import type {Account} from "../../types/Account.ts";
+import { fetchAccountsByCustomerId } from "../../api/accountsApi.ts";
 
 type NewLoanProps = {
     onBack: () => void;
@@ -11,6 +13,9 @@ type NewLoanProps = {
 
 export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
     const [customerId, setCustomerId] = useState<number | null>(null);
+    const [accountId, setAccountId] = useState<number | null>(null);
+    const [accounts, setAccounts] = useState<Account[]>([]);
+    const [loadingAccounts, setLoadingAccounts] = useState(false);
     const [loanType, setLoanType] = useState("");
     const [amortizationType, setAmortizationType] = useState("");
     const [principalAmount, setPrincipalAmount] = useState<number>(0);
@@ -19,11 +24,37 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const handleCustomerChange = async (id: string | number | null) => {
+        const nextId = id ? Number(id) : null;
+
+        setCustomerId(nextId);
+        setAccountId(null);
+
+        if (!nextId) {
+            setAccounts([]);
+            return;
+        }
+
+        try {
+            setLoadingAccounts(true);
+            setError("");
+
+            const data = await fetchAccountsByCustomerId(nextId);
+            setAccounts(data);
+        } catch (err) {
+            console.error("Error fetching accounts", err);
+            setAccounts([]);
+            setError("Could not load accounts for the selected customer");
+        } finally {
+            setLoadingAccounts(false);
+        }
+    };
+
     async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) {
         event.preventDefault();
         setError("");
 
-        if (!loanType || !customerId || !currencyIsoCode || !amortizationType || !principalAmount
+        if (!loanType || !customerId || !accountId || !currencyIsoCode || !amortizationType || !principalAmount
             || !numberOfInstallments) {
             setError("All fields are required");
             return;
@@ -35,6 +66,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
             await onSave({
                 loanType,
                 customerId,
+                accountId,
                 currencyIsoCode,
                 amortizationType,
                 principalAmount,
@@ -75,11 +107,29 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                     <div style={styles.inputGroup}>
                         <label style={styles.label}>Customer</label>
                         <CustomerAutocomplete
-                            onSelect={(id: string | number | null) => {
-                                setCustomerId(id ? Number(id) : null);
-                            }}
+                            onSelect={handleCustomerChange}
                             disabled={loading}
                         />
+                    </div>
+
+                    {/* Account */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Account</label>
+                        <select
+                            style={styles.select}
+                            value={accountId || ""}
+                            onChange={e => setAccountId(e.target.value ? parseInt(e.target.value, 10) : null)}
+                            disabled={loading || loadingAccounts || !customerId}
+                        >
+                            <option value="">
+                                {loadingAccounts ? "Loading accounts..." : "Select an account..."}
+                            </option>
+                            {accounts.map(acc => (
+                                <option key={acc.id} value={acc.id}>
+                                    {acc.type} - CBU: {acc.cbu} ({acc.currencyIsoCode})
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     {/* Loan Type */}
