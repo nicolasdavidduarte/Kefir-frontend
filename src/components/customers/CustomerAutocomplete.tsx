@@ -13,7 +13,7 @@ export default function CustomerAutocomplete({ onSelect, disabled }: CustomerAut
     const [results, setResults] = useState<Customer[]>([]);
     const [loading, setLoading] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
-    // Agregamos un flag para saber si el usuario está tipeando o si ya seleccionó
+
     const isSelectedRef = useRef(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -28,7 +28,7 @@ export default function CustomerAutocomplete({ onSelect, disabled }: CustomerAut
     }, []);
 
     useEffect(() => {
-        // Si ya seleccionamos un cliente, no disparamos la búsqueda de la API por el cambio de query
+
         if (isSelectedRef.current || query.trim().length < 3) return;
 
         const delayDebounceFn = setTimeout(async () => {
@@ -49,7 +49,7 @@ export default function CustomerAutocomplete({ onSelect, disabled }: CustomerAut
     }, [query]);
 
     const handleSelect = (customer: Customer) => {
-        isSelectedRef.current = true; // Bloqueamos efectos secundarios de tipeo
+        isSelectedRef.current = true;
         const fullName = `${customer.name1} ${customer.lastname1} (${customer.documentType}: ${customer.documentNumber})`;
 
         setQuery(fullName);
@@ -61,7 +61,7 @@ export default function CustomerAutocomplete({ onSelect, disabled }: CustomerAut
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        isSelectedRef.current = false; // El usuario volvió a escribir, desbloqueamos
+        isSelectedRef.current = false;
         setQuery(value);
 
         if (value.trim() === "") {
@@ -93,7 +93,6 @@ export default function CustomerAutocomplete({ onSelect, disabled }: CustomerAut
                     {results.map((customer) => (
                         <li
                             key={customer.id}
-                            // Usamos onMouseDown y prevenimos el default para que el input no pierda el foco de golpe
                             onMouseDown={(e) => {
                                 e.preventDefault();
                                 handleSelect(customer);

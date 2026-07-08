@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { LoanInstallment } from "../../types/LoanInstallment.ts";
+import { FaDollarSign } from "react-icons/fa";
 
 type Props = {
     installments: LoanInstallment[];
@@ -19,7 +20,7 @@ export default function LoanInstallmentTable({ installments }: Props) {
         <table style={styles.table}>
             <thead>
             <tr style={styles.theadTr}>
-                <th style={styles.th}>Number</th>
+                <th style={styles.th}>Nº</th>
                 <th style={styles.th}>Principal amount</th>
                 <th style={styles.th}>Interest amount</th>
                 <th style={styles.th}>Total amount</th>
@@ -58,6 +59,11 @@ export default function LoanInstallmentTable({ installments }: Props) {
                             }}>
                                 {inst.status.replace(/_/g, ' ')}
                             </span>
+                    </td>
+                    <td>
+                        <button style={styles.paymentButton} title="Manual payment">
+                            <FaDollarSign size={20}/>
+                        </button>
                     </td>
                 </tr>
             ))}
@@ -106,5 +112,20 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontWeight: 'bold',
         display: 'inline-block',
         textAlign: 'center',
-        minWidth: '80px' }
+        minWidth: '80px'
+    },
+    paymentButton: {
+        width: '36px',
+        height: '36px',
+        borderRadius: '50%',
+        border: 'none',
+        backgroundColor: '#22c55e',
+        color: '#fff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        boxShadow: '0 2px 6px rgba(34, 197, 94, 0.35)',
+        transition: 'all 0.2s ease',
+    }
 };

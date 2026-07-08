@@ -1,7 +1,7 @@
 import { useState } from "react";
 import * as React from "react";
 import type { CustomerCreationRequest } from "../../types/Customer.ts";
-import {FaArrowLeft} from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 
 type NewCustomerProps = {
     onBack: () => void;
