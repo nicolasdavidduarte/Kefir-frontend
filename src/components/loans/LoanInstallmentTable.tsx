@@ -12,7 +12,8 @@ export default function LoanInstallmentTable({ installments, onInstallmentPaymen
         switch (state) {
             case "PAID": return "#2ecc71";
             case "PAYMENT_PENDING": return "#f39c12";
-            case "OVERDUE": return "#e74c3c";
+            case "OVERDUE":
+            case "CHARGE_OFF": return "#e74c3c";
             default: return "#95a5a6";
         }
     };

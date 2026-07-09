@@ -92,6 +92,9 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
 
             setLoan(updatedLoan)
 
+            const updatedInstallments = await loadInstallments();
+            setInstallments(updatedInstallments);
+
         } catch (error) {
             alert(error instanceof Error ? error.message : "An unexpected error occurred.");
         } finally {
@@ -183,7 +186,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                             ...styles.statusBadge,
                             backgroundColor: statusColors[loan.status.toLowerCase()] || "#95a5a6"
                         }}>
-                                    {loan.status}
+                                    {loan.status.replace(/_/g, ' ')}
                         </span>
                     </div>
                 </div>
