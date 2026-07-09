@@ -4,9 +4,10 @@ import { FaDollarSign } from "react-icons/fa";
 
 type Props = {
     installments: LoanInstallment[];
+    onInstallmentPayment: (loanId: number, installmentNumber: number) => void;
 };
 
-export default function LoanInstallmentTable({ installments }: Props) {
+export default function LoanInstallmentTable({ installments, onInstallmentPayment }: Props) {
     const getStateColor = (state: string) => {
         switch (state) {
             case "PAID": return "#2ecc71";
@@ -61,7 +62,9 @@ export default function LoanInstallmentTable({ installments }: Props) {
                             </span>
                     </td>
                     <td>
-                        <button style={styles.paymentButton} title="Manual payment">
+                        <button style={styles.paymentButton} title="Manual payment"
+                                onClick={() => onInstallmentPayment(inst.loanId, inst.number)}
+                        >
                             <FaDollarSign size={20}/>
                         </button>
                     </td>
@@ -112,7 +115,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontWeight: 'bold',
         display: 'inline-block',
         textAlign: 'center',
-        minWidth: '80px'
+        minWidth: '85%'
     },
     paymentButton: {
         width: '36px',

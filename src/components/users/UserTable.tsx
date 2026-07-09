@@ -86,9 +86,9 @@ export default function UserTable({ users, onUserUpdated }: Props) {
                             ) : (
                                 <div
                                     style={{
-                                        width: "40px",
-                                        height: "40px",
-                                        borderRadius: "50%",
+                                        width: "35px",
+                                        height: "35px",
+                                        borderRadius: "100%",
                                         backgroundColor: user.enabled ? "#e74c3c" : "#2ecc71",
                                         display: "flex",
                                         alignItems: "center",
@@ -96,7 +96,7 @@ export default function UserTable({ users, onUserUpdated }: Props) {
                                     }}
                                 >
                                     <FaPowerOff
-                                        size={23}
+                                        size={20}
                                         style={{ display: 'block'}}
                                     />
                                 </div>

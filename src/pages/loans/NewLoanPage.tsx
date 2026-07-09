@@ -29,6 +29,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
 
         setCustomerId(nextId);
         setAccountId(null);
+        setCurrencyIsoCode("");
 
         if (!nextId) {
             setAccounts([]);
@@ -47,6 +48,22 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
             setError("Could not load accounts for the selected customer");
         } finally {
             setLoadingAccounts(false);
+        }
+    };
+    
+    const handleAccountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedId = e.target.value ? parseInt(e.target.value, 10) : null;
+        setAccountId(selectedId);
+
+        if (selectedId) {
+            const selectedAccount = accounts.find(acc => acc.id === selectedId);
+            if (selectedAccount) {
+                setCurrencyIsoCode(selectedAccount.currencyIsoCode);
+            } else {
+                setCurrencyIsoCode("");
+            }
+        } else {
+            setCurrencyIsoCode("");
         }
     };
 
@@ -118,7 +135,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                         <select
                             style={styles.select}
                             value={accountId || ""}
-                            onChange={e => setAccountId(e.target.value ? parseInt(e.target.value, 10) : null)}
+                            onChange={handleAccountChange}
                             disabled={loading || loadingAccounts || !customerId}
                         >
                             <option value="">
@@ -157,7 +174,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                             style={styles.select}
                             value={currencyIsoCode}
                             onChange={e => setCurrencyIsoCode(e.target.value)}
-                            disabled={loading}
+                            disabled={true}
                         >
                             <option value="">Select...</option>
                             <option value="USD">USD</option>

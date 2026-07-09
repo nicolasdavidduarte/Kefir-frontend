@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, useCallback} from "react";
 import * as React from "react";
-import { fetchLoanInstallments } from "../../api/loanInstallmentsApi.ts";
+import {createInstallmentPayment, fetchLoanInstallments} from "../../api/loanInstallmentsApi.ts";
 import type { LoanInstallment } from "../../types/LoanInstallment.ts";
 import type { Loan } from "../../types/Loan.ts";
 import LoanInstallmentTable from "../../components/loans/LoanInstallmentTable.tsx";
@@ -9,6 +9,7 @@ import { approveLoan, chargeOffLoan } from "../../api/loansApi.ts";
 
 type LoanDetailProps = {
     loan: Loan;
+    onInstallmentPaid?: () => void;
     onBack: () => void;
 };
 
@@ -18,17 +19,41 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        fetchLoanInstallments(loan.id)
-            .then((data) => {
-                setInstallments(data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message || "Failed to load loan installments");
-                setLoading(false);
-            });
+    const loadInstallments = useCallback(async () => {
+        return await fetchLoanInstallments(loan.id);
     }, [loan.id]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        async function load() {
+            try {
+                const data = await loadInstallments();
+
+                if (!cancelled) {
+                    setInstallments(data);
+                }
+            } catch (err) {
+                if (!cancelled) {
+                    setError(
+                        err instanceof Error
+                            ? err.message
+                            : "Failed to load installments"
+                    );
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoading(false);
+                }
+            }
+        }
+
+        void load();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [loadInstallments]);
 
     const formatCurrency = (amount: number | string | undefined) => {
         if (amount === undefined || amount === null) return "0,00";
@@ -71,6 +96,32 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
             alert(error instanceof Error ? error.message : "An unexpected error occurred.");
         } finally {
             setLoading(false);
+        }
+    };
+
+
+    const handleInstallmentPayment = async (
+        loanId: number,
+        installmentNumber: number
+    ) => {
+        const confirmed = window.confirm(
+            `Are you sure you want to pay installment #${installmentNumber}?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            await createInstallmentPayment(loanId, installmentNumber);
+            const data = await loadInstallments();
+            setInstallments(data);
+        } catch (error) {
+            alert(
+                error instanceof Error
+                    ? error.message
+                    : "An unexpected error occurred."
+            );
         }
     };
 
@@ -207,7 +258,10 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     No installments found for this loan.
                 </div>
             ) : (
-                <LoanInstallmentTable installments={installments} />
+                <LoanInstallmentTable
+                    installments={installments}
+                    onInstallmentPayment={handleInstallmentPayment}
+                />
             )}
 
             <span style={{display:"flex", justifyContent: "right", marginTop: "25px"}}>

@@ -1,4 +1,5 @@
 export type LoanInstallment = {
+    loanId: number
     number: number
     principalAmount: number
     interestAmount: number
