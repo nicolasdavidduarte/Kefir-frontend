@@ -31,7 +31,6 @@ export default function UserTable({ users, onUserUpdated }: Props) {
         <table style={styles.table}>
             <thead>
             <tr style={styles.theadTr}>
-                <th style={{ ...styles.th, width: '60px' }}>ID</th>
                 <th style={styles.th}>Username</th>
                 <th style={styles.th}>Created At</th>
                 <th style={styles.th}>Role</th>
@@ -41,7 +40,6 @@ export default function UserTable({ users, onUserUpdated }: Props) {
             <tbody>
             {users.map((user) => (
                 <tr key={user.id} style={styles.tbodyTr}>
-                    <td style={styles.td}>{user.id}</td>
                     <td style={{ ...styles.td, fontWeight: 'bold' }}>{user.username}</td>
                     <td style={styles.td}>
                         {new Date(user.createdAt).toLocaleDateString("es-AR", {

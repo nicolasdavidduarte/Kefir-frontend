@@ -163,7 +163,7 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         >
                             <option value="">Select...</option>
                             <option value="NATURAL">Natural </option>
-                            <option value="JURIDICIAL">Juridicial</option>
+                            <option value="JURIDICAL">Juridical</option>
                         </select>
                     </div>
 
