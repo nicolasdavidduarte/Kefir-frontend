@@ -65,9 +65,10 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
         { label: "Document type", value: customer.documentType },
         { label: "Document number", value: customer.documentNumber },
         { label: "Customer type", value: customer.customerType },
-        { label: "Created by user", value: customer.createdByUser },
-        { label: "Created at", value: formatDateTime(customer.creationDate) },
-        { label: "Updated at", value: formatDateTime(customer.updateDate) }
+        { label: "Created by", value: customer.createdBy },
+        { label: "Created at", value: formatDateTime(customer.createdAt) },
+        { label: "Updated by", value: customer.updatedBy },
+        { label: "Updated at", value: formatDateTime(customer.updatedAt) }
     ];
 
     return (

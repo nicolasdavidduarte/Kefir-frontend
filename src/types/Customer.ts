@@ -12,9 +12,10 @@ export type Customer = {
     documentNumber: string
     customerType: string
     status: string
-    createdByUser: string
-    creationDate: string
-    updateDate: string
+    createdBy: string
+    createdAt: string
+    updatedBy: string
+    updatedAt: string
 }
 
 export type CustomerCreationRequest = {
