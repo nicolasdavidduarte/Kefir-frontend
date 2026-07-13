@@ -9,13 +9,13 @@ type NewCustomerProps = {
 };
 
 export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
+    const [personType, setPersonType] = useState("NATURAL");
     const [name1, setName1] = useState("");
     const [name2, setName2] = useState("");
     const [name3, setName3] = useState("");
     const [lastname1, setLastname1] = useState("");
     const [lastname2, setLastname2] = useState("");
     const [lastname3, setLastname3] = useState("");
-    const [personType, setPersonType] = useState("");
     const [documentType, setDocumentType] = useState("");
     const [documentNumber, setDocumentNumber] = useState("");
     const [customerType, setCustomerType] = useState("");
@@ -76,6 +76,20 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
 
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
+
+                    {/* Person Type */}
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label}>Person Type</label>
+                        <select
+                            style={styles.select}
+                            value={personType}
+                            onChange={e => setPersonType(e.target.value)}
+                            disabled={loading}
+                        >
+                            <option value="">Select...</option>
+                            <option value="NATURAL">Natural </option>
+                        </select>
+                    </div>
 
                     {/* Name1 */}
                     <div style={styles.inputGroup}>
@@ -150,21 +164,6 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                             onChange={e => setLastname3(e.target.value)}
                             disabled={loading}
                         />
-                    </div>
-
-                    {/* Person Type */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Person Type</label>
-                        <select
-                            style={styles.select}
-                            value={personType}
-                            onChange={e => setPersonType(e.target.value)}
-                            disabled={loading}
-                        >
-                            <option value="">Select...</option>
-                            <option value="NATURAL">Natural </option>
-                            <option value="JURIDICAL">Juridical</option>
-                        </select>
                     </div>
 
                     {/* Document Type */}
