@@ -6,7 +6,11 @@ export type Account = {
     bank: string,
     cbu: string,
     balance: number,
-    status: string
+    status: string,
+    createdBy: string,
+    createdAt: string,
+    updatedBy: string,
+    updatedAt: string
 }
 
 export type AccountRequest = {

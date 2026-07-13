@@ -12,6 +12,16 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
     const [account, setAccount] = React.useState<Account>(initialAccount);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+    function formatDateTime(dateString: string): string {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
+    }
+
     const getStateColor = (state: string) => {
         switch (state) {
             case "OPENED": return "#2ecc71";
@@ -29,6 +39,10 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
         { label: "Bank", value: account.bank || "-" },
         { label: "CBU", value: account.cbu || "-" },
         { label: "Balance", value: account.balance },
+        { label: "Created by", value: account.createdBy },
+        { label: "Created at", value: formatDateTime(account.createdAt) },
+        { label: "Updated by", value: account.updatedBy },
+        { label: "Updated at", value: formatDateTime(account.updatedAt) },
     ];
 
     const handleStatusChange = async (action: "activate" | "deactivate") => {
