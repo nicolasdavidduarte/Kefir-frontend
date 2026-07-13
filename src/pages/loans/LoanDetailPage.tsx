@@ -238,12 +238,12 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                 <h3 style={styles.sectionTitle}>Audit Data</h3>
                 <div style={styles.summaryGrid}>
                     <div>
-                        <span style={styles.summaryLabel}>Creation Date</span>
-                        <span style={styles.summaryValue}>{formatDate(loan.createdAt)}</span>
+                        <span style={styles.summaryLabel}>Created by</span>
+                        <span style={styles.summaryValue}>{loan.createdBy || "N/A"}</span>
                     </div>
                     <div>
                         <span style={styles.summaryLabel}>Created by</span>
-                        <span style={styles.summaryValue}>{loan.user || "N/A"}</span>
+                        <span style={styles.summaryValue}>{formatDate(loan.createdAt)}</span>
                     </div>
                 </div>
 

@@ -16,7 +16,7 @@ export type Loan = {
     expirationDate: string
     status: string
     createdAt: string
-    user: string
+    createdBy: string
 }
 
 export type LoanRequest = {
