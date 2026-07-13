@@ -57,9 +57,9 @@ export default function LoanInstallmentTable({ installments, onInstallmentPaymen
                     <td style={styles.td}>
                             <span style={{
                                 ...styles.stateBadge,
-                                backgroundColor: getStateColor(inst.status)
+                                backgroundColor: getStateColor(inst.installmentStatus)
                             }}>
-                                {inst.status.replace(/_/g, ' ')}
+                                {inst.installmentStatus.replace(/_/g, ' ')}
                             </span>
                     </td>
                     <td>

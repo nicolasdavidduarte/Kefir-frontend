@@ -73,7 +73,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
     const statusColors: Record<string, string> = {
         pending: "#f39c12",
         active: "#2ecc71",
-        inactive: "#95a5a6",
+        closed: "#e74c3c",
         charge_off: "#e74c3c",
     };
 
@@ -116,7 +116,15 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
         }
 
         try {
-            await createInstallmentPayment(loanId, installmentNumber);
+            const response = await createInstallmentPayment(loanId, installmentNumber);
+
+            if (response && response.loanStatus) {
+                setLoan(prevLoan => ({
+                    ...prevLoan,
+                    status: response.loanStatus
+                }));
+            }
+
             const data = await loadInstallments();
             setInstallments(data);
         } catch (error) {

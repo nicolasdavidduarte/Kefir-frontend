@@ -12,7 +12,7 @@ type DashboardProps = {
     onLogout: () => void;
 };
 
-type View = "history" | "users" | "customers" | "loans" | "accounts";
+type View = "history" | "users" | "customers" | "accounts" | "loans";
 
 export default function Dashboard({ onLogout }: DashboardProps) {
     const username = getUser();
@@ -22,11 +22,11 @@ export default function Dashboard({ onLogout }: DashboardProps) {
     const navigateTo = (view: View, label: string) => {
         setCurrentView(view);
         if (view !== "history") {
-            const moduleMap: Record<string, "Users" | "Customers" | "Loans" | "Accounts"> = {
+            const moduleMap: Record<string, "Users" | "Customers" | "Accounts" | "Loans"> = {
                 users: "Users",
                 customers: "Customers",
-                loans: "Loans",
-                accounts: "Accounts"
+                accounts: "Accounts",
+                loans: "Loans"
             };
             logActivity(`Accessed ${label} module`, moduleMap[view]);
         }
@@ -39,10 +39,10 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                 return { bg: '#e8f4fd', text: '#1976d2', border: '#b3e5fc' };
             case "CUSTOMERS":
                 return { bg: '#e8f8f5', text: '#117a65', border: '#a3e4d7' };
-            case "LOANS":
-                return { bg: '#fef9e7', text: '#b7950b', border: '#f9e79f' };
             case "ACCOUNTS":
                 return { bg: '#f4f6f7', text: '#5d6d7e', border: '#d5dbdb' };
+            case "LOANS":
+                return { bg: '#fef9e7', text: '#b7950b', border: '#f9e79f' };
             default:
                 return { bg: '#f4f6f7', text: '#7f8c8d', border: '#d5dbdb' };
         }
@@ -117,8 +117,8 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 
                     {currentView === "users" && <UserListPage />}
                     {currentView === "customers" && <CustomerListPage />}
-                    {currentView === "loans" && <LoansList />}
                     {currentView === "accounts" && <AccountListPage />}
+                    {currentView === "loans" && <LoansList />}
                 </div>
             </main>
 
@@ -149,21 +149,21 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                     <button
                         style={{
                             ...styles.moduleBtn,
-                            ...(currentView === "loans" ? styles.moduleBtnActive : {})
-                        }}
-                        onClick={() => navigateTo("loans", "Loans")}
-                    >
-                        <span style={styles.navIcon}>💰</span> Loans
-                    </button>
-
-                    <button
-                        style={{
-                            ...styles.moduleBtn,
                             ...(currentView === "accounts" ? styles.moduleBtnActive : {})
                         }}
                         onClick={() => navigateTo("accounts", "Accounts")}
                     >
                         <span style={styles.navIcon}>📊</span> Accounts
+                    </button>
+
+                    <button
+                        style={{
+                            ...styles.moduleBtn,
+                            ...(currentView === "loans" ? styles.moduleBtnActive : {})
+                        }}
+                        onClick={() => navigateTo("loans", "Loans")}
+                    >
+                        <span style={styles.navIcon}>💰</span> Loans
                     </button>
                 </div>
             </aside>

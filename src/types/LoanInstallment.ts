@@ -6,8 +6,8 @@ export type LoanInstallment = {
     totalAmount: number
     paymentDueDate: string
     remainingBalance: number
-    status: string
-    user: string
+    installmentStatus: string
+    loanStatus: string
     createdAt: string
     updatedAt: string
 }
