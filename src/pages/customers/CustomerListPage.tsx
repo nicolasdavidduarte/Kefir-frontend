@@ -31,14 +31,9 @@ export default function CustomerListPage() {
     };
 
     const handleSaveCustomer = async (customerData: CustomerCreationRequest) => {
-        try {
             await createCustomer(customerData);
             setIsCreating(false);
             loadCustomers(true);
-        } catch (err) {
-            const errorResponse = err as { message?: string };
-            throw new Error(errorResponse.message || "Failed to create customer", { cause: err });
-        }
     };
 
     useEffect(() => {
