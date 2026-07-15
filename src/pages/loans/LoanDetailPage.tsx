@@ -270,6 +270,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                 </div>
             ) : (
                 <LoanInstallmentTable
+                    key={loan.id}
                     installments={installments}
                     onInstallmentPayment={handleInstallmentPayment}
                 />
