@@ -28,6 +28,12 @@ export default function UserListPage() {
             });
     };
 
+    const handleSaveUser = async (userData: UserRequest) => {
+        await createUser(userData);
+        setIsCreating(false);
+        loadUsers(true);
+    };
+
     useEffect(() => {
         fetchUsers()
             .then((data) => {
@@ -39,16 +45,6 @@ export default function UserListPage() {
                 setLoading(false);
             });
     }, []);
-    const handleSaveUser = async (userData: UserRequest) => {
-        try {
-            await createUser(userData);
-            setIsCreating(false);
-            loadUsers(true);
-        } catch (err) {
-            const errorResponse = err as { message?: string };
-            throw new Error(errorResponse.message || "Failed to create user", { cause: err });
-        }
-    };
 
     if (isCreating) {
         return (

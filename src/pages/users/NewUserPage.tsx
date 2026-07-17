@@ -2,6 +2,7 @@ import { useState } from "react";
 import * as React from "react";
 import type { UserRequest } from "../../types/User.ts";
 import {FaArrowLeft} from "react-icons/fa";
+import {ApiError} from "../../api/http.ts";
 
 type NewUserProps = {
     onBack: () => void;
@@ -43,8 +44,22 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
 
             onBack();
         } catch (err) {
-            const errorResponse = err as { message?: string };
-            setError(errorResponse.message || "Failed to create user");
+            if (err instanceof ApiError && err.payload?.message) {
+                const backendMessage = err.payload.message;
+
+                if (typeof backendMessage === "object") {
+                    const formattedErrors = Object.entries(backendMessage).map(
+                        ([field, msg]) => `${field}: ${msg}`
+                    ).toReversed();
+                    setError(formattedErrors.join("\n"));
+                } else {
+                    setError(backendMessage);
+                }
+            } else if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Failed to create customer");
+            }
         } finally {
             setLoading(false);
         }
@@ -204,7 +219,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     label: { fontSize: '13px', color: '#34495e', fontWeight: '600' },
     input: { padding: '10px 14px', borderRadius: '6px', border: '1px solid #dcdde1', fontSize: '14px', color: '#2c3e50', backgroundColor: '#fcfcfc', outline: 'none', boxSizing: 'border-box', width: '100%' },
     select: { padding: '10px 14px', borderRadius: '6px', border: '1px solid #dcdde1', fontSize: '14px', color: '#2c3e50', backgroundColor: '#fcfcfc', outline: 'none', width: '100%' },
-    errorContainer: { backgroundColor: '#fdf1f0', color: '#e74c3c', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', border: '1px solid #fadbd8' },
+    errorContainer: { backgroundColor: '#fdf1f0', color: '#e74c3c', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', border: '1px solid #fadbd8', whiteSpace: 'pre-line' },
     actionRow: { display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' },
     cancelBtn: { backgroundColor: '#f4f6f7', color: '#7f8c8d', border: '1px solid #d5dbdb', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '14px' },
     submitBtn: { backgroundColor: '#3498db', color: 'white', border: 'none', padding: '10px 24px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '14px', boxShadow: '0 4px 10px rgba(52, 152, 219, 0.2)' }
