@@ -40,7 +40,7 @@ function decodePayload(token: string): any {
 
         return JSON.parse(jsonPayload);
     } catch (error) {
-        console.error("Error decodificando el payload del JWT:", error);
+        console.error("JWT payload decoding error:", error);
         return null;
     }
 }
