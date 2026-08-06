@@ -11,16 +11,22 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
+        if (isSubmitting) return;
+
         setError("");
+        setIsSubmitting(true);
 
         try {
             await login(username, password);
             onLoginSuccess();
         } catch {
             setError("Invalid username or password");
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -37,39 +43,47 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
                     <span style={styles.subtitle}>Core Banking System</span>
                 </div>
 
-                <form style={styles.form} onSubmit={handleSubmit}> {}
-
+                <form style={styles.form} onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
-                        <label htmlFor="username" style={styles.label}>Username</label> {}
+                        <label htmlFor="username" style={styles.label}>Username</label>
                         <input
                             type="text"
                             id="username"
                             placeholder="Enter your username"
                             value={username}
                             onChange={e => setUsername(e.target.value)}
+                            disabled={isSubmitting}
                             style={styles.input}
                         />
                     </div>
 
                     <div style={styles.inputGroup}>
-                        <label htmlFor="password" style={styles.label}>Password</label> {}
+                        <label htmlFor="password" style={styles.label}>Password</label>
                         <input
                             type="password"
                             id="password"
                             placeholder="Enter your password"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
+                            disabled={isSubmitting}
                             style={styles.input}
                         />
                     </div>
 
-                    <button type="submit" style={styles.loginBtn}> {}
-                        Login
+                    <button
+                        type="submit"
+                        style={{
+                            ...styles.loginBtn,
+                            ...(isSubmitting ? styles.loginBtnDisabled : {})
+                        }}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? "Logging in..." : "Login"}
                     </button>
 
                     {error && (
                         <div style={styles.errorContainer}>
-                            {error} {}
+                            {error}
                         </div>
                     )}
                 </form>
@@ -121,17 +135,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         marginTop: '25px',
         marginBottom: '35px'
     },
-    brandHeader: {
-        textAlign: 'center',
-        marginBottom: '32px'
-    },
-    mainTitle: {
-        margin: '0 0 6px 0',
-        color: '#2c3e50',
-        fontSize: '32px',
-        fontWeight: '700',
-        letterSpacing: '-0.5px'
-    },
     subtitle: {
         margin: 0,
         color: '#7f8c8d',
@@ -175,7 +178,13 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontWeight: 'bold',
         fontSize: '16px',
         marginTop: '10px',
-        boxShadow: '0 4px 12px rgba(52, 152, 219, 0.2)'
+        boxShadow: '0 4px 12px rgba(52, 152, 219, 0.2)',
+        transition: 'background-color 0.2s ease'
+    },
+    loginBtnDisabled: {
+        backgroundColor: '#95a5a6',
+        cursor: 'not-allowed',
+        boxShadow: 'none'
     },
     errorContainer: {
         backgroundColor: '#fdf1f0',
@@ -187,12 +196,5 @@ const styles: { [key: string]: React.CSSProperties } = {
         textAlign: 'center',
         border: '1px solid #fadbd8',
         marginTop: '5px'
-    },
-    footerText: {
-        textAlign: 'center',
-        marginTop: '24px',
-        fontSize: '12px',
-        color: '#95a5a6',
-        fontWeight: '500'
     }
 };

@@ -15,7 +15,7 @@ type DashboardProps = {
 type View = "history" | "users" | "customers" | "accounts" | "loans";
 
 export default function Dashboard({ onLogout }: DashboardProps) {
-    const username = getUser();
+    const username = getUser()
     const [currentView, setCurrentView] = useState<View>("history");
     const { history, logActivity } = useHistory();
 

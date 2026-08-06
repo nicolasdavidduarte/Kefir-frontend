@@ -21,7 +21,7 @@ export default function UserTable({ users, onUserUpdated }: Props) {
             }
         } catch (error) {
             console.error("Failed to update user status:", error);
-            alert("Could not update user status. Verify permissions.");
+            alert(error);
         } finally {
             setActionLoadingId(null);
         }
