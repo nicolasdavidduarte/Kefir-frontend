@@ -78,7 +78,10 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                     <FaArrowLeft size={12} />
                     <span> Back to Customers</span>
                 </button>
-                <h2 style={styles.title}> Create New Customer</h2>
+                <div style={styles.titleArea}>
+                    <h2 style={styles.title}>Create New Customer</h2>
+                    <p style={styles.subtitle}>Fill in the required information to register a customer in the system.</p>
+                </div>
             </div>
 
             {error && <div style={styles.errorContainer}>{error}</div>}
@@ -243,7 +246,12 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
 
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
-        width: '100%'
+        width: '100%',
+        maxWidth: '640px',
+        margin: '0 auto',
+        boxSizing: 'border-box',
+        padding: '24px 16px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
     header: {
         display: "flex",
@@ -263,16 +271,23 @@ const styles: { [key: string]: React.CSSProperties } = {
         alignItems: 'center',
         gap: '6px'
     },
+    titleArea: { display: 'flex', flexDirection: 'column', textAlign: 'left' },
     title: {
-        margin: 0,
-        fontSize: '18px',
-        fontWeight: '600',
-        color: '#0f172a'
+        margin: '8px 0 0 0',
+        fontSize: '26px',
+        fontWeight: 600,
+        color: '#1e293b'
     },
+    subtitle: { margin: '4px 0 0 0', fontSize: '14px', color: '#64748b' },
     formCard: {
         backgroundColor: '#ffffff',
-        maxWidth: '500px',
-        width: '100%'
+        borderRadius: '10px',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+        padding: '28px',
+        width: '100%',
+        boxSizing: 'border-box',
+        textAlign: 'left'
     },
     form: {
         display: 'flex',

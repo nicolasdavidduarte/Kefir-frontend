@@ -1,53 +1,39 @@
 import * as React from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import type {Account} from "../../types/Account.ts";
-import {activateAccount, deactivateAccount} from "../../api/accountsApi.ts";
+import type { Account } from "../../types/Account.ts";
+import { activateAccount, deactivateAccount } from "../../api/accountsApi.ts";
 
 type AccountDetailProps = {
     account: Account;
     onBack: () => void;
 };
 
+function formatDateTime(dateString: string): string {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
 export default function AccountDetailPage({ account: initialAccount, onBack }: AccountDetailProps) {
     const [account, setAccount] = React.useState<Account>(initialAccount);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-    function formatDateTime(dateString: string): string {
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-        return `${day}/${month}/${year} ${hours}:${minutes}`;
-    }
-
-    const getStateColor = (state: string) => {
-        switch (state) {
-            case "OPENED": return "#2ecc71";
-            case "PENDING": return "#f39c12";
-            case "CLOSED": return "#e74c3c";
-            default: return "#95a5a6";
+    const getStatusStyle = (status: string) => {
+        switch (status) {
+            case "OPENED": return { bg: "#e6f4ea", text: "#137333", border: "#ceedd5" };
+            case "PENDING": return { bg: "#fef7e0", text: "#b06000", border: "#fce8b2" };
+            case "CLOSED": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+            default: return { bg: "#f1f5f9", text: "#5f6368", border: "#e2e8f0" };
         }
     };
 
-    const fields = [
-        { label: "Id", value: account.id },
-        { label: "Customer", value: account.customer || "-" },
-        { label: "Type", value: account.type || "-" },
-        { label: "Currency", value: account.currencyIsoCode },
-        { label: "Bank", value: account.bank || "-" },
-        { label: "CBU", value: account.cbu || "-" },
-        { label: "Balance", value: account.balance },
-        { label: "Created by", value: account.createdBy },
-        { label: "Created at", value: formatDateTime(account.createdAt) },
-        { label: "Updated by", value: account.updatedBy },
-        { label: "Updated at", value: formatDateTime(account.updatedAt) },
-    ];
-
     const handleStatusChange = async (action: "activate" | "deactivate") => {
         const actionText = action === "activate" ? "activate" : "deactivate";
-        const confirmChange = window.confirm(`¿Are you sure you want to ${actionText} account ${account.id}?`);
+        const confirmChange = window.confirm(`Are you sure you want to ${actionText} account ${account.id}?`);
 
         if (!confirmChange) return;
 
@@ -59,7 +45,7 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
                     ? await activateAccount(account.id)
                     : await deactivateAccount(account.id);
 
-            setAccount(updatedAccount)
+            setAccount(updatedAccount);
 
         } catch (error) {
             alert(error instanceof Error ? error.message : "An unexpected error occurred.");
@@ -68,55 +54,98 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
         }
     };
 
+    const statusStyle = getStatusStyle(account.status);
+
+    const primaryDetails = [
+        { label: "Customer", value: account.customer },
+        { label: "Type", value: account.type },
+        { label: "Currency", value: account.currencyIsoCode },
+        { label: "Balance", value: account.balance },
+        { label: "Bank", value: account.bank },
+        { label: "CBU", value: account.cbu }
+    ];
+
+    const auditDetails = [
+        { label: "Created By", value: account.createdBy },
+        { label: "Created At", value: formatDateTime(account.createdAt) },
+        { label: "Updated By", value: account.updatedBy },
+        { label: "Updated At", value: formatDateTime(account.updatedAt) }
+    ];
+
     return (
         <div style={styles.container}>
-            <div style={styles.header}>
-                <button onClick={onBack}>
+            {/* Navigation & Header */}
+            <div style={styles.topNav}>
+                <button onClick={onBack} style={styles.backBtn}>
                     <FaArrowLeft />
-                    <span> Back</span>
+                    <span>Back</span>
                 </button>
-                <h1 style={styles.title}>Account Details</h1>
             </div>
 
-            <div style={styles.formGrid}>
-                {fields.map((field, index) => (
-                    <div key={index} style={styles.fieldBox}>
-                        <span style={styles.label}>{field.label}</span>
-                        <span style={styles.inputFallback}>{field.value}</span>
-                    </div>
-                ))}
+            <div style={styles.headerRow}>
+                <div>
+                    <h1 style={styles.title}>Account #{account.id}</h1>
+                    <span style={styles.subtitle}>Customer: {account.customer || "N/A"}</span>
+                </div>
 
-                <div style={{ ...styles.fieldBox, justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={styles.label}>Status</span>
-                        <span style={{
-                            ...styles.statusBadge,
-                            backgroundColor: getStateColor(account.status)
-                        }}>
-                            {account.status}
-                        </span>
-                    </div>
+                <div style={styles.actionsGroup}>
+                    <span style={{
+                        ...styles.statusBadge,
+                        backgroundColor: statusStyle.bg,
+                        color: statusStyle.text,
+                        borderColor: statusStyle.border
+                    }}>
+                        {account.status === "OPENED" ? "Active" : account.status}
+                    </span>
 
-                    <div style={styles.actionContainer}>
-                        {(account.status === "PENDING" || account.status === "CLOSED") && (
-                            <button
-                                style={{ ...styles.btnAction, ...styles.btnActivate }}
-                                onClick={() => handleStatusChange("activate")}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? "Processing..." : "Activate"}
-                            </button>
-                        )}
-                        {(account.status === "OPENED") && (
-                            <button
-                                style={{ ...styles.btnAction, ...styles.btnDeactivate }}
-                                onClick={() => handleStatusChange("deactivate")}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? "Processing..." : "Deactivate"}
-                            </button>
-                        )}
-                    </div>
+                    {(account.status === "PENDING" || account.status === "CLOSED") && (
+                        <button
+                            style={{ ...styles.btnAction, ...styles.btnActivate }}
+                            onClick={() => handleStatusChange("activate")}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Processing..." : "Activate"}
+                        </button>
+                    )}
+                    {account.status === "OPENED" && (
+                        <button
+                            style={{ ...styles.btnAction, ...styles.btnDeactivate }}
+                            onClick={() => handleStatusChange("deactivate")}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Processing..." : "Deactivate"}
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <div style={styles.divider} />
+
+            {/* General Information */}
+            <div style={styles.section}>
+                <h3 style={styles.sectionTitle}>General Information</h3>
+                <div style={styles.flatGrid}>
+                    {primaryDetails.map((item, idx) => (
+                        <div key={idx} style={styles.fieldItem}>
+                            <span style={styles.label}>{item.label}</span>
+                            <span style={styles.value}>{item.value || "-"}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div style={styles.divider} />
+
+            {/* Audit Details */}
+            <div style={styles.section}>
+                <h3 style={styles.sectionTitle}>Audit Details</h3>
+                <div style={styles.flatGrid}>
+                    {auditDetails.map((item, idx) => (
+                        <div key={idx} style={styles.fieldItem}>
+                            <span style={styles.label}>{item.label}</span>
+                            <span style={styles.value}>{item.value || "-"}</span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
@@ -127,66 +156,102 @@ const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
         boxSizing: 'border-box',
-        padding: '10px'
+        padding: '24px 32px',
+        backgroundColor: '#ffffff',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
-    header: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: "16px"
+    topNav: {
+        marginBottom: '16px'
+    },
+    backBtn: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        backgroundColor: 'transparent',
+        color: '#64748b',
+        border: '1px solid #cbd5e1',
+        padding: '6px 14px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontSize: '13px',
+        fontWeight: '500'
+    },
+    headerRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '20px'
     },
     title: {
-        margin: '0 0 40px 0',
-        fontSize: '28px',
-        fontWeight: 500,
-        color: '#2c3e50'
+        margin: 0,
+        color: '#0f172a',
+        fontSize: '24px',
+        fontWeight: '700'
     },
-    formGrid: {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '16px 24px',
-        width: '100%',
-        boxSizing: 'border-box'
+    subtitle: {
+        fontSize: '13px',
+        color: '#64748b',
+        marginTop: '4px',
+        display: 'block'
     },
-    fieldBox: {
+    actionsGroup: {
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: '#fff',
-        border: '1px solid #dcdde1',
-        borderRadius: '6px',
-        padding: '10px 14px',
-        boxSizing: 'border-box',
-        height: '50px'
-    },
-    label: {
-        color: '#7f8c8d',
-        fontWeight: '600',
-        fontSize: '14px',
-        flex: '0 0 90px',
-        flexShrink: 0,
-        borderRight: '1px solid #f1f2f6',
-        marginRight: '14px',
-        paddingRight: '8px',
-        textAlign: 'left'
-    },
-    inputFallback: {
-        color: '#2c3e50',
-        fontSize: '15px',
-        fontWeight: '500',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
+        gap: '12px'
     },
     statusBadge: {
-        color: 'white',
-        padding: '4px 12px',
-        borderRadius: '4px',
+        padding: '5px 12px',
+        borderRadius: '16px',
         fontSize: '13px',
-        fontWeight: 'bold',
-        textTransform: 'uppercase'
+        fontWeight: '500',
+        border: '1px solid'
     },
-    actionContainer: { display: 'flex', gap: '8px' },
-    btnAction: { padding: '6px 12px', borderRadius: '4px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', border: 'none', color: '#fff', transition: 'background-color 0.2s' },
-    btnActivate: { backgroundColor: '#2ecc71' },
-    btnDeactivate: { backgroundColor: '#e74c3c' }
+    btnAction: {
+        padding: '8px 16px',
+        borderRadius: '6px',
+        fontSize: '13px',
+        fontWeight: '600',
+        cursor: 'pointer',
+        border: 'none',
+        color: '#ffffff',
+        transition: 'opacity 0.15s ease'
+    },
+    btnActivate: { backgroundColor: '#10b981' },
+    btnDeactivate: { backgroundColor: '#ef4444' },
+    divider: {
+        height: '1px',
+        backgroundColor: '#f1f5f9',
+        margin: '24px 0'
+    },
+    section: {
+        marginBottom: '8px'
+    },
+    sectionTitle: {
+        margin: '0 0 20px 0',
+        fontSize: '12px',
+        fontWeight: '600',
+        color: '#64748b',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
+    },
+    flatGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+        gap: '24px 32px'
+    },
+    fieldItem: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    label: {
+        fontSize: '12px',
+        color: '#64748b',
+        fontWeight: '500',
+        marginBottom: '6px'
+    },
+    value: {
+        fontSize: '15px',
+        color: '#0f172a',
+        fontWeight: '600'
+    }
 };

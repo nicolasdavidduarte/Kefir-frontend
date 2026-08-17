@@ -72,7 +72,6 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
 
     return (
         <div style={styles.container}>
-            {/* Navigation & Header */}
             <div style={styles.topNav}>
                 <button onClick={onBack} style={styles.backBtn}>
                     <FaArrowLeft />
