@@ -15,7 +15,7 @@ type DashboardProps = {
 type View = "history" | "users" | "customers" | "accounts" | "loans";
 
 export default function Dashboard({ onLogout }: DashboardProps) {
-    const username = getUser()
+    const username = getUser();
     const [currentView, setCurrentView] = useState<View>("history");
     const { history, logActivity } = useHistory();
 
@@ -36,137 +36,138 @@ export default function Dashboard({ onLogout }: DashboardProps) {
         const mod = module.toUpperCase();
         switch (mod) {
             case "USERS":
-                return { bg: '#e8f4fd', text: '#1976d2', border: '#b3e5fc' };
+                return { bg: '#f0f7ff', text: '#0284c7', border: '#bae6fd' };
             case "CUSTOMERS":
-                return { bg: '#e8f8f5', text: '#117a65', border: '#a3e4d7' };
+                return { bg: '#f0fdf4', text: '#16a34a', border: '#bbf7d0' };
             case "ACCOUNTS":
-                return { bg: '#f4f6f7', text: '#5d6d7e', border: '#d5dbdb' };
+                return { bg: '#f8fafc', text: '#475569', border: '#e2e8f0' };
             case "LOANS":
-                return { bg: '#fef9e7', text: '#b7950b', border: '#f9e79f' };
+                return { bg: '#fefce8', text: '#ca8a04', border: '#fef08a' };
             default:
-                return { bg: '#f4f6f7', text: '#7f8c8d', border: '#d5dbdb' };
+                return { bg: '#f8fafc', text: '#64748b', border: '#e2e8f0' };
         }
     };
 
     return (
         <div style={styles.container}>
-            <header style={styles.header}>
-                <div style={styles.logoWrapper} onClick={() => setCurrentView("history")}>
-                    <img
-                        src={logo}
-                        alt="Kefir Logo"
-                        style={styles.logoImage}
-                    />
-                    <span style={styles.sub}> Core Banking System</span>
-                </div>
-                <div style={styles.userSection}>
-                    <span style={styles.welcomeText}>Welcome, <strong>{username}</strong></span>
-                    <button onClick={onLogout} style={styles.logoutBtn}>Logout</button>
-                </div>
-            </header>
-
-            <main style={styles.content}>
-                <div style={styles.whiteBody}>
-
-                    {currentView === "history" && (
-                        <>
-                            <div style={styles.cardHeader}>
-                                <h2 style={styles.cardTitle}>System Activity History</h2>
-                                <p style={styles.cardSubtitle}>Real-time audit log of recently accessed modules</p>
-                            </div>
-
-                            {history.length === 0 ? (
-                                <p style={{ color: '#7f8c8d', padding: '10px 0' }}>No recent activity to show.</p>
-                            ) : (
-                                <div style={styles.scrollableTimeline}>
-                                    {history.slice(0, 10).map((log, index) => {
-                                        const modStyle = getModuleStyle(log.module);
-                                        return (
-                                            <div key={log.id} style={styles.timelineItem}>
-                                                <div style={styles.timeColumn}>
-                                                    {log.timestamp}
-                                                </div>
-
-                                                <div style={styles.lineColumn}>
-                                                    <div style={{...styles.timelineDot, backgroundColor: modStyle.text}} />
-                                                    {index !== Math.min(history.length, 10) - 1 && (
-                                                        <div style={styles.timelineLine} />
-                                                    )}
-                                                </div>
-
-                                                <div style={styles.logContent}>
-                                                    <span style={{
-                                                        ...styles.moduleBadge,
-                                                        backgroundColor: modStyle.bg,
-                                                        color: modStyle.text,
-                                                        borderColor: modStyle.border
-                                                    }}>
-                                                        {log.module.toUpperCase()}
-                                                    </span>
-                                                    <span style={styles.logDescription}>
-                                                        {log.action}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </>
-                    )}
-
-                    {currentView === "users" && <UserListPage />}
-                    {currentView === "customers" && <CustomerListPage />}
-                    {currentView === "accounts" && <AccountListPage />}
-                    {currentView === "loans" && <LoansList />}
-                </div>
-            </main>
-
+            {/* Sidebar a la izquierda */}
             <aside style={styles.sidebar}>
-                <h3 style={styles.sidebarTitle}>Modules</h3>
+                <div style={styles.logoWrapper} onClick={() => setCurrentView("history")}>
+                    <img src={logo} alt="Kefir Logo" style={styles.logoImage} />
+                    <span style={styles.brandTitle}>Kefir</span>
+                </div>
 
-                <div style={styles.navMenu}>
-                    <button
-                        style={{
-                            ...styles.moduleBtn,
-                            ...(currentView === "users" ? styles.moduleBtnActive : {})
-                        }}
-                        onClick={() => navigateTo("users", "Users")}
-                    >
-                        <span style={styles.navIcon}>👥</span> Users
-                    </button>
-
-                    <button
-                        style={{
-                            ...styles.moduleBtn,
-                            ...(currentView === "customers" ? styles.moduleBtnActive : {})
-                        }}
-                        onClick={() => navigateTo("customers", "Customers")}
-                    >
-                        <span style={styles.navIcon}>💳</span> Customers
-                    </button>
-
-                    <button
-                        style={{
-                            ...styles.moduleBtn,
-                            ...(currentView === "accounts" ? styles.moduleBtnActive : {})
-                        }}
-                        onClick={() => navigateTo("accounts", "Accounts")}
-                    >
-                        <span style={styles.navIcon}>📊</span> Accounts
-                    </button>
-
-                    <button
-                        style={{
-                            ...styles.moduleBtn,
-                            ...(currentView === "loans" ? styles.moduleBtnActive : {})
-                        }}
-                        onClick={() => navigateTo("loans", "Loans")}
-                    >
-                        <span style={styles.navIcon}>💰</span> Loans
-                    </button>
+                <div style={styles.navSection}>
+                    <span style={styles.sidebarSectionTitle}>Navigation</span>
+                    <nav style={styles.navMenu}>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "history" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => setCurrentView("history")}
+                        >
+                            Overview
+                        </button>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "users" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => navigateTo("users", "Users")}
+                        >
+                            Users
+                        </button>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "customers" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => navigateTo("customers", "Customers")}
+                        >
+                            Customers
+                        </button>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "accounts" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => navigateTo("accounts", "Accounts")}
+                        >
+                            Accounts
+                        </button>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "loans" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => navigateTo("loans", "Loans")}
+                        >
+                            Loans
+                        </button>
+                    </nav>
                 </div>
             </aside>
+
+            <div style={styles.mainWrapper}>
+                <header style={styles.header}>
+                    <span style={styles.systemBadge}>Core Banking System</span>
+                    <div style={styles.userSection}>
+                        <span style={styles.welcomeText}>User: <strong>{username}</strong></span>
+                        <button onClick={onLogout} style={styles.logoutBtn}>Log out</button>
+                    </div>
+                </header>
+
+                <main style={styles.content}>
+                    <div style={styles.whiteBody}>
+                        {currentView === "history" && (
+                            <>
+                                <div style={styles.cardHeader}>
+                                    <h2 style={styles.cardTitle}>System Activity History</h2>
+                                    <p style={styles.cardSubtitle}>Real-time audit log of recently accessed modules</p>
+                                </div>
+
+                                {history.length === 0 ? (
+                                    <p style={{ color: '#64748b', padding: '12px 0' }}>No recent activity logged.</p>
+                                ) : (
+                                    <div style={styles.scrollableTimeline}>
+                                        {history.slice(0, 10).map((log, index) => {
+                                            const modStyle = getModuleStyle(log.module);
+                                            return (
+                                                <div key={log.id} style={styles.timelineItem}>
+                                                    <div style={styles.timeColumn}>{log.timestamp}</div>
+                                                    <div style={styles.lineColumn}>
+                                                        <div style={{ ...styles.timelineDot, backgroundColor: modStyle.text }} />
+                                                        {index !== Math.min(history.length, 10) - 1 && (
+                                                            <div style={styles.timelineLine} />
+                                                        )}
+                                                    </div>
+                                                    <div style={styles.logContent}>
+                                                        <span style={{
+                                                            ...styles.moduleBadge,
+                                                            backgroundColor: modStyle.bg,
+                                                            color: modStyle.text,
+                                                            borderColor: modStyle.border
+                                                        }}>
+                                                            {log.module.toUpperCase()}
+                                                        </span>
+                                                        <span style={styles.logDescription}>{log.action}</span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </>
+                        )}
+
+                        {currentView === "users" && <UserListPage />}
+                        {currentView === "customers" && <CustomerListPage />}
+                        {currentView === "accounts" && <AccountListPage />}
+                        {currentView === "loans" && <LoansList />}
+                    </div>
+                </main>
+            </div>
         </div>
     );
 }
@@ -174,43 +175,92 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         display: 'grid',
-        gridTemplateColumns: '1fr 280px',
-        gridTemplateRows: '70px 1fr',
+        gridTemplateColumns: '240px 1fr',
         height: '100vh',
-        maxHeight: '100vh',
-        overflow: 'hidden',
-        backgroundColor: '#f8f9fa',
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        backgroundColor: '#f8fafc',
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
         boxSizing: 'border-box'
     },
-    header: {
-        gridColumn: 'span 2',
-        backgroundColor: '#2c3e50',
-        color: '#ffffff',
-        padding: '16px 24px',
+    sidebar: {
+        backgroundColor: '#0f172a',
+        borderRight: '1px solid #1e293b',
+        padding: '20px 16px',
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        zIndex: 10,
-        boxSizing: 'border-box'
+        flexDirection: 'column',
+        gap: '24px'
     },
     logoWrapper: {
         display: 'flex',
         alignItems: 'center',
-        cursor: 'pointer',
-        gap: '4px',
-        height: '100%'
+        gap: '12px',
+        padding: '0 8px',
+        cursor: 'pointer'
     },
     logoImage: {
-        height: '42px',
-        width: 'auto',
-        objectFit: 'contain',
-        mixBlendMode: 'screen',
-        filter: 'contrast(160%) brightness(120%)',
-        transform: 'scale(1.5)',
-        marginRight: '8px',
-        marginTop: '-2px'
+        height: '32px',
+        width: 'auto'
+    },
+    brandTitle: {
+        color: '#f8fafc',
+        fontSize: '18px',
+        fontWeight: '700',
+        letterSpacing: '-0.5px'
+    },
+    navSection: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px'
+    },
+    sidebarSectionTitle: {
+        fontSize: '11px',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        color: '#64748b',
+        fontWeight: '600',
+        padding: '0 8px'
+    },
+    navMenu: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px'
+    },
+    moduleBtn: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: '8px 12px',
+        backgroundColor: 'transparent',
+        color: '#94a3b8',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: '500',
+        textAlign: 'left',
+        transition: 'all 0.15s ease'
+    },
+    moduleBtnActive: {
+        backgroundColor: '#1e293b',
+        color: '#f8fafc',
+        fontWeight: '600'
+    },
+    mainWrapper: {
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden'
+    },
+    header: {
+        height: '60px',
+        backgroundColor: '#ffffff',
+        borderBottom: '1px solid #e2e8f0',
+        padding: '0 32px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    systemBadge: {
+        fontSize: '13px',
+        color: '#64748b',
+        fontWeight: '500'
     },
     userSection: {
         display: 'flex',
@@ -218,182 +268,104 @@ const styles: { [key: string]: React.CSSProperties } = {
         gap: '16px'
     },
     welcomeText: {
-        fontSize: '14px',
-        color: '#ecf0f1'
+        fontSize: '13px',
+        color: '#334155'
     },
     logoutBtn: {
-        backgroundColor: '#e74c3c',
-        color: 'white',
-        border: 'none',
-        padding: '6px 14px',
-        borderRadius: '4px',
+        backgroundColor: '#transparent',
+        color: '#64748b',
+        border: '1px solid #cbd5e1',
+        padding: '6px 12px',
+        borderRadius: '6px',
         cursor: 'pointer',
-        fontWeight: '600',
+        fontWeight: '500',
         fontSize: '13px',
-        transition: 'background-color 0.15s ease'
+        transition: 'all 0.15s ease'
     },
     content: {
         padding: '32px',
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        justifyContent: 'center',
         overflowY: 'auto',
-        boxSizing: 'border-box',
-        minHeight: 0,
-        // Firefox
-        scrollbarWidth: 'thin',
-        scrollbarColor: '#cbd5e1 #f8f9fa'
+        flex: 1
     },
     whiteBody: {
-        backgroundColor: 'white',
+        backgroundColor: '#ffffff',
         width: '100%',
         maxWidth: '1000px',
         borderRadius: '8px',
-        padding: '28px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
-        boxSizing: 'border-box',
+        padding: '24px',
         border: '1px solid #e2e8f0',
-        marginBottom: '20px'
+        alignSelf: 'start'
     },
     cardHeader: {
-        marginBottom: '24px',
-        borderBottom: '1px solid #f1f2f6',
-        paddingBottom: '16px',
-        textAlign: 'left'
+        marginBottom: '20px',
+        borderBottom: '1px solid #f1f5f9',
+        paddingBottom: '12px'
     },
     cardTitle: {
         margin: 0,
         fontSize: '18px',
-        color: '#2c3e50',
+        color: '#0f172a',
         fontWeight: '600'
-    },
-    sub: {
-        padding: '2px 6px',
-        borderRadius: '4px',
-        margin: '4px 0 0 0',
-        fontSize: '13px',
-        color: '#ffffff',
-        fontFamily: 'Sans-serif'
     },
     cardSubtitle: {
         margin: '4px 0 0 0',
         fontSize: '13px',
-        color: '#95a5a6'
+        color: '#64748b'
     },
     scrollableTimeline: {
-        maxHeight: '420px',
-        overflowY: 'hidden',
-        paddingRight: '8px',
         display: 'flex',
         flexDirection: 'column'
     },
     timelineItem: {
         display: 'flex',
         alignItems: 'center',
-        minHeight: '48px',
-        boxSizing: 'border-box'
+        minHeight: '40px'
     },
     timeColumn: {
-        width: '55px',
-        fontSize: '13px',
-        color: '#7f8c8d',
-        fontWeight: '500',
-        fontFamily: 'monospace',
-        textAlign: 'left'
+        width: '60px',
+        fontSize: '12px',
+        color: '#64748b',
+        fontFamily: 'monospace'
     },
     lineColumn: {
-        width: '30px',
+        width: '24px',
         position: 'relative',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '48px',
-        flexShrink: 0
+        height: '40px'
     },
     timelineDot: {
-        width: '8px',
-        height: '8px',
+        width: '6px',
+        height: '6px',
         borderRadius: '50%',
         zIndex: 2
     },
     timelineLine: {
         position: 'absolute',
-        top: '24px',
-        bottom: '-24px',
-        width: '2px',
+        top: '20px',
+        bottom: '-20px',
+        width: '1px',
         backgroundColor: '#e2e8f0',
         zIndex: 1
     },
     logContent: {
         display: 'flex',
         alignItems: 'center',
-        gap: '16px',
-        flex: 1,
-        textAlign: 'left'
+        gap: '12px',
+        flex: 1
     },
     moduleBadge: {
-        fontSize: '11px',
+        fontSize: '10px',
         fontWeight: '700',
-        padding: '3px 8px',
+        padding: '2px 6px',
         borderRadius: '4px',
-        minWidth: '85px',
-        textAlign: 'center',
-        border: '1px solid',
-        letterSpacing: '0.5px'
+        border: '1px solid'
     },
     logDescription: {
-        fontSize: '14px',
-        color: '#34495e',
-        fontWeight: '400'
-    },
-    sidebar: {
-        backgroundColor: '#ffffff',
-        borderLeft: '1px solid #e2e8f0',
-        padding: '24px',
-        display: 'flex',
-        flexDirection: 'column',
-
-        height: '100%',
-        boxSizing: 'border-box'
-    },
-    sidebarTitle: {
-        margin: '0 0 16px 0',
-        fontSize: '12px',
-        textTransform: 'uppercase',
-        letterSpacing: '1px',
-        color: '#95a5a6',
-        fontWeight: '700',
-        textAlign: 'left',
-        borderBottom: '1px solid #f1f2f6',
-        paddingBottom: '10px'
-    },
-    navMenu: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px'
-    },
-    moduleBtn: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '12px 16px',
-        backgroundColor: 'transparent',
-        color: '#5d6d7e',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        fontSize: '14px',
-        fontWeight: '600',
-        textAlign: 'left',
-        transition: 'all 0.15s ease',
-        width: '100%'
-    },
-    moduleBtnActive: {
-        backgroundColor: '#3498db',
-        color: 'white',
-        boxShadow: '0 4px 10px rgba(52, 152, 219, 0.25)'
-    },
-    navIcon: {
-        fontSize: '16px'
+        fontSize: '13px',
+        color: '#334155'
     }
 };
