@@ -74,20 +74,14 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
     return (
         <div style={styles.container}>
             <div style={styles.header}>
-                <button onClick={onBack} style={styles.backButton}>
-                    <FaArrowLeft />
-                    <span> Back</span>
+                <button onClick={onBack} style={styles.backBtn}>
+                    <FaArrowLeft size={12} />
+                    <span> Back to Customers</span>
                 </button>
-                <h2 style={styles.title}>
-                    Create New Customer
-                </h2>
+                <h2 style={styles.title}> Create New Customer</h2>
             </div>
 
-            {error && (
-                <div style={styles.errorContainer}>
-                    {error}
-                </div>
-            )}
+            {error && <div style={styles.errorContainer}>{error}</div>}
 
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
@@ -249,48 +243,48 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
 
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
-        width: '100%',
-        boxSizing: 'border-box',
-        padding: '10px',
+        width: '100%'
     },
     header: {
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-start",
-        gap: "16px"
+        gap: "12px",
+        marginBottom: "20px"
     },
-    backBtn: { backgroundColor: '#7f8c8d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' },
-    titleArea: { display: 'flex', flexDirection: 'column', textAlign: 'left' },
-    title:{
-        margin: '0 0 40px 0',
-        fontSize: '28px',
-        fontWeight: 500,
-        color: '#2c3e50'
+    backBtn: {
+        backgroundColor: 'transparent',
+        color: '#64748b',
+        border: 'none',
+        padding: '0',
+        cursor: 'pointer',
+        fontSize: '13px',
+        fontWeight: '500',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px'
     },
-    subtitle: { margin: '4px 0 0 0', fontSize: '13px', color: '#95a5a6' },
+    title: {
+        margin: 0,
+        fontSize: '18px',
+        fontWeight: '600',
+        color: '#0f172a'
+    },
     formCard: {
         backgroundColor: '#ffffff',
-        borderRadius: '8px',
-        border: '1px solid #e2e8f0',
-        padding: '32px',
-        maxWidth: '600px',
-        width: '100%',
-        boxSizing: 'border-box',
-        textAlign: 'left',
-        maxHeight: '100%',
-        overflow: 'hidden'
+        maxWidth: '500px',
+        width: '100%'
     },
     form: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '20px'
+        gap: '16px'
     },
     inputGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
-    label: { fontSize: '13px', color: '#34495e', fontWeight: '600' },
-    input: { padding: '10px 14px', borderRadius: '6px', border: '1px solid #dcdde1', fontSize: '14px', color: '#2c3e50', backgroundColor: '#fcfcfc', outline: 'none', boxSizing: 'border-box', width: '100%' },
-    select: { padding: '10px 14px', borderRadius: '6px', border: '1px solid #dcdde1', fontSize: '14px', color: '#2c3e50', backgroundColor: '#fcfcfc', outline: 'none', width: '100%' },
-    errorContainer: { backgroundColor: '#fdf1f0', color: '#e74c3c', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', border: '1px solid #fadbd8', whiteSpace: 'pre-line' },
+    label: { fontSize: '13px', color: '#334155', fontWeight: '500' },
+    input: { padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', color: '#0f172a', outline: 'none', boxSizing: 'border-box', width: '100%' },
+    select: { padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', color: '#0f172a', outline: 'none', width: '100%', boxSizing: 'border-box' },
+    errorContainer: { backgroundColor: '#fef2f2', color: '#b91c1c', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', border: '1px solid #fecaca', marginBottom: '16px', whiteSpace: 'pre-line' },
     actionRow: { display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' },
-    cancelBtn: { backgroundColor: '#f4f6f7', color: '#7f8c8d', border: '1px solid #d5dbdb', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '14px' },
-    submitBtn: { backgroundColor: '#3498db', color: 'white', border: 'none', padding: '10px 24px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '14px', boxShadow: '0 4px 10px rgba(52, 152, 219, 0.2)' }
+    cancelBtn: { backgroundColor: '#ffffff', color: '#475569', border: '1px solid #cbd5e1', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: '500', fontSize: '13px' },
+    submitBtn: { backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: '500', fontSize: '13px' }
 };

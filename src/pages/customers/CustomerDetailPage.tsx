@@ -22,18 +22,18 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
     const [customer, setCustomer] = React.useState<Customer>(initialCustomer);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-    const getStateColor = (state: string) => {
-        switch (state) {
-            case "ACTIVE": return "#2ecc71";
-            case "PENDING": return "#f39c12";
-            case "DEACTIVATED": return "#e74c3c";
-            default: return "#95a5a6";
+    const getStatusStyle = (status: string) => {
+        switch (status) {
+            case "ACTIVE": return { bg: "#e6f4ea", text: "#137333", border: "#ceedd5" };
+            case "PENDING": return { bg: "#fef7e0", text: "#b06000", border: "#fce8b2" };
+            case "DEACTIVATED": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+            default: return { bg: "#f1f5f9", text: "#5f6368", border: "#e2e8f0" };
         }
     };
 
     const handleStatusChange = async (action: "activate" | "deactivate") => {
         const actionText = action === "activate" ? "activate" : "deactivate";
-        const confirmChange = window.confirm(`¿Are you sure you want to ${actionText} customer ${customer.fullname}?`);
+        const confirmChange = window.confirm(`Are you sure you want to ${actionText} customer ${customer.fullname}?`);
 
         if (!confirmChange) return;
 
@@ -45,7 +45,7 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
                     ? await activateCustomer(customer.id)
                     : await deactivateCustomer(customer.id);
 
-            setCustomer(updatedCustomer)
+            setCustomer(updatedCustomer);
 
         } catch (error) {
             alert(error instanceof Error ? error.message : "An unexpected error occurred.");
@@ -54,72 +54,96 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
         }
     };
 
-    const fields = [
-        { label: "Name 1", value: customer.name1 },
-        { label: "Name 2", value: customer.name2 || "-" },
-        { label: "Name 3", value: customer.name3 || "-" },
-        { label: "Lastname 1", value: customer.lastname1 },
-        { label: "Lastname 2", value: customer.lastname2 || "-" },
-        { label: "Lastname 3", value: customer.lastname3 || "-" },
-        { label: "Person type", value: customer.personType },
-        { label: "Document type", value: customer.documentType },
-        { label: "Document number", value: customer.documentNumber },
-        { label: "Customer type", value: customer.customerType },
-        { label: "Created by", value: customer.createdBy },
-        { label: "Created at", value: formatDateTime(customer.createdAt) },
-        { label: "Updated by", value: customer.updatedBy },
-        { label: "Updated at", value: formatDateTime(customer.updatedAt) }
+    const statusStyle = getStatusStyle(customer.status);
+
+    const primaryDetails = [
+        { label: "Full Name", value: `${customer.name1} ${customer.name2 || ""} ${customer.name3 || ""} ${customer.lastname1} ${customer.lastname2 || ""} ${customer.lastname3 || ""}`.replace(/\s+/g, ' ').trim() },
+        { label: "Person Type", value: customer.personType },
+        { label: "Document", value: `${customer.documentType} - ${customer.documentNumber}` },
+        { label: "Customer Type", value: customer.customerType }
+    ];
+
+    const auditDetails = [
+        { label: "Created By", value: customer.createdBy },
+        { label: "Created At", value: formatDateTime(customer.createdAt) },
+        { label: "Updated By", value: customer.updatedBy },
+        { label: "Updated At", value: formatDateTime(customer.updatedAt) }
     ];
 
     return (
         <div style={styles.container}>
-            <div style={styles.header}>
-                <button onClick={onBack}>
+            {/* Navigation & Header */}
+            <div style={styles.topNav}>
+                <button onClick={onBack} style={styles.backBtn}>
                     <FaArrowLeft />
-                    <span> Back</span>
+                    <span>Back</span>
                 </button>
-                <h1 style={styles.title}>Details of customer {customer.fullname}</h1>
             </div>
 
-            <div style={styles.formGrid}>
-                {fields.map((field, index) => (
-                    <div key={index} style={styles.fieldBox}>
-                        <span style={styles.label}>{field.label}</span>
-                        <span style={styles.inputFallback}>{field.value}</span>
-                    </div>
-                ))}
+            <div style={styles.headerRow}>
+                <div>
+                    <h1 style={styles.title}>{customer.fullname}</h1>
+                    <span style={styles.subtitle}>Customer ID: {customer.id}</span>
+                </div>
 
-                <div style={{ ...styles.fieldBox, justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={styles.label}>Status</span>
-                        <span style={{
-                            ...styles.statusBadge,
-                            backgroundColor: getStateColor(customer.status)
-                        }}>
-                            {customer.status}
-                        </span>
-                    </div>
+                <div style={styles.actionsGroup}>
+                    <span style={{
+                        ...styles.statusBadge,
+                        backgroundColor: statusStyle.bg,
+                        color: statusStyle.text,
+                        borderColor: statusStyle.border
+                    }}>
+                        {customer.status === "ACTIVE" ? "Active" : customer.status}
+                    </span>
 
-                    <div style={styles.actionContainer}>
-                        {(customer.status === "PENDING" || customer.status === "DEACTIVATED") && (
-                            <button
-                                style={{ ...styles.btnAction, ...styles.btnActivate }}
-                                onClick={() => handleStatusChange("activate")}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? "Processing..." : "Activate"}
-                            </button>
-                        )}
-                        {(customer.status === "ACTIVE") && (
-                            <button
-                                style={{ ...styles.btnAction, ...styles.btnDeactivate }}
-                                onClick={() => handleStatusChange("deactivate")}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? "Processing..." : "Deactivate"}
-                            </button>
-                        )}
-                    </div>
+                    {(customer.status === "PENDING" || customer.status === "DEACTIVATED") && (
+                        <button
+                            style={{ ...styles.btnAction, ...styles.btnActivate }}
+                            onClick={() => handleStatusChange("activate")}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Processing..." : "Activate"}
+                        </button>
+                    )}
+                    {customer.status === "ACTIVE" && (
+                        <button
+                            style={{ ...styles.btnAction, ...styles.btnDeactivate }}
+                            onClick={() => handleStatusChange("deactivate")}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Processing..." : "Deactivate"}
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <div style={styles.divider} />
+
+            {/* General Information */}
+            <div style={styles.section}>
+                <h3 style={styles.sectionTitle}>General Information</h3>
+                <div style={styles.flatGrid}>
+                    {primaryDetails.map((item, idx) => (
+                        <div key={idx} style={styles.fieldItem}>
+                            <span style={styles.label}>{item.label}</span>
+                            <span style={styles.value}>{item.value || "-"}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div style={styles.divider} />
+
+            {/* Audit Details */}
+            <div style={styles.section}>
+                <h3 style={styles.sectionTitle}>Audit Details</h3>
+                <div style={styles.flatGrid}>
+                    {auditDetails.map((item, idx) => (
+                        <div key={idx} style={styles.fieldItem}>
+                            <span style={styles.label}>{item.label}</span>
+                            <span style={styles.value}>{item.value || "-"}</span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
@@ -127,16 +151,105 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
-    container: { width: '100%', boxSizing: 'border-box', padding: '10px' },
-    header: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "16px" },
-    title: { margin: '0 0 40px 0', fontSize: '28px', fontWeight: 500, color: '#2c3e50' },
-    formGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px', width: '100%', boxSizing: 'border-box' },
-    fieldBox: { display: 'flex', alignItems: 'center', backgroundColor: '#fff', border: '1px solid #dcdde1', borderRadius: '6px', padding: '10px 14px', boxSizing: 'border-box', height: '50px' },
-    label: { color: '#7f8c8d', fontWeight: '600', fontSize: '14px', flex: '0 0 90px', flexShrink: 0, borderRight: '1px solid #f1f2f6', marginRight: '14px', paddingRight: '8px', textAlign: 'left' },
-    inputFallback: { color: '#2c3e50', fontSize: '15px', fontWeight: '500', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
-    statusBadge: { color: 'white', padding: '4px 12px', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase' },
-    actionContainer: { display: 'flex', gap: '8px' },
-    btnAction: { padding: '6px 12px', borderRadius: '4px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', border: 'none', color: '#fff', transition: 'background-color 0.2s' },
-    btnActivate: { backgroundColor: '#2ecc71' },
-    btnDeactivate: { backgroundColor: '#e74c3c' }
+    container: {
+        width: '100%',
+        boxSizing: 'border-box',
+        padding: '24px 32px',
+        backgroundColor: '#ffffff',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    },
+    topNav: {
+        marginBottom: '16px'
+    },
+    backBtn: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        backgroundColor: 'transparent',
+        color: '#64748b',
+        border: '1px solid #cbd5e1',
+        padding: '6px 14px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontSize: '13px',
+        fontWeight: '500'
+    },
+    headerRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '20px'
+    },
+    title: {
+        margin: 0,
+        color: '#0f172a',
+        fontSize: '24px',
+        fontWeight: '700'
+    },
+    subtitle: {
+        fontSize: '13px',
+        color: '#64748b',
+        marginTop: '4px',
+        display: 'block'
+    },
+    actionsGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+    },
+    statusBadge: {
+        padding: '5px 12px',
+        borderRadius: '16px',
+        fontSize: '13px',
+        fontWeight: '500',
+        border: '1px solid'
+    },
+    btnAction: {
+        padding: '8px 16px',
+        borderRadius: '6px',
+        fontSize: '13px',
+        fontWeight: '600',
+        cursor: 'pointer',
+        border: 'none',
+        color: '#ffffff',
+        transition: 'opacity 0.15s ease'
+    },
+    btnActivate: { backgroundColor: '#10b981' },
+    btnDeactivate: { backgroundColor: '#ef4444' },
+    divider: {
+        height: '1px',
+        backgroundColor: '#f1f5f9',
+        margin: '24px 0'
+    },
+    section: {
+        marginBottom: '8px'
+    },
+    sectionTitle: {
+        margin: '0 0 20px 0',
+        fontSize: '12px',
+        fontWeight: '600',
+        color: '#64748b',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
+    },
+    flatGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+        gap: '24px 32px'
+    },
+    fieldItem: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    label: {
+        fontSize: '12px',
+        color: '#64748b',
+        fontWeight: '500',
+        marginBottom: '6px'
+    },
+    value: {
+        fontSize: '15px',
+        color: '#0f172a',
+        fontWeight: '600'
+    }
 };
