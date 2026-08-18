@@ -53,8 +53,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             {/* Sidebar a la izquierda */}
             <aside style={styles.sidebar}>
                 <div style={styles.logoWrapper} onClick={() => setCurrentView("history")}>
-                    <img src={logo} alt="Kefir Logo" style={styles.logoImage} />
-                    <span style={styles.brandTitle}>Kefir</span>
+                    <span style={styles.brandTitle}>Control Panel</span>
                 </div>
 
                 <div style={styles.navSection}>
@@ -111,7 +110,10 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 
             <div style={styles.mainWrapper}>
                 <header style={styles.header}>
-                    <span style={styles.systemBadge}>Core Banking System</span>
+                    <div style={styles.brandSection}>
+                        <img src={logo} alt="Kefir Logo" style={styles.logoImage} />
+                        <span style={styles.systemBadge}>Core Banking System</span>
+                    </div>
                     <div style={styles.userSection}>
                         <span style={styles.welcomeText}>User: <strong>{username}</strong></span>
                         <button onClick={onLogout} style={styles.logoutBtn}>Log out</button>
@@ -257,10 +259,17 @@ const styles: { [key: string]: React.CSSProperties } = {
         justifyContent: 'space-between',
         alignItems: 'center'
     },
+    brandSection: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+    },
     systemBadge: {
         fontSize: '13px',
         color: '#64748b',
-        fontWeight: '500'
+        fontWeight: '500',
+        lineHeight: 1,
+        transform: 'translateY(-2px)'
     },
     userSection: {
         display: 'flex',
@@ -272,8 +281,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#334155'
     },
     logoutBtn: {
-        backgroundColor: '#transparent',
-        color: '#64748b',
+        backgroundColor: '#ffffff',
+        color: '#475569',
         border: '1px solid #cbd5e1',
         padding: '6px 12px',
         borderRadius: '6px',
