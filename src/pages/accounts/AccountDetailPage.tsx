@@ -85,7 +85,6 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
             <div style={styles.headerRow}>
                 <div>
                     <h1 style={styles.title}>Account #{account.id}</h1>
-                    <span style={styles.subtitle}>Customer: {account.customer || "N/A"}</span>
                 </div>
 
                 <div style={styles.actionsGroup}>
@@ -95,12 +94,12 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
                         color: statusStyle.text,
                         borderColor: statusStyle.border
                     }}>
-                        {account.status === "OPENED" ? "Active" : account.status}
+                        {account.status === "OPENED" ? "Active" : account.status.toLowerCase()}
                     </span>
 
                     {(account.status === "PENDING" || account.status === "CLOSED") && (
                         <button
-                            style={{ ...styles.btnAction, ...styles.btnActivate }}
+                            style={styles.actionBtn}
                             onClick={() => handleStatusChange("activate")}
                             disabled={isLoading}
                         >
@@ -109,7 +108,7 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
                     )}
                     {account.status === "OPENED" && (
                         <button
-                            style={{ ...styles.btnAction, ...styles.btnDeactivate }}
+                            style={styles.actionBtn}
                             onClick={() => handleStatusChange("deactivate")}
                             disabled={isLoading}
                         >
@@ -204,20 +203,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderRadius: '16px',
         fontSize: '13px',
         fontWeight: '500',
-        border: '1px solid'
+        border: '1px solid',
+        textTransform: 'capitalize'
     },
-    btnAction: {
-        padding: '8px 16px',
-        borderRadius: '6px',
-        fontSize: '13px',
-        fontWeight: '600',
-        cursor: 'pointer',
-        border: 'none',
-        color: '#ffffff',
-        transition: 'opacity 0.15s ease'
-    },
-    btnActivate: { backgroundColor: '#10b981' },
-    btnDeactivate: { backgroundColor: '#ef4444' },
     divider: {
         height: '1px',
         backgroundColor: '#f1f5f9',
@@ -253,5 +241,16 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontSize: '15px',
         color: '#0f172a',
         fontWeight: '600'
+    },
+    actionBtn: {
+        background: 'none',
+        border: '1px solid #cbd5e1',
+        borderRadius: '6px',
+        padding: '4px 10px',
+        cursor: 'pointer',
+        fontSize: '12px',
+        color: '#475569',
+        fontWeight: '500',
+        transition: 'all 0.15s ease'
     }
 };

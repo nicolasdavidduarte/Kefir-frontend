@@ -70,11 +70,14 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
         });
     };
 
-    const statusColors: Record<string, string> = {
-        pending: "#f39c12",
-        active: "#2ecc71",
-        closed: "#e74c3c",
-        charge_off: "#e74c3c",
+    const getStatusStyle = (status: string) => {
+        switch (status) {
+            case "ACTIVE": return { bg: "#e6f4ea", text: "#137333", border: "#ceedd5" };
+            case "PENDING": return { bg: "#fef7e0", text: "#b06000", border: "#fce8b2" };
+            case "CLOSED": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+            case "CHARGE_OFF": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+            default: return { bg: "#f1f5f9", text: "#5f6368", border: "#e2e8f0" };
+        }
     };
 
     const handleStatusChange = async (action: "approve" | "charge-off") => {
@@ -190,12 +193,15 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     </div>
                     <div>
                         <span style={styles.summaryLabel}>Status</span>
+
                         <span style={{
                             ...styles.statusBadge,
-                            backgroundColor: statusColors[loan.status.toLowerCase()] || "#95a5a6"
+                            backgroundColor: getStatusStyle(loan.status).bg,
+                            color: getStatusStyle(loan.status).text,
+                            borderColor: getStatusStyle(loan.status).border
                         }}>
-                                    {loan.status.replace(/_/g, ' ')}
-                        </span>
+                                    {loan.status.replace(/_/g, ' ').toLowerCase()}
+                                </span>
                     </div>
                 </div>
 
@@ -307,11 +313,10 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
-        maxHeight: 'calc(100vh - 180px)',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        paddingRight: '8px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        padding: '24px 32px',
+        backgroundColor: '#ffffff',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
     header: {
         display: "flex",
@@ -322,8 +327,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     title: {
         margin: 0,
-        color: '#2c3e50',
-        fontSize: '22px'
+        color: '#0f172a',
+        fontSize: '24px',
+        fontWeight: '700'
+    },
+    subtitle: {
+        fontSize: '13px',
+        color: '#64748b',
+        marginTop: '4px',
+        display: 'block'
     },
     summaryCard: {
         backgroundColor: '#ffffff',
@@ -335,12 +347,12 @@ const styles: { [key: string]: React.CSSProperties } = {
         boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
     },
     sectionTitle: {
-        margin: '0 0 14px 0',
-        color: '#34495e',
-        fontSize: '14px',
+        margin: '0 0 20px 0',
+        fontSize: '12px',
         fontWeight: '600',
+        color: '#64748b',
         textTransform: 'uppercase',
-        letterSpacing: '0.5px'
+        letterSpacing: '0.05em'
     },
     summaryGrid: {
         display: 'grid',
@@ -367,22 +379,41 @@ const styles: { [key: string]: React.CSSProperties } = {
         textOverflow: 'ellipsis'
     },
     divider: {
-        border: 'none',
-        borderTop: '1px solid #f1f5f9',
-        margin: '20px 0'
+        height: '1px',
+        backgroundColor: '#f1f5f9',
+        margin: '24px 0'
     },
     statusBadge: {
-        color: 'white',
-        padding: '4px 10px',
-        borderRadius: '4px',
-        fontSize: '12px',
-        fontWeight: 'bold',
-        display: 'inline-block',
-        textAlign: 'center',
-        minWidth: '70px'
+        padding: '5px 12px',
+        borderRadius: '16px',
+        fontSize: '13px',
+        fontWeight: '500',
+        border: '1px solid',
+        textTransform: 'capitalize'
     },
-    backBtn: { backgroundColor: '#7f8c8d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' },
-    btnAction: { padding: '6px 12px', borderRadius: '4px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', border: 'none', color: '#fff', transition: 'background-color 0.2s' },
-    btnActivate: { backgroundColor: '#2ecc71' },
-    btnDeactivate: { backgroundColor: '#e74c3c' }
+    backBtn: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        backgroundColor: 'transparent',
+        color: '#64748b',
+        border: '1px solid #cbd5e1',
+        padding: '6px 14px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontSize: '13px',
+        fontWeight: '500'
+    },
+    btnAction: {
+        padding: '8px 16px',
+        borderRadius: '6px',
+        fontSize: '13px',
+        fontWeight: '600',
+        cursor: 'pointer',
+        border: 'none',
+        color: '#ffffff',
+        transition: 'opacity 0.15s ease'
+    },
+    btnActivate: { backgroundColor: '#10b981' },
+    btnDeactivate: { backgroundColor: '#ef4444' },
 };
