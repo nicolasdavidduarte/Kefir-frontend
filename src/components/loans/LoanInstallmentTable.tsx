@@ -73,7 +73,7 @@ export default function LoanInstallmentTable({ installments, onInstallmentPaymen
                                     color: getStatusStyle(inst.installmentStatus).text,
                                     borderColor: getStatusStyle(inst.installmentStatus).border
                                 }}>
-                                    {inst.installmentStatus.replace(/_/g, ' ')}
+                                    {inst.installmentStatus.replace(/_/g, ' ').toLowerCase()}
                                 </span>
                             </td>
                             <td>
@@ -164,7 +164,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontWeight: '500',
         border: '1px solid',
         whiteSpace: 'nowrap',
-        display: 'inline-block'
+        display: 'inline-block',
+        textTransform: 'capitalize'
     },
     paymentButton: {
         width: '36px',
