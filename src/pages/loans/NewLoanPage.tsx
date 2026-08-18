@@ -3,7 +3,7 @@ import * as React from "react";
 import type { LoanRequest } from "../../types/Loan.ts";
 import { FaArrowLeft } from "react-icons/fa";
 import CustomerAutocomplete from "../../components/customers/CustomerAutocomplete.tsx";
-import type {Account} from "../../types/Account.ts";
+import type { Account } from "../../types/Account.ts";
 import { fetchAccountsByCustomerId } from "../../api/accountsApi.ts";
 
 type NewLoanProps = {
@@ -50,7 +50,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
             setLoadingAccounts(false);
         }
     };
-    
+
     const handleAccountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = e.target.value ? parseInt(e.target.value, 10) : null;
         setAccountId(selectedId);
@@ -101,15 +101,16 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
 
     return (
         <div style={styles.container}>
-            <div style={styles.header}>
+            <div style={styles.topNav}>
                 <button onClick={onBack} style={styles.backBtn}>
                     <FaArrowLeft size={12} />
                     <span>Back to Loans</span>
                 </button>
-                <div style={styles.titleArea}>
-                    <h2 style={styles.title}>Create New Loan</h2>
-                    <p style={styles.subtitle}>Fill in the required information to create a new loan for a customer.</p>
-                </div>
+            </div>
+
+            <div style={styles.header}>
+                <h1 style={styles.title}>Create New Loan</h1>
+                <p style={styles.subtitle}>Fill in the required information to create a new loan for a customer.</p>
             </div>
 
             {error && <div style={styles.errorContainer}>{error}</div>}
@@ -117,18 +118,18 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
 
-                    {/* Customer */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Customer</label>
+                    {/* Customer (Columna 1) */}
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1', gridColumnStart: 1 }}>
+                        <label style={styles.label}>Customer *</label>
                         <CustomerAutocomplete
                             onSelect={handleCustomerChange}
                             disabled={loading}
                         />
                     </div>
 
-                    {/* Account */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Account</label>
+                    {/* Account (Columna 1, fuerza salto de fila) */}
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1', gridColumnStart: 1 }}>
+                        <label style={styles.label}>Account *</label>
                         <select
                             style={styles.select}
                             value={accountId || ""}
@@ -146,9 +147,9 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                         </select>
                     </div>
 
-                    {/* Loan Type */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Loan Type</label>
+                    {/* Loan Type & Amortization Type (Columna 1 y 2) */}
+                    <div style={{ ...styles.inputGroup, gridColumnStart: 1 }}>
+                        <label style={styles.label}>Loan Type *</label>
                         <select
                             style={styles.select}
                             value={loanType}
@@ -164,8 +165,23 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                         </select>
                     </div>
 
-                    {/* Currency */}
                     <div style={styles.inputGroup}>
+                        <label style={styles.label}>Amortization Type *</label>
+                        <select
+                            style={styles.select}
+                            value={amortizationType}
+                            onChange={e => setAmortizationType(e.target.value)}
+                            disabled={loading}
+                        >
+                            <option value="">Select...</option>
+                            <option value="FRENCH">French</option>
+                            <option value="GERMAN">German</option>
+                            <option value="AMERICAN">American</option>
+                        </select>
+                    </div>
+
+                    {/* Currency (Columna 1, fuerza salto de fila) */}
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1', gridColumnStart: 1 }}>
                         <label style={styles.label}>Currency</label>
                         <select
                             style={styles.select}
@@ -180,25 +196,8 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                         </select>
                     </div>
 
-                    {/* Amortization Type */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Amortization Type</label>
-                        <select
-                            style={styles.select}
-                            value={amortizationType}
-                            onChange={e => setAmortizationType(e.target.value)}
-                            disabled={loading}
-                        >
-                            <option value="">Select...</option>
-                            <option value="FRENCH">French</option>
-                            <option value="GERMAN">German</option>
-                            <option value="AMERICAN">American</option>
-                        </select>
-                    </div>
-
-                    {/* Principal Amount */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Principal Amount</label>
+                    <div style={{ ...styles.inputGroup, gridColumnStart: 1 }}>
+                        <label style={styles.label}>Principal Amount *</label>
                         <input
                             type="number"
                             style={styles.input}
@@ -210,9 +209,8 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                         />
                     </div>
 
-                    {/* Number of Installments */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Number of Installments</label>
+                        <label style={styles.label}>Number of Installments *</label>
                         <input
                             type="number"
                             style={styles.input}
@@ -238,7 +236,7 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                             style={styles.submitBtn}
                             disabled={loading}
                         >
-                            {loading ? "Saving..." : "Save"}
+                            {loading ? "Saving..." : "Save Loan"}
                         </button>
                     </div>
                 </form>
@@ -250,17 +248,12 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
-        maxWidth: '640px',
-        margin: '0 auto',
         boxSizing: 'border-box',
-        padding: '24px 16px',
+        padding: '0',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
-    header: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-        marginBottom: "20px"
+    topNav: {
+        marginBottom: '12px'
     },
     backBtn: {
         backgroundColor: 'transparent',
@@ -274,35 +267,105 @@ const styles: { [key: string]: React.CSSProperties } = {
         alignItems: 'center',
         gap: '6px'
     },
-    titleArea: { display: 'flex', flexDirection: 'column', textAlign: 'left' },
-    title: {
-        margin: '8px 0 0 0',
-        fontSize: '26px',
-        fontWeight: 600,
-        color: '#1e293b'
+    header: {
+        marginBottom: '20px',
+        textAlign: 'left'
     },
-    subtitle: { margin: '4px 0 0 0', fontSize: '14px', color: '#64748b' },
+    title: {
+        margin: '0',
+        fontSize: '24px',
+        fontWeight: 700,
+        color: '#0f172a'
+    },
+    subtitle: {
+        margin: '4px 0 0 0',
+        fontSize: '13px',
+        color: '#64748b'
+    },
     formCard: {
         backgroundColor: '#ffffff',
-        borderRadius: '10px',
+        borderRadius: '8px',
         border: '1px solid #e2e8f0',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
         padding: '28px',
         width: '100%',
         boxSizing: 'border-box',
         textAlign: 'left'
     },
     form: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: '16px 24px'
+    },
+    inputGroup: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px'
+        gap: '6px'
     },
-    inputGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
-    label: { fontSize: '13px', color: '#334155', fontWeight: '500' },
-    input: { padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', color: '#0f172a', outline: 'none', boxSizing: 'border-box', width: '100%' },
-    select: { padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', color: '#0f172a', outline: 'none', width: '100%', boxSizing: 'border-box' },
-    errorContainer: { backgroundColor: '#fef2f2', color: '#b91c1c', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', border: '1px solid #fecaca', marginBottom: '16px', whiteSpace: 'pre-line' },
-    actionRow: { display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' },
-    cancelBtn: { backgroundColor: '#ffffff', color: '#475569', border: '1px solid #cbd5e1', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: '500', fontSize: '13px' },
-    submitBtn: { backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: '500', fontSize: '13px' }
+    label: {
+        fontSize: '12px',
+        color: '#334155',
+        fontWeight: '600'
+    },
+    input: {
+        height: '38px',
+        padding: '0 12px',
+        borderRadius: '6px',
+        border: '1px solid #cbd5e1',
+        fontSize: '14px',
+        color: '#0f172a',
+        outline: 'none',
+        boxSizing: 'border-box',
+        width: '100%'
+    },
+    select: {
+        height: '38px',
+        padding: '0 12px',
+        borderRadius: '6px',
+        border: '1px solid #cbd5e1',
+        fontSize: '14px',
+        color: '#0f172a',
+        outline: 'none',
+        width: '100%',
+        boxSizing: 'border-box'
+    },
+    errorContainer: {
+        backgroundColor: '#fef2f2',
+        color: '#b91c1c',
+        padding: '10px 12px',
+        borderRadius: '6px',
+        fontSize: '13px',
+        border: '1px solid #fecaca',
+        marginBottom: '16px',
+        whiteSpace: 'pre-line'
+    },
+    actionRow: {
+        gridColumn: '1 / -1',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        gap: '12px',
+        marginTop: '8px',
+        paddingTop: '16px',
+        borderTop: '1px solid #f1f5f9'
+    },
+    cancelBtn: {
+        backgroundColor: '#ffffff',
+        color: '#475569',
+        border: '1px solid #cbd5e1',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontWeight: '500',
+        fontSize: '13px'
+    },
+    submitBtn: {
+        backgroundColor: '#0f172a',
+        color: 'white',
+        border: 'none',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontWeight: '500',
+        fontSize: '13px'
+    }
 };

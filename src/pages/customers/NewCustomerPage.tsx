@@ -27,8 +27,8 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
         event.preventDefault();
         setError("");
 
-        if (!name1 || !lastname1 || !personType || !documentType|| !documentNumber || !customerType) {
-            setError("All fields are required");
+        if (!name1 || !lastname1 || !personType || !documentType || !documentNumber || !customerType) {
+            setError("All required fields must be completed.");
             return;
         }
 
@@ -73,15 +73,16 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
 
     return (
         <div style={styles.container}>
-            <div style={styles.header}>
+            <div style={styles.topNav}>
                 <button onClick={onBack} style={styles.backBtn}>
                     <FaArrowLeft size={12} />
-                    <span> Back to Customers</span>
+                    <span>Back to Customers</span>
                 </button>
-                <div style={styles.titleArea}>
-                    <h2 style={styles.title}>Create New Customer</h2>
-                    <p style={styles.subtitle}>Fill in the required information to register a customer in the system.</p>
-                </div>
+            </div>
+
+            <div style={styles.header}>
+                <h1 style={styles.title}>Create New Customer</h1>
+                <p style={styles.subtitle}>Fill in the required information to register a customer in the system.</p>
             </div>
 
             {error && <div style={styles.errorContainer}>{error}</div>}
@@ -89,9 +90,9 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
 
-                    {/* Person Type */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Person Type</label>
+                    {/* Classifications / General */}
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1' }}>
+                        <label style={styles.label}>Person Type *</label>
                         <select
                             style={styles.select}
                             value={personType}
@@ -99,13 +100,27 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                             disabled={loading}
                         >
                             <option value="">Select...</option>
-                            <option value="NATURAL">Natural </option>
+                            <option value="NATURAL">Natural</option>
                         </select>
                     </div>
 
-                    {/* Name1 */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Name 1</label>
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1' }}>
+                        <label style={styles.label}>Customer Type *</label>
+                        <select
+                            style={styles.select}
+                            value={customerType}
+                            onChange={e => setCustomerType(e.target.value)}
+                            disabled={loading}
+                        >
+                            <option value="">Select...</option>
+                            <option value="RETAIL">Retail</option>
+                            <option value="CORPORATE">Corporate</option>
+                        </select>
+                    </div>
+
+                    {/* Names Grid Row */}
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1', gridColumnStart: 1 }}>
+                        <label style={styles.label}>First Name *</label>
                         <input
                             type="text"
                             style={styles.input}
@@ -116,9 +131,8 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         />
                     </div>
 
-                    {/* Name2 */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Name 2</label>
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1' }}>
+                        <label style={styles.label}>Middle Name 1</label>
                         <input
                             type="text"
                             style={styles.input}
@@ -128,9 +142,8 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         />
                     </div>
 
-                    {/* Name3 */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Name 3</label>
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1' }}>
+                        <label style={styles.label}>Middle Name 2</label>
                         <input
                             type="text"
                             style={styles.input}
@@ -140,9 +153,9 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         />
                     </div>
 
-                    {/* Lastname1 */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Lastname 1</label>
+                    {/* Lastnames Grid Row */}
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1' }}>
+                        <label style={styles.label}>First Last Name *</label>
                         <input
                             type="text"
                             style={styles.input}
@@ -153,9 +166,8 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         />
                     </div>
 
-                    {/* Lastname2 */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Lastname 2</label>
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1' }}>
+                        <label style={styles.label}>Second Last Name</label>
                         <input
                             type="text"
                             style={styles.input}
@@ -165,10 +177,8 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         />
                     </div>
 
-
-                    {/* Lastname3 */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Lastname 3</label>
+                    <div style={{ ...styles.inputGroup, gridColumn: 'span 1' }}>
+                        <label style={styles.label}>Third Last Name</label>
                         <input
                             type="text"
                             style={styles.input}
@@ -178,9 +188,8 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         />
                     </div>
 
-                    {/* Document Type */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Document Type</label>
+                    <div style={{ ...styles.inputGroup, gridColumnStart: 1}}>
+                        <label style={styles.label}>Document Type *</label>
                         <select
                             style={styles.select}
                             value={documentType}
@@ -193,9 +202,9 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         </select>
                     </div>
 
-                    {/* Document Number */}
+                    {/* Document Number - Span wide */}
                     <div style={styles.inputGroup}>
-                        <label style={styles.label}>Document Number</label>
+                        <label style={styles.label}>Document Number *</label>
                         <input
                             type="text"
                             style={styles.input}
@@ -204,21 +213,6 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                             onChange={e => setDocumentNumber(e.target.value)}
                             disabled={loading}
                         />
-                    </div>
-
-                    {/* Customer Type */}
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Customer Type</label>
-                        <select
-                            style={styles.select}
-                            value={customerType}
-                            onChange={e => setCustomerType(e.target.value)}
-                            disabled={loading}
-                        >
-                            <option value="">Select...</option>
-                            <option value="RETAIL">Retail</option>
-                            <option value="CORPORATE">Corporate</option>
-                        </select>
                     </div>
 
                     <div style={styles.actionRow}>
@@ -235,7 +229,7 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                             style={styles.submitBtn}
                             disabled={loading}
                         >
-                            {loading ? "Saving..." : "Save"}
+                            {loading ? "Saving..." : "Save Customer"}
                         </button>
                     </div>
                 </form>
@@ -247,17 +241,12 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
-        maxWidth: '960px',
-        margin: '0 auto',
         boxSizing: 'border-box',
-        padding: '24px 16px',
+        padding: '0',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
-    header: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-        marginBottom: "20px"
+    topNav: {
+        marginBottom: '12px'
     },
     backBtn: {
         backgroundColor: 'transparent',
@@ -271,41 +260,105 @@ const styles: { [key: string]: React.CSSProperties } = {
         alignItems: 'center',
         gap: '6px'
     },
-    titleArea: { display: 'flex', flexDirection: 'column', textAlign: 'left' },
-    title: {
-        margin: '8px 0 0 0',
-        fontSize: '26px',
-        fontWeight: 600,
-        color: '#1e293b'
+    header: {
+        marginBottom: '20px',
+        textAlign: 'left'
     },
-    subtitle: { margin: '4px 0 0 0', fontSize: '14px', color: '#64748b' },
+    title: {
+        margin: '0',
+        fontSize: '24px',
+        fontWeight: 700,
+        color: '#0f172a'
+    },
+    subtitle: {
+        margin: '4px 0 0 0',
+        fontSize: '13px',
+        color: '#64748b'
+    },
     formCard: {
         backgroundColor: '#ffffff',
-        borderRadius: '10px',
+        borderRadius: '8px',
         border: '1px solid #e2e8f0',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
-        padding: '28px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+        padding: '24px',
         width: '100%',
         boxSizing: 'border-box',
         textAlign: 'left'
     },
     form: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
+        gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '16px 24px'
     },
-    inputGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
-    label: { fontSize: '13px', color: '#334155', fontWeight: '500' },
-    input: { padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', color: '#0f172a', outline: 'none', boxSizing: 'border-box', width: '100%' },
-    select: { padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', color: '#0f172a', outline: 'none', width: '100%', boxSizing: 'border-box' },
-    errorContainer: { backgroundColor: '#fef2f2', color: '#b91c1c', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', border: '1px solid #fecaca', marginBottom: '16px', whiteSpace: 'pre-line' },
+    inputGroup: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '6px'
+    },
+    label: {
+        fontSize: '12px',
+        color: '#334155',
+        fontWeight: '600'
+    },
+    input: {
+        height: '38px',
+        padding: '0 12px',
+        borderRadius: '6px',
+        border: '1px solid #cbd5e1',
+        fontSize: '14px',
+        color: '#0f172a',
+        outline: 'none',
+        boxSizing: 'border-box',
+        width: '100%'
+    },
+    select: {
+        height: '38px',
+        padding: '0 12px',
+        borderRadius: '6px',
+        border: '1px solid #cbd5e1',
+        fontSize: '14px',
+        color: '#0f172a',
+        outline: 'none',
+        width: '100%',
+        boxSizing: 'border-box'
+    },
+    errorContainer: {
+        backgroundColor: '#fef2f2',
+        color: '#b91c1c',
+        padding: '10px 12px',
+        borderRadius: '6px',
+        fontSize: '13px',
+        border: '1px solid #fecaca',
+        marginBottom: '16px',
+        whiteSpace: 'pre-line'
+    },
     actionRow: {
         gridColumn: '1 / -1',
         display: 'flex',
         justifyContent: 'flex-end',
         gap: '12px',
-        marginTop: '8px'
+        marginTop: '8px',
+        paddingTop: '16px',
+        borderTop: '1px solid #f1f5f9'
     },
-    cancelBtn: { backgroundColor: '#ffffff', color: '#475569', border: '1px solid #cbd5e1', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: '500', fontSize: '13px' },
-    submitBtn: { backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: '500', fontSize: '13px' }
+    cancelBtn: {
+        backgroundColor: '#ffffff',
+        color: '#475569',
+        border: '1px solid #cbd5e1',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontWeight: '500',
+        fontSize: '13px'
+    },
+    submitBtn: {
+        backgroundColor: '#0f172a',
+        color: 'white',
+        border: 'none',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontWeight: '500',
+        fontSize: '13px'
+    }
 };
