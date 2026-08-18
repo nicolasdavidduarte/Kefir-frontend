@@ -9,6 +9,7 @@ type AccountDetailProps = {
 };
 
 function formatDateTime(dateString: string): string {
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -56,28 +57,12 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
 
     const statusStyle = getStatusStyle(account.status);
 
-    const primaryDetails = [
-        { label: "Customer", value: account.customer },
-        { label: "Type", value: account.type },
-        { label: "Currency", value: account.currencyIsoCode },
-        { label: "Balance", value: account.balance },
-        { label: "Bank", value: account.bank },
-        { label: "CBU", value: account.cbu }
-    ];
-
-    const auditDetails = [
-        { label: "Created By", value: account.createdBy },
-        { label: "Created At", value: formatDateTime(account.createdAt) },
-        { label: "Updated By", value: account.updatedBy },
-        { label: "Updated At", value: formatDateTime(account.updatedAt) }
-    ];
-
     return (
         <div style={styles.container}>
             {/* Navigation & Header */}
             <div style={styles.topNav}>
                 <button onClick={onBack} style={styles.backBtn}>
-                    <FaArrowLeft />
+                    <FaArrowLeft size={12} />
                     <span>Back to Accounts</span>
                 </button>
             </div>
@@ -120,31 +105,58 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
 
             <div style={styles.divider} />
 
-            {/* General Information */}
-            <div style={styles.section}>
+            {/* Summary Card */}
+            <div style={styles.summaryCard}>
+                {/* General Information */}
                 <h3 style={styles.sectionTitle}>General Information</h3>
-                <div style={styles.flatGrid}>
-                    {primaryDetails.map((item, idx) => (
-                        <div key={idx} style={styles.fieldItem}>
-                            <span style={styles.label}>{item.label}</span>
-                            <span style={styles.value}>{item.value || "-"}</span>
-                        </div>
-                    ))}
+                <div style={styles.summaryGrid}>
+                    <div>
+                        <span style={styles.summaryLabel}>Customer</span>
+                        <span style={styles.summaryValue}>{account.customer || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Type</span>
+                        <span style={styles.summaryValue}>{account.type || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Currency</span>
+                        <span style={styles.summaryValue}>{account.currencyIsoCode || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Balance</span>
+                        <span style={styles.summaryValue}>{account.balance ?? "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Bank</span>
+                        <span style={styles.summaryValue}>{account.bank || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>CBU</span>
+                        <span style={styles.summaryValue}>{account.cbu || "N/A"}</span>
+                    </div>
                 </div>
-            </div>
 
-            <div style={styles.divider} />
+                <hr style={styles.divider} />
 
-            {/* Audit Details */}
-            <div style={styles.section}>
+                {/* Audit Details */}
                 <h3 style={styles.sectionTitle}>Audit Details</h3>
-                <div style={styles.flatGrid}>
-                    {auditDetails.map((item, idx) => (
-                        <div key={idx} style={styles.fieldItem}>
-                            <span style={styles.label}>{item.label}</span>
-                            <span style={styles.value}>{item.value || "-"}</span>
-                        </div>
-                    ))}
+                <div style={styles.summaryGrid}>
+                    <div>
+                        <span style={styles.summaryLabel}>Created By</span>
+                        <span style={styles.summaryValue}>{account.createdBy || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Created At</span>
+                        <span style={styles.summaryValue}>{formatDateTime(account.createdAt)}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Updated By</span>
+                        <span style={styles.summaryValue}>{account.updatedBy || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Updated At</span>
+                        <span style={styles.summaryValue}>{formatDateTime(account.updatedAt)}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -186,12 +198,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontSize: '24px',
         fontWeight: '700'
     },
-    subtitle: {
-        fontSize: '13px',
-        color: '#64748b',
-        marginTop: '4px',
-        display: 'block'
-    },
     actionsGroup: {
         display: 'flex',
         alignItems: 'center',
@@ -205,42 +211,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         border: '1px solid',
         textTransform: 'capitalize'
     },
-    divider: {
-        height: '1px',
-        backgroundColor: '#f1f5f9',
-        margin: '24px 0'
-    },
-    section: {
-        marginBottom: '8px'
-    },
-    sectionTitle: {
-        margin: '0 0 20px 0',
-        fontSize: '12px',
-        fontWeight: '600',
-        color: '#64748b',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em'
-    },
-    flatGrid: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-        gap: '24px 32px'
-    },
-    fieldItem: {
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    label: {
-        fontSize: '12px',
-        color: '#64748b',
-        fontWeight: '500',
-        marginBottom: '6px'
-    },
-    value: {
-        fontSize: '15px',
-        color: '#0f172a',
-        fontWeight: '600'
-    },
     actionBtn: {
         background: 'none',
         border: '1px solid #cbd5e1',
@@ -251,5 +221,52 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#475569',
         fontWeight: '500',
         transition: 'all 0.15s ease'
+    },
+    summaryCard: {
+        backgroundColor: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '24px',
+        marginBottom: '32px',
+        boxSizing: 'border-box',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+    },
+    sectionTitle: {
+        margin: '0 0 20px 0',
+        fontSize: '12px',
+        fontWeight: '600',
+        color: '#64748b',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
+    },
+    summaryGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gap: '16px 24px',
+        marginBottom: '4px'
+    },
+    summaryLabel: {
+        display: 'block',
+        fontSize: '11px',
+        fontWeight: '600',
+        color: '#94a3b8',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        marginBottom: '4px'
+    },
+    summaryValue: {
+        display: 'block',
+        fontSize: '15px',
+        fontWeight: '500',
+        color: '#334155',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+    },
+    divider: {
+        height: '1px',
+        backgroundColor: '#f1f5f9',
+        margin: '24px 0',
+        border: 'none'
     }
 };

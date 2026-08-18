@@ -9,6 +9,7 @@ type CustomerDetailProps = {
 };
 
 function formatDateTime(dateString: string): string {
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -56,25 +57,14 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
 
     const statusStyle = getStatusStyle(customer.status);
 
-    const primaryDetails = [
-        { label: "Full Name", value: `${customer.name1} ${customer.name2 || ""} ${customer.name3 || ""} ${customer.lastname1} ${customer.lastname2 || ""} ${customer.lastname3 || ""}`.replace(/\s+/g, ' ').trim() },
-        { label: "Person Type", value: customer.personType },
-        { label: "Document", value: `${customer.documentType} - ${customer.documentNumber}` },
-        { label: "Customer Type", value: customer.customerType }
-    ];
-
-    const auditDetails = [
-        { label: "Created By", value: customer.createdBy },
-        { label: "Created At", value: formatDateTime(customer.createdAt) },
-        { label: "Updated By", value: customer.updatedBy },
-        { label: "Updated At", value: formatDateTime(customer.updatedAt) }
-    ];
+    const fullName = `${customer.name1} ${customer.name2 || ""} ${customer.name3 || ""} ${customer.lastname1} ${customer.lastname2 || ""} ${customer.lastname3 || ""}`.replace(/\s+/g, ' ').trim();
 
     return (
         <div style={styles.container}>
+            {/* Navigation & Header */}
             <div style={styles.topNav}>
                 <button onClick={onBack} style={styles.backBtn}>
-                    <FaArrowLeft />
+                    <FaArrowLeft size={12} />
                     <span>Back to Customers</span>
                 </button>
             </div>
@@ -118,31 +108,50 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
 
             <div style={styles.divider} />
 
-            {/* General Information */}
-            <div style={styles.section}>
+            {/* Summary Card */}
+            <div style={styles.summaryCard}>
+                {/* General Information */}
                 <h3 style={styles.sectionTitle}>General Information</h3>
-                <div style={styles.flatGrid}>
-                    {primaryDetails.map((item, idx) => (
-                        <div key={idx} style={styles.fieldItem}>
-                            <span style={styles.label}>{item.label}</span>
-                            <span style={styles.value}>{item.value || "-"}</span>
-                        </div>
-                    ))}
+                <div style={styles.summaryGrid}>
+                    <div>
+                        <span style={styles.summaryLabel}>Full Name</span>
+                        <span style={styles.summaryValue}>{fullName || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Person Type</span>
+                        <span style={styles.summaryValue}>{customer.personType || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Document</span>
+                        <span style={styles.summaryValue}>{`${customer.documentType} - ${customer.documentNumber}`}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Customer Type</span>
+                        <span style={styles.summaryValue}>{customer.customerType || "N/A"}</span>
+                    </div>
                 </div>
-            </div>
 
-            <div style={styles.divider} />
+                <hr style={styles.divider} />
 
-            {/* Audit Details */}
-            <div style={styles.section}>
+                {/* Audit Details */}
                 <h3 style={styles.sectionTitle}>Audit Details</h3>
-                <div style={styles.flatGrid}>
-                    {auditDetails.map((item, idx) => (
-                        <div key={idx} style={styles.fieldItem}>
-                            <span style={styles.label}>{item.label}</span>
-                            <span style={styles.value}>{item.value || "-"}</span>
-                        </div>
-                    ))}
+                <div style={styles.summaryGrid}>
+                    <div>
+                        <span style={styles.summaryLabel}>Created By</span>
+                        <span style={styles.summaryValue}>{customer.createdBy || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Created At</span>
+                        <span style={styles.summaryValue}>{formatDateTime(customer.createdAt)}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Updated By</span>
+                        <span style={styles.summaryValue}>{customer.updatedBy || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Updated At</span>
+                        <span style={styles.summaryValue}>{formatDateTime(customer.updatedAt)}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -203,42 +212,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         border: '1px solid',
         textTransform: 'capitalize'
     },
-    divider: {
-        height: '1px',
-        backgroundColor: '#f1f5f9',
-        margin: '24px 0'
-    },
-    section: {
-        marginBottom: '8px'
-    },
-    sectionTitle: {
-        margin: '0 0 20px 0',
-        fontSize: '12px',
-        fontWeight: '600',
-        color: '#64748b',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em'
-    },
-    flatGrid: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-        gap: '24px 32px'
-    },
-    fieldItem: {
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    label: {
-        fontSize: '12px',
-        color: '#64748b',
-        fontWeight: '500',
-        marginBottom: '6px'
-    },
-    value: {
-        fontSize: '15px',
-        color: '#0f172a',
-        fontWeight: '600'
-    },
     actionBtn: {
         background: 'none',
         border: '1px solid #cbd5e1',
@@ -249,5 +222,52 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#475569',
         fontWeight: '500',
         transition: 'all 0.15s ease'
+    },
+    summaryCard: {
+        backgroundColor: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '24px',
+        marginBottom: '32px',
+        boxSizing: 'border-box',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+    },
+    sectionTitle: {
+        margin: '0 0 20px 0',
+        fontSize: '12px',
+        fontWeight: '600',
+        color: '#64748b',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
+    },
+    summaryGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gap: '16px 24px',
+        marginBottom: '4px'
+    },
+    summaryLabel: {
+        display: 'block',
+        fontSize: '11px',
+        fontWeight: '600',
+        color: '#94a3b8',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        marginBottom: '4px'
+    },
+    summaryValue: {
+        display: 'block',
+        fontSize: '15px',
+        fontWeight: '500',
+        color: '#334155',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+    },
+    divider: {
+        height: '1px',
+        backgroundColor: '#f1f5f9',
+        margin: '24px 0',
+        border: 'none'
     }
 };

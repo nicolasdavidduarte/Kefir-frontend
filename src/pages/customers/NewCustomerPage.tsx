@@ -247,7 +247,7 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
-        maxWidth: '640px',
+        maxWidth: '960px',
         margin: '0 auto',
         boxSizing: 'border-box',
         padding: '24px 16px',
@@ -290,16 +290,22 @@ const styles: { [key: string]: React.CSSProperties } = {
         textAlign: 'left'
     },
     form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px'
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: '16px 24px'
     },
     inputGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
     label: { fontSize: '13px', color: '#334155', fontWeight: '500' },
     input: { padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', color: '#0f172a', outline: 'none', boxSizing: 'border-box', width: '100%' },
     select: { padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px', color: '#0f172a', outline: 'none', width: '100%', boxSizing: 'border-box' },
     errorContainer: { backgroundColor: '#fef2f2', color: '#b91c1c', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', border: '1px solid #fecaca', marginBottom: '16px', whiteSpace: 'pre-line' },
-    actionRow: { display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' },
+    actionRow: {
+        gridColumn: '1 / -1',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        gap: '12px',
+        marginTop: '8px'
+    },
     cancelBtn: { backgroundColor: '#ffffff', color: '#475569', border: '1px solid #cbd5e1', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: '500', fontSize: '13px' },
     submitBtn: { backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: '500', fontSize: '13px' }
 };
