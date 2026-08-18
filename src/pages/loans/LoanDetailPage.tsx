@@ -153,15 +153,52 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
 
     return (
         <div style={styles.container}>
-            <div style={styles.header}>
-                <button onClick={onBack} style={styles.backButton}>
-                    <FaArrowLeft />
-                    <span> Back</span>
+            <div style={styles.topNav}>
+                <button onClick={onBack} style={styles.backBtn}>
+                    <FaArrowLeft size={12} />
+                    <span>Back to Accounts</span>
                 </button>
-                <h2 style={styles.title}>
-                    Details of loan #{loan.id}
-                </h2>
             </div>
+
+            <div style={styles.headerRow}>
+                <div>
+                    <h2 style={styles.title}>
+                        Details of loan #{loan.id}
+                    </h2>
+                </div>
+
+                <div style={styles.actionsGroup}>
+                    <span style={{
+                        ...styles.statusBadge,
+                        backgroundColor: getStatusStyle(loan.status).bg,
+                        color: getStatusStyle(loan.status).text,
+                        borderColor: getStatusStyle(loan.status).border
+                    }}>
+                                    {loan.status.replace(/_/g, ' ').toLowerCase()}
+                    </span>
+
+                    {(loan.status === "PENDING" || loan.status === "INACTIVE") && (
+                        <button
+                            style={styles.actionBtn}
+                            onClick={() => handleStatusChange("approve")}
+                            disabled={loading}
+                        >
+                            {loading ? "Processing..." : "Approve"}
+                        </button>
+                    )}
+                    {(loan.status === "ACTIVE") && (
+                        <button
+                            style={styles.actionBtn}
+                            onClick={() => handleStatusChange("charge-off")}
+                            disabled={loading}
+                        >
+                            {loading ? "Processing..." : "Charge-Off"}
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <div style={styles.divider} />
 
             <div style={styles.summaryCard}>
 
@@ -190,18 +227,6 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     <div>
                         <span style={styles.summaryLabel}>Expiration Date</span>
                         <span style={styles.summaryValue}>{formatDate(loan.expirationDate)}</span>
-                    </div>
-                    <div>
-                        <span style={styles.summaryLabel}>Status</span>
-
-                        <span style={{
-                            ...styles.statusBadge,
-                            backgroundColor: getStatusStyle(loan.status).bg,
-                            color: getStatusStyle(loan.status).text,
-                            borderColor: getStatusStyle(loan.status).border
-                        }}>
-                                    {loan.status.replace(/_/g, ' ').toLowerCase()}
-                                </span>
                     </div>
                 </div>
 
@@ -281,30 +306,6 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     onInstallmentPayment={handleInstallmentPayment}
                 />
             )}
-
-            <span style={{display:"flex", justifyContent: "right", marginTop: "25px"}}>
-
-
-                        {(loan.status === "PENDING" || loan.status === "INACTIVE") && (
-                            <button
-                                style={{ ...styles.btnAction, ...styles.btnActivate }}
-                                onClick={() => handleStatusChange("approve")}
-                                disabled={loading}
-                            >
-                                {loading ? "Processing..." : "Approve"}
-                            </button>
-                        )}
-                {(loan.status === "ACTIVE") && (
-                    <button
-                        style={{ ...styles.btnAction, ...styles.btnDeactivate }}
-                        onClick={() => handleStatusChange("charge-off")}
-                        disabled={loading}
-                    >
-                        {loading ? "Processing..." : "Charge-Off"}
-                    </button>
-                )}
-
-            </span>
         </div>
 
     );
@@ -318,11 +319,20 @@ const styles: { [key: string]: React.CSSProperties } = {
         backgroundColor: '#ffffff',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
+    topNav: {
+        marginBottom: '16px'
+    },
     header: {
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
         gap: "16px",
+        marginBottom: '20px'
+    },
+    headerRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
         marginBottom: '20px'
     },
     title: {
@@ -383,6 +393,11 @@ const styles: { [key: string]: React.CSSProperties } = {
         backgroundColor: '#f1f5f9',
         margin: '24px 0'
     },
+    actionsGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+    },
     statusBadge: {
         padding: '5px 12px',
         borderRadius: '16px',
@@ -392,28 +407,26 @@ const styles: { [key: string]: React.CSSProperties } = {
         textTransform: 'capitalize'
     },
     backBtn: {
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
         backgroundColor: 'transparent',
         color: '#64748b',
-        border: '1px solid #cbd5e1',
-        padding: '6px 14px',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        fontSize: '13px',
-        fontWeight: '500'
-    },
-    btnAction: {
-        padding: '8px 16px',
-        borderRadius: '6px',
-        fontSize: '13px',
-        fontWeight: '600',
-        cursor: 'pointer',
         border: 'none',
-        color: '#ffffff',
-        transition: 'opacity 0.15s ease'
+        padding: '0',
+        cursor: 'pointer',
+        fontSize: '13px',
+        fontWeight: '500',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px'
     },
-    btnActivate: { backgroundColor: '#10b981' },
-    btnDeactivate: { backgroundColor: '#ef4444' },
+    actionBtn: {
+        background: 'none',
+        border: '1px solid #cbd5e1',
+        borderRadius: '6px',
+        padding: '4px 10px',
+        cursor: 'pointer',
+        fontSize: '12px',
+        color: '#475569',
+        fontWeight: '500',
+        transition: 'all 0.15s ease'
+    }
 };

@@ -75,7 +75,7 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
             <div style={styles.topNav}>
                 <button onClick={onBack} style={styles.backBtn}>
                     <FaArrowLeft />
-                    <span>Back</span>
+                    <span>Back to Customers</span>
                 </button>
             </div>
 
@@ -161,17 +161,16 @@ const styles: { [key: string]: React.CSSProperties } = {
         marginBottom: '16px'
     },
     backBtn: {
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
         backgroundColor: 'transparent',
         color: '#64748b',
-        border: '1px solid #cbd5e1',
-        padding: '6px 14px',
-        borderRadius: '6px',
+        border: 'none',
+        padding: '0',
         cursor: 'pointer',
         fontSize: '13px',
-        fontWeight: '500'
+        fontWeight: '500',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px'
     },
     headerRow: {
         display: 'flex',
