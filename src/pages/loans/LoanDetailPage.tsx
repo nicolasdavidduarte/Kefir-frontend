@@ -81,7 +81,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
     };
 
     const handleStatusChange = async (action: "approve" | "charge-off") => {
-        const confirmChange = window.confirm(`¿Are you sure you want to ${action} loan ${loan.id}?`);
+        const confirmChange = window.confirm(`Are you sure you want to ${action} loan ${loan.id}?`);
 
         if (!confirmChange) return;
 

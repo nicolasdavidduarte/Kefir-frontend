@@ -118,7 +118,6 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
 
-                    {/* Customer (Columna 1) */}
                     <div style={{ ...styles.inputGroup, gridColumn: 'span 1', gridColumnStart: 1 }}>
                         <label style={styles.label}>Customer *</label>
                         <CustomerAutocomplete
@@ -127,7 +126,6 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                         />
                     </div>
 
-                    {/* Account (Columna 1, fuerza salto de fila) */}
                     <div style={{ ...styles.inputGroup, gridColumn: 'span 1', gridColumnStart: 1 }}>
                         <label style={styles.label}>Account *</label>
                         <select
@@ -147,7 +145,6 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                         </select>
                     </div>
 
-                    {/* Loan Type & Amortization Type (Columna 1 y 2) */}
                     <div style={{ ...styles.inputGroup, gridColumnStart: 1 }}>
                         <label style={styles.label}>Loan Type *</label>
                         <select
@@ -180,7 +177,6 @@ export default function NewLoanPage({ onBack, onSave }: NewLoanProps) {
                         </select>
                     </div>
 
-                    {/* Currency (Columna 1, fuerza salto de fila) */}
                     <div style={{ ...styles.inputGroup, gridColumn: 'span 1', gridColumnStart: 1 }}>
                         <label style={styles.label}>Currency</label>
                         <select

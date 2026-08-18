@@ -75,7 +75,7 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
 
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
-                    {/* Fila 1: Username / System Role */}
+
                     <div style={styles.inputGroup}>
                         <label style={styles.label}>Username</label>
                         <input
@@ -103,7 +103,6 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
                         </select>
                     </div>
 
-                    {/* Fila 2: Full Name (Columna 1) - Columna 2 vacía */}
                     <div style={{ ...styles.inputGroup, gridColumn: '1 / 2' }}>
                         <label style={styles.label}>Full Name</label>
                         <input
@@ -116,7 +115,6 @@ export default function NewUserPage({ onBack, onSave }: NewUserProps) {
                         />
                     </div>
 
-                    {/* Fila 3: Password / Confirm Password */}
                     <div style={{ ...styles.inputGroup, gridColumnStart: 1 }}>
                         <label style={styles.label}>Password</label>
                         <input

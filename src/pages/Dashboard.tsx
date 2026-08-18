@@ -50,7 +50,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 
     return (
         <div style={styles.container}>
-            {/* Sidebar a la izquierda */}
+
             <aside style={styles.sidebar}>
                 <div style={styles.logoWrapper} onClick={() => setCurrentView("history")}>
                     <span style={styles.brandTitle}>Control Panel</span>

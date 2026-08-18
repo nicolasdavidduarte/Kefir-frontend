@@ -59,7 +59,7 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
 
     return (
         <div style={styles.container}>
-            {/* Navigation & Header */}
+
             <div style={styles.topNav}>
                 <button onClick={onBack} style={styles.backBtn}>
                     <FaArrowLeft size={12} />
@@ -103,7 +103,7 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
                 </div>
             </div>
 
-            {/* Summary Card */}
+
             <div style={styles.summaryCard}>
                 {/* General Information */}
                 <h3 style={styles.sectionTitle}>General Information</h3>

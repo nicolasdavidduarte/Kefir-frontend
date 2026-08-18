@@ -90,7 +90,6 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
             <div style={styles.formCard}>
                 <form onSubmit={handleSubmit} style={styles.form}>
 
-                    {/* Classifications / General */}
                     <div style={{ ...styles.inputGroup, gridColumn: 'span 1' }}>
                         <label style={styles.label}>Person Type *</label>
                         <select
@@ -118,7 +117,6 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         </select>
                     </div>
 
-                    {/* Names Grid Row */}
                     <div style={{ ...styles.inputGroup, gridColumn: 'span 1', gridColumnStart: 1 }}>
                         <label style={styles.label}>First Name *</label>
                         <input
@@ -153,7 +151,6 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         />
                     </div>
 
-                    {/* Lastnames Grid Row */}
                     <div style={{ ...styles.inputGroup, gridColumn: 'span 1' }}>
                         <label style={styles.label}>First Last Name *</label>
                         <input
@@ -202,7 +199,6 @@ export default function NewUserPage({ onBack, onSave }: NewCustomerProps) {
                         </select>
                     </div>
 
-                    {/* Document Number - Span wide */}
                     <div style={styles.inputGroup}>
                         <label style={styles.label}>Document Number *</label>
                         <input
