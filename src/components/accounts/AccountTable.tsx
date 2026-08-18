@@ -7,6 +7,15 @@ type Props = {
     onSelectAccount: (account: Account) => void;
 };
 
+const getStatusStyle = (status: string) => {
+    switch (status) {
+        case "OPENED": return { bg: "#e6f4ea", text: "#137333", border: "#ceedd5" };
+        case "PENDING": return { bg: "#fef7e0", text: "#b06000", border: "#fce8b2" };
+        case "CLOSED": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+        default: return { bg: "#f1f5f9", text: "#5f6368", border: "#e2e8f0" };
+    }
+};
+
 export default function AccountTable({ accounts, onSelectAccount }: Props) {
     return (
         <div style={{ width: '100%', overflowX: 'auto' }} className="table-scroll-container">
@@ -18,6 +27,7 @@ export default function AccountTable({ accounts, onSelectAccount }: Props) {
                 <th style={styles.th}>Type</th>
                 <th style={styles.th}>Currency</th>
                 <th style={styles.th}>Balance</th>
+                <th style={styles.th}>Status</th>
             </tr>
             </thead>
             <tbody>
@@ -32,6 +42,16 @@ export default function AccountTable({ accounts, onSelectAccount }: Props) {
                     <td style={{ ...styles.td }}>{account.type}</td>
                     <td style={{ ...styles.td }}>{account.currencyIsoCode}</td>
                     <td style={{ ...styles.td }}>{account.balance}</td>
+                    <td style={styles.td}>
+                                <span style={{
+                                    ...styles.statusBadge,
+                                    backgroundColor: getStatusStyle(account.status).bg,
+                                    color: getStatusStyle(account.status).text,
+                                    borderColor: getStatusStyle(account.status).border
+                                }}>
+                                    {account.status.replace(/_/g, ' ').toLowerCase()}
+                                </span>
+                    </td>
                 </tr>
             ))}
             </tbody>
@@ -83,7 +103,8 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontSize: '12px',
         fontWeight: '500',
         border: '1px solid',
-        display: 'inline-block'
+        display: 'inline-block',
+        textTransform: 'capitalize'
     }
 
 };

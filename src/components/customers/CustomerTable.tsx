@@ -7,6 +7,15 @@ type Props = {
     onSelectCustomer: (customer: Customer) => void;
 };
 
+const getStatusStyle = (status: string) => {
+    switch (status) {
+        case "ACTIVE": return { bg: "#e6f4ea", text: "#137333", border: "#ceedd5" };
+        case "PENDING": return { bg: "#fef7e0", text: "#b06000", border: "#fce8b2" };
+        case "DEACTIVATED": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+        default: return { bg: "#f1f5f9", text: "#5f6368", border: "#e2e8f0" };
+    }
+};
+
 export default function CustomerTable({ customers, onSelectCustomer }: Props) {
     return (
             <table style={styles.table}>
@@ -18,6 +27,7 @@ export default function CustomerTable({ customers, onSelectCustomer }: Props) {
                 <th style={styles.th}>Document type</th>
                 <th style={styles.th}>Document number</th>
                 <th style={styles.th}>Customer type</th>
+                <th style={styles.th}>Status</th>
             </tr>
             </thead>
             <tbody>
@@ -30,6 +40,16 @@ export default function CustomerTable({ customers, onSelectCustomer }: Props) {
                     <td style={{ ...styles.td, width: '16%' }}>{customer.documentType}</td>
                     <td style={{ ...styles.td, width: '16%' }}>{customer.documentNumber}</td>
                     <td style={{ ...styles.td, width: '16%' }}>{customer.customerType}</td>
+                    <td style={styles.td}>
+                                <span style={{
+                                    ...styles.statusBadge,
+                                    backgroundColor: getStatusStyle(customer.status).bg,
+                                    color: getStatusStyle(customer.status).text,
+                                    borderColor: getStatusStyle(customer.status).border
+                                }}>
+                                    {customer.status.replace(/_/g, ' ').toLowerCase()}
+                                </span>
+                    </td>
                 </tr>
             ))}
             </tbody>
@@ -71,6 +91,7 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontSize: '12px',
         fontWeight: '500',
         border: '1px solid',
-        display: 'inline-block'
+        display: 'inline-block',
+        textTransform: 'capitalize'
     }
 };
