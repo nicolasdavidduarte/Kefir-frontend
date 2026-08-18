@@ -106,8 +106,6 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
                 </div>
             </div>
 
-            <div style={styles.divider} />
-
             {/* Summary Card */}
             <div style={styles.summaryCard}>
                 {/* General Information */}
@@ -125,7 +123,7 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
                         <span style={styles.summaryLabel}>Document</span>
                         <span style={styles.summaryValue}>{`${customer.documentType} - ${customer.documentNumber}`}</span>
                     </div>
-                    <div>
+                    <div style={{ gridColumnStart: 1 }}>
                         <span style={styles.summaryLabel}>Customer Type</span>
                         <span style={styles.summaryValue}>{customer.customerType || "N/A"}</span>
                     </div>
@@ -162,12 +160,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
         boxSizing: 'border-box',
-        padding: '24px 32px',
-        backgroundColor: '#ffffff',
+        padding: '0',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
     topNav: {
-        marginBottom: '16px'
+        marginBottom: '12px'
     },
     backBtn: {
         backgroundColor: 'transparent',
@@ -216,9 +213,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         background: 'none',
         border: '1px solid #cbd5e1',
         borderRadius: '6px',
-        padding: '4px 10px',
+        padding: '6px 12px',
         cursor: 'pointer',
-        fontSize: '12px',
+        fontSize: '13px',
         color: '#475569',
         fontWeight: '500',
         transition: 'all 0.15s ease'
@@ -228,12 +225,13 @@ const styles: { [key: string]: React.CSSProperties } = {
         border: '1px solid #e2e8f0',
         borderRadius: '8px',
         padding: '24px',
-        marginBottom: '32px',
+        width: '100%',
         boxSizing: 'border-box',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        textAlign: 'left'
     },
     sectionTitle: {
-        margin: '0 0 20px 0',
+        margin: '0 0 16px 0',
         fontSize: '12px',
         fontWeight: '600',
         color: '#64748b',
@@ -242,9 +240,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     summaryGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '16px 24px',
-        marginBottom: '4px'
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '16px 24px'
     },
     summaryLabel: {
         display: 'block',
@@ -257,7 +254,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     summaryValue: {
         display: 'block',
-        fontSize: '15px',
+        fontSize: '14px',
         fontWeight: '500',
         color: '#334155',
         whiteSpace: 'nowrap',
@@ -267,7 +264,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     divider: {
         height: '1px',
         backgroundColor: '#f1f5f9',
-        margin: '24px 0',
+        margin: '20px 0',
         border: 'none'
     }
 };

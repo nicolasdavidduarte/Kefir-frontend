@@ -103,8 +103,6 @@ export default function AccountDetailPage({ account: initialAccount, onBack }: A
                 </div>
             </div>
 
-            <div style={styles.divider} />
-
             {/* Summary Card */}
             <div style={styles.summaryCard}>
                 {/* General Information */}
@@ -167,12 +165,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
         boxSizing: 'border-box',
-        padding: '24px 32px',
-        backgroundColor: '#ffffff',
+        padding: '0',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
     topNav: {
-        marginBottom: '16px'
+        marginBottom: '12px'
     },
     backBtn: {
         backgroundColor: 'transparent',
@@ -215,9 +212,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         background: 'none',
         border: '1px solid #cbd5e1',
         borderRadius: '6px',
-        padding: '4px 10px',
+        padding: '6px 12px',
         cursor: 'pointer',
-        fontSize: '12px',
+        fontSize: '13px',
         color: '#475569',
         fontWeight: '500',
         transition: 'all 0.15s ease'
@@ -228,11 +225,13 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderRadius: '8px',
         padding: '24px',
         marginBottom: '32px',
+        width: '100%',
         boxSizing: 'border-box',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        textAlign: 'left'
     },
     sectionTitle: {
-        margin: '0 0 20px 0',
+        margin: '0 0 16px 0',
         fontSize: '12px',
         fontWeight: '600',
         color: '#64748b',
@@ -241,9 +240,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     summaryGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '16px 24px',
-        marginBottom: '4px'
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '16px 24px'
     },
     summaryLabel: {
         display: 'block',
@@ -256,7 +254,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     summaryValue: {
         display: 'block',
-        fontSize: '15px',
+        fontSize: '14px',
         fontWeight: '500',
         color: '#334155',
         whiteSpace: 'nowrap',
@@ -266,7 +264,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     divider: {
         height: '1px',
         backgroundColor: '#f1f5f9',
-        margin: '24px 0',
+        margin: '20px 0',
         border: 'none'
     }
 };

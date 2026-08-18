@@ -93,7 +93,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     ? await approveLoan(loan.id)
                     : await chargeOffLoan(loan.id);
 
-            setLoan(updatedLoan)
+            setLoan(updatedLoan);
 
             const updatedInstallments = await loadInstallments();
             setInstallments(updatedInstallments);
@@ -104,7 +104,6 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
             setLoading(false);
         }
     };
-
 
     const handleInstallmentPayment = async (
         loanId: number,
@@ -156,7 +155,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
             <div style={styles.topNav}>
                 <button onClick={onBack} style={styles.backBtn}>
                     <FaArrowLeft size={12} />
-                    <span>Back to Accounts</span>
+                    <span>Back to Loans</span>
                 </button>
             </div>
 
@@ -174,7 +173,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                         color: getStatusStyle(loan.status).text,
                         borderColor: getStatusStyle(loan.status).border
                     }}>
-                                    {loan.status.replace(/_/g, ' ').toLowerCase()}
+                        {loan.status.replace(/_/g, ' ').toLowerCase()}
                     </span>
 
                     {(loan.status === "PENDING" || loan.status === "INACTIVE") && (
@@ -198,10 +197,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                 </div>
             </div>
 
-            <div style={styles.divider} />
-
             <div style={styles.summaryCard}>
-
                 <h3 style={styles.sectionTitle}>General Information</h3>
                 <div style={styles.summaryGrid}>
                     <div>
@@ -264,7 +260,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                         <span style={styles.summaryLabel}>Total Interest</span>
                         <span style={styles.summaryValue}>${formatCurrency(loan.totalInterest)}</span>
                     </div>
-                    <div style={{ gridColumn: 'span 2' }}>
+                    <div>
                         <span style={styles.summaryLabel}>Total Operation Amount</span>
                         <span style={{ ...styles.summaryValue, fontWeight: '700', color: '#2c3e50' }}>
                             ${formatCurrency(loan.totalOperationAmount)}
@@ -281,19 +277,15 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                         <span style={styles.summaryValue}>{loan.createdBy || "N/A"}</span>
                     </div>
                     <div>
-                        <span style={styles.summaryLabel}>Created by</span>
+                        <span style={styles.summaryLabel}>Created At</span>
                         <span style={styles.summaryValue}>{formatDate(loan.createdAt)}</span>
                     </div>
                 </div>
-
             </div>
 
-            <span style={{display:"flex", justifyContent: "left", marginBottom:"20px"}}>
-            <h2 style={styles.title}>
-                Installments details
-            </h2>
-            </span>
-
+            <div style={{ marginBottom: "16px" }}>
+                <h2 style={styles.title}>Installments details</h2>
+            </div>
 
             {installments.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
@@ -307,7 +299,6 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                 />
             )}
         </div>
-
     );
 }
 
@@ -315,19 +306,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
         boxSizing: 'border-box',
-        padding: '24px 32px',
-        backgroundColor: '#ffffff',
+        padding: '0',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
     topNav: {
-        marginBottom: '16px'
-    },
-    header: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: "16px",
-        marginBottom: '20px'
+        marginBottom: '12px'
     },
     headerRow: {
         display: 'flex',
@@ -340,58 +323,6 @@ const styles: { [key: string]: React.CSSProperties } = {
         color: '#0f172a',
         fontSize: '24px',
         fontWeight: '700'
-    },
-    subtitle: {
-        fontSize: '13px',
-        color: '#64748b',
-        marginTop: '4px',
-        display: 'block'
-    },
-    summaryCard: {
-        backgroundColor: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: '8px',
-        padding: '24px',
-        marginBottom: '32px',
-        boxSizing: 'border-box',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-    },
-    sectionTitle: {
-        margin: '0 0 20px 0',
-        fontSize: '12px',
-        fontWeight: '600',
-        color: '#64748b',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em'
-    },
-    summaryGrid: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '16px 24px',
-        marginBottom: '4px'
-    },
-    summaryLabel: {
-        display: 'block',
-        fontSize: '11px',
-        fontWeight: '600',
-        color: '#94a3b8',
-        textTransform: 'uppercase',
-        letterSpacing: '0.5px',
-        marginBottom: '4px'
-    },
-    summaryValue: {
-        display: 'block',
-        fontSize: '15px',
-        fontWeight: '500',
-        color: '#334155',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
-    },
-    divider: {
-        height: '1px',
-        backgroundColor: '#f1f5f9',
-        margin: '24px 0'
     },
     actionsGroup: {
         display: 'flex',
@@ -422,11 +353,59 @@ const styles: { [key: string]: React.CSSProperties } = {
         background: 'none',
         border: '1px solid #cbd5e1',
         borderRadius: '6px',
-        padding: '4px 10px',
+        padding: '6px 12px',
         cursor: 'pointer',
-        fontSize: '12px',
+        fontSize: '13px',
         color: '#475569',
         fontWeight: '500',
         transition: 'all 0.15s ease'
+    },
+    summaryCard: {
+        backgroundColor: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '24px',
+        marginBottom: '32px',
+        width: '100%',
+        boxSizing: 'border-box',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        textAlign: 'left'
+    },
+    sectionTitle: {
+        margin: '0 0 16px 0',
+        fontSize: '12px',
+        fontWeight: '600',
+        color: '#64748b',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
+    },
+    summaryGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '16px 24px'
+    },
+    summaryLabel: {
+        display: 'block',
+        fontSize: '11px',
+        fontWeight: '600',
+        color: '#94a3b8',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        marginBottom: '4px'
+    },
+    summaryValue: {
+        display: 'block',
+        fontSize: '14px',
+        fontWeight: '500',
+        color: '#334155',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+    },
+    divider: {
+        height: '1px',
+        backgroundColor: '#f1f5f9',
+        margin: '20px 0',
+        border: 'none'
     }
 };
