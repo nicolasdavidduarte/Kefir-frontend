@@ -70,15 +70,18 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
         });
     };
 
-    const statusColors: Record<string, string> = {
-        pending: "#f39c12",
-        active: "#2ecc71",
-        closed: "#e74c3c",
-        charge_off: "#e74c3c",
+    const getStatusStyle = (status: string) => {
+        switch (status) {
+            case "ACTIVE": return { bg: "#e6f4ea", text: "#137333", border: "#ceedd5" };
+            case "PENDING": return { bg: "#fef7e0", text: "#b06000", border: "#fce8b2" };
+            case "CLOSED": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+            case "CHARGE_OFF": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+            default: return { bg: "#f1f5f9", text: "#5f6368", border: "#e2e8f0" };
+        }
     };
 
     const handleStatusChange = async (action: "approve" | "charge-off") => {
-        const confirmChange = window.confirm(`¿Are you sure you want to ${action} loan ${loan.id}?`);
+        const confirmChange = window.confirm(`Are you sure you want to ${action} loan ${loan.id}?`);
 
         if (!confirmChange) return;
 
@@ -90,7 +93,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     ? await approveLoan(loan.id)
                     : await chargeOffLoan(loan.id);
 
-            setLoan(updatedLoan)
+            setLoan(updatedLoan);
 
             const updatedInstallments = await loadInstallments();
             setInstallments(updatedInstallments);
@@ -101,7 +104,6 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
             setLoading(false);
         }
     };
-
 
     const handleInstallmentPayment = async (
         loanId: number,
@@ -151,18 +153,52 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
 
     return (
         <div style={styles.container}>
-            <div style={styles.header}>
-                <button onClick={onBack} style={styles.backButton}>
-                    <FaArrowLeft />
-                    <span> Back</span>
+            <div style={styles.topNav}>
+                <button onClick={onBack} style={styles.backBtn}>
+                    <FaArrowLeft size={12} />
+                    <span>Back to Loans</span>
                 </button>
-                <h2 style={styles.title}>
-                    Details of loan #{loan.id}
-                </h2>
+            </div>
+
+            <div style={styles.headerRow}>
+                <div>
+                    <h2 style={styles.title}>
+                        Details of loan #{loan.id}
+                    </h2>
+                </div>
+
+                <div style={styles.actionsGroup}>
+                    <span style={{
+                        ...styles.statusBadge,
+                        backgroundColor: getStatusStyle(loan.status).bg,
+                        color: getStatusStyle(loan.status).text,
+                        borderColor: getStatusStyle(loan.status).border
+                    }}>
+                        {loan.status.replace(/_/g, ' ').toLowerCase()}
+                    </span>
+
+                    {(loan.status === "PENDING" || loan.status === "INACTIVE") && (
+                        <button
+                            style={styles.actionBtn}
+                            onClick={() => handleStatusChange("approve")}
+                            disabled={loading}
+                        >
+                            {loading ? "Processing..." : "Approve"}
+                        </button>
+                    )}
+                    {(loan.status === "ACTIVE") && (
+                        <button
+                            style={styles.actionBtn}
+                            onClick={() => handleStatusChange("charge-off")}
+                            disabled={loading}
+                        >
+                            {loading ? "Processing..." : "Charge-Off"}
+                        </button>
+                    )}
+                </div>
             </div>
 
             <div style={styles.summaryCard}>
-
                 <h3 style={styles.sectionTitle}>General Information</h3>
                 <div style={styles.summaryGrid}>
                     <div>
@@ -188,15 +224,6 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     <div>
                         <span style={styles.summaryLabel}>Expiration Date</span>
                         <span style={styles.summaryValue}>{formatDate(loan.expirationDate)}</span>
-                    </div>
-                    <div>
-                        <span style={styles.summaryLabel}>Status</span>
-                        <span style={{
-                            ...styles.statusBadge,
-                            backgroundColor: statusColors[loan.status.toLowerCase()] || "#95a5a6"
-                        }}>
-                                    {loan.status.replace(/_/g, ' ')}
-                        </span>
                     </div>
                 </div>
 
@@ -234,7 +261,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                         <span style={styles.summaryLabel}>Total Interest</span>
                         <span style={styles.summaryValue}>${formatCurrency(loan.totalInterest)}</span>
                     </div>
-                    <div style={{ gridColumn: 'span 2' }}>
+                    <div>
                         <span style={styles.summaryLabel}>Total Operation Amount</span>
                         <span style={{ ...styles.summaryValue, fontWeight: '700', color: '#2c3e50' }}>
                             ${formatCurrency(loan.totalOperationAmount)}
@@ -251,19 +278,15 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                         <span style={styles.summaryValue}>{loan.createdBy || "N/A"}</span>
                     </div>
                     <div>
-                        <span style={styles.summaryLabel}>Created by</span>
+                        <span style={styles.summaryLabel}>Created At</span>
                         <span style={styles.summaryValue}>{formatDate(loan.createdAt)}</span>
                     </div>
                 </div>
-
             </div>
 
-            <span style={{display:"flex", justifyContent: "left", marginBottom:"20px"}}>
-            <h2 style={styles.title}>
-                Installments details
-            </h2>
-            </span>
-
+            <div style={{ marginBottom: "16px" }}>
+                <h2 style={styles.title}>Installments details</h2>
+            </div>
 
             {installments.length === 0 ? (
                 <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
@@ -276,55 +299,67 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     onInstallmentPayment={handleInstallmentPayment}
                 />
             )}
-
-            <span style={{display:"flex", justifyContent: "right", marginTop: "25px"}}>
-
-
-                        {(loan.status === "PENDING" || loan.status === "INACTIVE") && (
-                            <button
-                                style={{ ...styles.btnAction, ...styles.btnActivate }}
-                                onClick={() => handleStatusChange("approve")}
-                                disabled={loading}
-                            >
-                                {loading ? "Processing..." : "Approve"}
-                            </button>
-                        )}
-                {(loan.status === "ACTIVE") && (
-                    <button
-                        style={{ ...styles.btnAction, ...styles.btnDeactivate }}
-                        onClick={() => handleStatusChange("charge-off")}
-                        disabled={loading}
-                    >
-                        {loading ? "Processing..." : "Charge-Off"}
-                    </button>
-                )}
-
-            </span>
         </div>
-
     );
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
-        maxHeight: 'calc(100vh - 180px)',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        paddingRight: '8px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        padding: '0',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
-    header: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: "16px",
+    topNav: {
+        marginBottom: '12px'
+    },
+    headerRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
         marginBottom: '20px'
     },
     title: {
         margin: 0,
-        color: '#2c3e50',
-        fontSize: '22px'
+        color: '#0f172a',
+        fontSize: '24px',
+        fontWeight: '700'
+    },
+    actionsGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+    },
+    statusBadge: {
+        padding: '5px 12px',
+        borderRadius: '16px',
+        fontSize: '13px',
+        fontWeight: '500',
+        border: '1px solid',
+        textTransform: 'capitalize'
+    },
+    backBtn: {
+        backgroundColor: 'transparent',
+        color: '#64748b',
+        border: 'none',
+        padding: '0',
+        cursor: 'pointer',
+        fontSize: '13px',
+        fontWeight: '500',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px'
+    },
+    actionBtn: {
+        background: 'none',
+        border: '1px solid #cbd5e1',
+        borderRadius: '6px',
+        padding: '6px 12px',
+        cursor: 'pointer',
+        fontSize: '13px',
+        color: '#475569',
+        fontWeight: '500',
+        transition: 'all 0.15s ease'
     },
     summaryCard: {
         backgroundColor: '#ffffff',
@@ -332,22 +367,23 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderRadius: '8px',
         padding: '24px',
         marginBottom: '32px',
+        width: '100%',
         boxSizing: 'border-box',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        textAlign: 'left'
     },
     sectionTitle: {
-        margin: '0 0 14px 0',
-        color: '#34495e',
-        fontSize: '14px',
+        margin: '0 0 16px 0',
+        fontSize: '12px',
         fontWeight: '600',
+        color: '#64748b',
         textTransform: 'uppercase',
-        letterSpacing: '0.5px'
+        letterSpacing: '0.05em'
     },
     summaryGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '16px 24px',
-        marginBottom: '4px'
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '16px 24px'
     },
     summaryLabel: {
         display: 'block',
@@ -360,7 +396,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     },
     summaryValue: {
         display: 'block',
-        fontSize: '15px',
+        fontSize: '14px',
         fontWeight: '500',
         color: '#334155',
         whiteSpace: 'nowrap',
@@ -368,22 +404,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         textOverflow: 'ellipsis'
     },
     divider: {
-        border: 'none',
-        borderTop: '1px solid #f1f5f9',
-        margin: '20px 0'
-    },
-    statusBadge: {
-        color: 'white',
-        padding: '4px 10px',
-        borderRadius: '4px',
-        fontSize: '12px',
-        fontWeight: 'bold',
-        display: 'inline-block',
-        textAlign: 'center',
-        minWidth: '70px'
-    },
-    backBtn: { backgroundColor: '#7f8c8d', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' },
-    btnAction: { padding: '6px 12px', borderRadius: '4px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', border: 'none', color: '#fff', transition: 'background-color 0.2s' },
-    btnActivate: { backgroundColor: '#2ecc71' },
-    btnDeactivate: { backgroundColor: '#e74c3c' }
+        height: '1px',
+        backgroundColor: '#f1f5f9',
+        margin: '20px 0',
+        border: 'none'
+    }
 };

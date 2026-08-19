@@ -12,13 +12,13 @@ export default function LoanInstallmentTable({ installments, onInstallmentPaymen
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 7;
 
-    const getStateColor = (state: string) => {
-        switch (state) {
-            case "PAID": return "#2ecc71";
-            case "PAYMENT_PENDING": return "#f39c12";
-            case "OVERDUE":
-            case "CHARGE_OFF": return "#e74c3c";
-            default: return "#95a5a6";
+    const getStatusStyle = (status: string) => {
+        switch (status) {
+            case "PAID": return { bg: "#e6f4ea", text: "#137333", border: "#ceedd5" };
+            case "PAYMENT_PENDING": return { bg: "#fef7e0", text: "#b06000", border: "#fce8b2" };
+            case "CLOSED": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+            case "CHARGE_OFF": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+            default: return { bg: "#f1f5f9", text: "#5f6368", border: "#e2e8f0" };
         }
     };
 
@@ -66,12 +66,15 @@ export default function LoanInstallmentTable({ installments, onInstallmentPaymen
                                 ${inst.remainingBalance.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                             </td>
                             <td style={styles.td}>
-                                    <span style={{
-                                        ...styles.stateBadge,
-                                        backgroundColor: getStateColor(inst.installmentStatus)
-                                    }}>
-                                        {inst.installmentStatus.replace(/_/g, ' ')}
-                                    </span>
+
+                                <span style={{
+                                    ...styles.statusBadge,
+                                    backgroundColor: getStatusStyle(inst.installmentStatus).bg,
+                                    color: getStatusStyle(inst.installmentStatus).text,
+                                    borderColor: getStatusStyle(inst.installmentStatus).border
+                                }}>
+                                    {inst.installmentStatus.replace(/_/g, ' ').toLowerCase()}
+                                </span>
                             </td>
                             <td>
                                 <button style={styles.paymentButton} title="Manual payment"
@@ -134,38 +137,37 @@ const styles: { [key: string]: React.CSSProperties } = {
     table: {
         width: '100%',
         borderCollapse: 'collapse',
-        textAlign: 'left',
-        boxSizing: 'border-box',
+        textAlign: 'left'
     },
     theadTr: {
-        borderBottom: '2px solid #e2e8f0'
+        borderBottom: '1px solid #e2e8f0'
     },
     th: {
-        padding: '10px 12px',
-        color: '#7f8c8d',
+        padding: '12px 16px',
+        color: '#64748b',
         fontWeight: '600',
-        fontSize: '13px',
-        letterSpacing: '0.5px',
+        fontSize: '12px',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
     },
     tbodyTr: {
-        borderBottom: '1px solid #f1f2f6'
+        borderBottom: '1px solid #f1f5f9'
     },
     td: {
-        padding: '9px 9px',
-        color: '#2c3e50',
+        padding: '12px 16px',
+        color: '#334155',
         fontSize: '14px',
-        verticalAlign: 'middle',
-        whiteSpace: "nowrap"
+        verticalAlign: 'middle'
     },
-    stateBadge: {
-        color: 'white',
-        padding: '4px 10px',
-        borderRadius: '4px',
+    statusBadge: {
+        padding: '2px 8px',
+        borderRadius: '12px',
         fontSize: '12px',
-        fontWeight: 'bold',
+        fontWeight: '500',
+        border: '1px solid',
+        whiteSpace: 'nowrap',
         display: 'inline-block',
-        textAlign: 'center',
-        minWidth: '85%'
+        textTransform: 'capitalize'
     },
     paymentButton: {
         width: '36px',

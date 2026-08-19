@@ -56,12 +56,12 @@ export default function UserListPage() {
     }
 
     if (loading) {
-        return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading system users...</div>;
+        return <div style={{ padding: '20px', color: '#64748b', fontSize: '14px' }}>Loading system users...</div>;
     }
 
     if (error) {
         return (
-            <div style={{ padding: '20px', color: '#e74c3c', fontWeight: 'bold' }}>
+            <div style={{ padding: '20px', color: '#ef4444', fontWeight: '500', fontSize: '14px' }}>
                 Error: {error}
             </div>
         );
@@ -75,18 +75,18 @@ export default function UserListPage() {
     return (
         <div style={styles.container}>
             <div style={styles.tableHeader}>
-                <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '24px' }}>System Users</h2>
-                <button
-                    onClick={() => setIsCreating(true)}
-                    style={styles.addBtn}
-                >
+                <div>
+                    <h2 style={{ margin: 0, color: '#0f172a', fontSize: '18px', fontWeight: '600' }}>System Users</h2>
+                    <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '13px' }}>Manage user accounts and permissions</p>
+                </div>
+                <button onClick={() => setIsCreating(true)} style={styles.addBtn}>
                     + New User
                 </button>
             </div>
 
             {users.length === 0 ? (
-                <div style={{ padding: '40px', textAlign: 'center', color: '#7f8c8d' }}>
-                    Users data not found
+                <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
+                    No users found
                 </div>
             ) : (
                 <>
@@ -122,7 +122,6 @@ export default function UserListPage() {
                         </div>
                     )}
                 </>
-
             )}
         </div>
     );
@@ -131,60 +130,53 @@ export default function UserListPage() {
 const styles: { [key: string]: React.CSSProperties } = {
     container: {
         width: '100%',
-        boxSizing: 'border-box',
-        maxHeight: 'calc(100vh - 140px)',
         display: 'flex',
-        flexDirection: 'column',
-        overflowY: 'auto'
+        flexDirection: 'column'
     },
     tableHeader: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        marginBottom: '24px',
-        boxSizing: 'border-box',
-        flexShrink: 0
+        marginBottom: '20px',
+        paddingBottom: '16px',
+        borderBottom: '1px solid #f1f5f9'
     },
     addBtn: {
-        backgroundColor: '#2ecc71',
-        color: 'white',
+        backgroundColor: '#0f172a',
+        color: '#ffffff',
         border: 'none',
-        padding: '10px 18px',
-        borderRadius: '4px',
+        padding: '8px 14px',
+        borderRadius: '6px',
         cursor: 'pointer',
-        fontWeight: '600',
-        fontSize: '14px'
+        fontWeight: '500',
+        fontSize: '13px'
     },
     paginationContainer: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         gap: '16px',
-        marginTop: '24px',
-        padding: '10px 0',
-        width: '100%'
+        marginTop: '20px'
     },
     pageBtn: {
         backgroundColor: '#ffffff',
-        color: '#2c3e50',
-        border: '1px solid #dcdde1',
-        padding: '8px 16px',
+        color: '#334155',
+        border: '1px solid #cbd5e1',
+        padding: '6px 12px',
         borderRadius: '6px',
         cursor: 'pointer',
-        fontWeight: '600',
-        fontSize: '13px',
-        outline: 'none',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+        fontWeight: '500',
+        fontSize: '13px'
     },
     disabledBtn: {
-        backgroundColor: '#f5f6fa',
-        color: '#7f8c8d',
+        backgroundColor: '#f8fafc',
+        color: '#94a3b8',
         cursor: 'not-allowed',
-        boxShadow: 'none'
+        borderColor: '#e2e8f0'
     },
     pageInfo: {
-        fontSize: '14px',
-        color: '#2c3e50'
+        fontSize: '13px',
+        color: '#64748b'
     }
 };

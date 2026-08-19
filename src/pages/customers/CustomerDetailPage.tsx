@@ -9,6 +9,7 @@ type CustomerDetailProps = {
 };
 
 function formatDateTime(dateString: string): string {
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -22,18 +23,18 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
     const [customer, setCustomer] = React.useState<Customer>(initialCustomer);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-    const getStateColor = (state: string) => {
-        switch (state) {
-            case "ACTIVE": return "#2ecc71";
-            case "PENDING": return "#f39c12";
-            case "DEACTIVATED": return "#e74c3c";
-            default: return "#95a5a6";
+    const getStatusStyle = (status: string) => {
+        switch (status) {
+            case "ACTIVE": return { bg: "#e6f4ea", text: "#137333", border: "#ceedd5" };
+            case "PENDING": return { bg: "#fef7e0", text: "#b06000", border: "#fce8b2" };
+            case "DEACTIVATED": return { bg: "#fce8e6", text: "#c5221f", border: "#fad2cf" };
+            default: return { bg: "#f1f5f9", text: "#5f6368", border: "#e2e8f0" };
         }
     };
 
     const handleStatusChange = async (action: "activate" | "deactivate") => {
         const actionText = action === "activate" ? "activate" : "deactivate";
-        const confirmChange = window.confirm(`¿Are you sure you want to ${actionText} customer ${customer.fullname}?`);
+        const confirmChange = window.confirm(`Are you sure you want to ${actionText} customer ${customer.fullname}?`);
 
         if (!confirmChange) return;
 
@@ -45,7 +46,7 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
                     ? await activateCustomer(customer.id)
                     : await deactivateCustomer(customer.id);
 
-            setCustomer(updatedCustomer)
+            setCustomer(updatedCustomer);
 
         } catch (error) {
             alert(error instanceof Error ? error.message : "An unexpected error occurred.");
@@ -54,71 +55,100 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
         }
     };
 
-    const fields = [
-        { label: "Name 1", value: customer.name1 },
-        { label: "Name 2", value: customer.name2 || "-" },
-        { label: "Name 3", value: customer.name3 || "-" },
-        { label: "Lastname 1", value: customer.lastname1 },
-        { label: "Lastname 2", value: customer.lastname2 || "-" },
-        { label: "Lastname 3", value: customer.lastname3 || "-" },
-        { label: "Person type", value: customer.personType },
-        { label: "Document type", value: customer.documentType },
-        { label: "Document number", value: customer.documentNumber },
-        { label: "Customer type", value: customer.customerType },
-        { label: "Created by", value: customer.createdBy },
-        { label: "Created at", value: formatDateTime(customer.createdAt) },
-        { label: "Updated by", value: customer.updatedBy },
-        { label: "Updated at", value: formatDateTime(customer.updatedAt) }
-    ];
+    const statusStyle = getStatusStyle(customer.status);
+
+    const fullName = `${customer.name1} ${customer.name2 || ""} ${customer.name3 || ""} ${customer.lastname1} ${customer.lastname2 || ""} ${customer.lastname3 || ""}`.replace(/\s+/g, ' ').trim();
 
     return (
         <div style={styles.container}>
-            <div style={styles.header}>
-                <button onClick={onBack}>
-                    <FaArrowLeft />
-                    <span> Back</span>
+            {/* Navigation & Header */}
+            <div style={styles.topNav}>
+                <button onClick={onBack} style={styles.backBtn}>
+                    <FaArrowLeft size={12} />
+                    <span>Back to Customers</span>
                 </button>
-                <h1 style={styles.title}>Details of customer {customer.fullname}</h1>
             </div>
 
-            <div style={styles.formGrid}>
-                {fields.map((field, index) => (
-                    <div key={index} style={styles.fieldBox}>
-                        <span style={styles.label}>{field.label}</span>
-                        <span style={styles.inputFallback}>{field.value}</span>
-                    </div>
-                ))}
+            <div style={styles.headerRow}>
+                <div>
+                    <h1 style={styles.title}>{customer.fullname}</h1>
+                    <span style={styles.subtitle}>Customer ID: {customer.id}</span>
+                </div>
 
-                <div style={{ ...styles.fieldBox, justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <span style={styles.label}>Status</span>
-                        <span style={{
-                            ...styles.statusBadge,
-                            backgroundColor: getStateColor(customer.status)
-                        }}>
-                            {customer.status}
-                        </span>
-                    </div>
+                <div style={styles.actionsGroup}>
+                    <span style={{
+                        ...styles.statusBadge,
+                        backgroundColor: statusStyle.bg,
+                        color: statusStyle.text,
+                        borderColor: statusStyle.border
+                    }}>
+                        {customer.status === "ACTIVE" ? "Active" : customer.status.toLowerCase()}
+                    </span>
 
-                    <div style={styles.actionContainer}>
-                        {(customer.status === "PENDING" || customer.status === "DEACTIVATED") && (
-                            <button
-                                style={{ ...styles.btnAction, ...styles.btnActivate }}
-                                onClick={() => handleStatusChange("activate")}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? "Processing..." : "Activate"}
-                            </button>
-                        )}
-                        {(customer.status === "ACTIVE") && (
-                            <button
-                                style={{ ...styles.btnAction, ...styles.btnDeactivate }}
-                                onClick={() => handleStatusChange("deactivate")}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? "Processing..." : "Deactivate"}
-                            </button>
-                        )}
+                    {(customer.status === "PENDING" || customer.status === "DEACTIVATED") && (
+                        <button
+                            style={styles.actionBtn}
+                            onClick={() => handleStatusChange("activate")}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Processing..." : "Activate"}
+                        </button>
+                    )}
+                    {customer.status === "ACTIVE" && (
+                        <button
+                            style={styles.actionBtn}
+                            onClick={() => handleStatusChange("deactivate")}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Processing..." : "Deactivate"}
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Summary Card */}
+            <div style={styles.summaryCard}>
+                {/* General Information */}
+                <h3 style={styles.sectionTitle}>General Information</h3>
+                <div style={styles.summaryGrid}>
+                    <div>
+                        <span style={styles.summaryLabel}>Full Name</span>
+                        <span style={styles.summaryValue}>{fullName || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Person Type</span>
+                        <span style={styles.summaryValue}>{customer.personType || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Document</span>
+                        <span style={styles.summaryValue}>{`${customer.documentType} - ${customer.documentNumber}`}</span>
+                    </div>
+                    <div style={{ gridColumnStart: 1 }}>
+                        <span style={styles.summaryLabel}>Customer Type</span>
+                        <span style={styles.summaryValue}>{customer.customerType || "N/A"}</span>
+                    </div>
+                </div>
+
+                <hr style={styles.divider} />
+
+                {/* Audit Details */}
+                <h3 style={styles.sectionTitle}>Audit Details</h3>
+                <div style={styles.summaryGrid}>
+                    <div>
+                        <span style={styles.summaryLabel}>Created By</span>
+                        <span style={styles.summaryValue}>{customer.createdBy || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Created At</span>
+                        <span style={styles.summaryValue}>{formatDateTime(customer.createdAt)}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Updated By</span>
+                        <span style={styles.summaryValue}>{customer.updatedBy || "N/A"}</span>
+                    </div>
+                    <div>
+                        <span style={styles.summaryLabel}>Updated At</span>
+                        <span style={styles.summaryValue}>{formatDateTime(customer.updatedAt)}</span>
                     </div>
                 </div>
             </div>
@@ -127,16 +157,114 @@ export default function CustomerDetailPage({ customer: initialCustomer, onBack }
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
-    container: { width: '100%', boxSizing: 'border-box', padding: '10px' },
-    header: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "16px" },
-    title: { margin: '0 0 40px 0', fontSize: '28px', fontWeight: 500, color: '#2c3e50' },
-    formGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px', width: '100%', boxSizing: 'border-box' },
-    fieldBox: { display: 'flex', alignItems: 'center', backgroundColor: '#fff', border: '1px solid #dcdde1', borderRadius: '6px', padding: '10px 14px', boxSizing: 'border-box', height: '50px' },
-    label: { color: '#7f8c8d', fontWeight: '600', fontSize: '14px', flex: '0 0 90px', flexShrink: 0, borderRight: '1px solid #f1f2f6', marginRight: '14px', paddingRight: '8px', textAlign: 'left' },
-    inputFallback: { color: '#2c3e50', fontSize: '15px', fontWeight: '500', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
-    statusBadge: { color: 'white', padding: '4px 12px', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', textTransform: 'uppercase' },
-    actionContainer: { display: 'flex', gap: '8px' },
-    btnAction: { padding: '6px 12px', borderRadius: '4px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', border: 'none', color: '#fff', transition: 'background-color 0.2s' },
-    btnActivate: { backgroundColor: '#2ecc71' },
-    btnDeactivate: { backgroundColor: '#e74c3c' }
+    container: {
+        width: '100%',
+        boxSizing: 'border-box',
+        padding: '0',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    },
+    topNav: {
+        marginBottom: '12px'
+    },
+    backBtn: {
+        backgroundColor: 'transparent',
+        color: '#64748b',
+        border: 'none',
+        padding: '0',
+        cursor: 'pointer',
+        fontSize: '13px',
+        fontWeight: '500',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px'
+    },
+    headerRow: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '20px'
+    },
+    title: {
+        margin: 0,
+        color: '#0f172a',
+        fontSize: '24px',
+        fontWeight: '700'
+    },
+    subtitle: {
+        fontSize: '13px',
+        color: '#64748b',
+        marginTop: '4px',
+        display: 'block'
+    },
+    actionsGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+    },
+    statusBadge: {
+        padding: '5px 12px',
+        borderRadius: '16px',
+        fontSize: '13px',
+        fontWeight: '500',
+        border: '1px solid',
+        textTransform: 'capitalize'
+    },
+    actionBtn: {
+        background: 'none',
+        border: '1px solid #cbd5e1',
+        borderRadius: '6px',
+        padding: '6px 12px',
+        cursor: 'pointer',
+        fontSize: '13px',
+        color: '#475569',
+        fontWeight: '500',
+        transition: 'all 0.15s ease'
+    },
+    summaryCard: {
+        backgroundColor: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '24px',
+        width: '100%',
+        boxSizing: 'border-box',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        textAlign: 'left'
+    },
+    sectionTitle: {
+        margin: '0 0 16px 0',
+        fontSize: '12px',
+        fontWeight: '600',
+        color: '#64748b',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
+    },
+    summaryGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: '16px 24px'
+    },
+    summaryLabel: {
+        display: 'block',
+        fontSize: '11px',
+        fontWeight: '600',
+        color: '#94a3b8',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        marginBottom: '4px'
+    },
+    summaryValue: {
+        display: 'block',
+        fontSize: '14px',
+        fontWeight: '500',
+        color: '#334155',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+    },
+    divider: {
+        height: '1px',
+        backgroundColor: '#f1f5f9',
+        margin: '20px 0',
+        border: 'none'
+    }
 };

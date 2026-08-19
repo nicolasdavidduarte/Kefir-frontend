@@ -2,7 +2,6 @@ import type { User } from "../../types/User.ts";
 import * as React from "react";
 import { useState } from "react";
 import { updateUserStatus } from "../../api/usersApi.ts";
-import { FaPowerOff } from "react-icons/fa";
 
 type Props = {
     users: User[];
@@ -21,7 +20,7 @@ export default function UserTable({ users, onUserUpdated }: Props) {
             }
         } catch (error) {
             console.error("Failed to update user status:", error);
-            alert(error);
+            alert("Error updating user status");
         } finally {
             setActionLoadingId(null);
         }
@@ -34,20 +33,19 @@ export default function UserTable({ users, onUserUpdated }: Props) {
                 <th style={styles.th}>Username</th>
                 <th style={styles.th}>Created At</th>
                 <th style={styles.th}>Role</th>
-                <th style={{ ...styles.th, width: '120px' }}>Enabled</th>
+                <th style={styles.th}>Status</th>
+                <th style={{ ...styles.th, textAlign: 'right' }}>Actions</th>
             </tr>
             </thead>
             <tbody>
             {users.map((user) => (
                 <tr key={user.id} style={styles.tbodyTr}>
-                    <td style={{ ...styles.td, fontWeight: 'bold' }}>{user.username}</td>
+                    <td style={{ ...styles.td, fontWeight: '600', color: '#0f172a' }}>{user.username}</td>
                     <td style={styles.td}>
                         {new Date(user.createdAt).toLocaleDateString("es-AR", {
                             day: "2-digit",
                             month: "2-digit",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit"
+                            year: "numeric"
                         })}
                     </td>
                     <td style={styles.td}>
@@ -58,47 +56,26 @@ export default function UserTable({ users, onUserUpdated }: Props) {
                                     </span>
                             ))
                         ) : (
-                            <span style={{ color: '#95a5a6', fontSize: '13px' }}>None</span>
+                            <span style={{ color: '#94a3b8', fontSize: '13px' }}>None</span>
                         )}
                     </td>
                     <td style={styles.td}>
                             <span style={{
                                 ...styles.statusBadge,
-                                backgroundColor: user.enabled ? '#2ecc71' : '#e74c3c'
+                                backgroundColor: user.enabled ? '#f0fdf4' : '#fef2f2',
+                                color: user.enabled ? '#15803d' : '#b91c1c',
+                                borderColor: user.enabled ? '#bbf7d0' : '#fecaca'
                             }}>
-                                {user.enabled ? "ACTIVE" : "INACTIVE"}
+                                {user.enabled ? "Active" : "Inactive"}
                             </span>
                     </td>
-                    <td style={{ ...styles.td, textAlign: 'center' }}>
+                    <td style={{ ...styles.td, textAlign: 'right' }}>
                         <button
                             onClick={() => handleToggleStatus(user.id, user.enabled)}
                             disabled={actionLoadingId === user.id}
-                            title={user.enabled ? "Deactivate" : "Activate"}
-                            style={{
-                                ...styles.iconBtn,
-                                opacity: actionLoadingId === user.id ? 0.4 : 1
-                            }}
+                            style={styles.actionBtn}
                         >
-                            {actionLoadingId === user.id ? (
-                                <span style={styles.spinner}>⏳</span>
-                            ) : (
-                                <div
-                                    style={{
-                                        width: "35px",
-                                        height: "35px",
-                                        borderRadius: "100%",
-                                        backgroundColor: user.enabled ? "#e74c3c" : "#2ecc71",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <FaPowerOff
-                                        size={20}
-                                        style={{ display: 'block'}}
-                                    />
-                                </div>
-                            )}
+                            {actionLoadingId === user.id ? "Updating..." : (user.enabled ? "Deactivate" : "Activate")}
                         </button>
                     </td>
                 </tr>
@@ -112,64 +89,55 @@ const styles: { [key: string]: React.CSSProperties } = {
     table: {
         width: '100%',
         borderCollapse: 'collapse',
-        textAlign: 'left',
-        boxSizing: 'border-box'
+        textAlign: 'left'
     },
     theadTr: {
-        borderBottom: '2px solid #34495e',
+        borderBottom: '1px solid #e2e8f0'
     },
     th: {
         padding: '12px 16px',
-        color: '#7f8c8d',
+        color: '#64748b',
         fontWeight: '600',
-        fontSize: '14px',
-        boxSizing: 'border-box'
+        fontSize: '12px',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em'
     },
     tbodyTr: {
-        borderBottom: '1px solid #ecf0f1',
+        borderBottom: '1px solid #f1f5f9'
     },
     td: {
         padding: '12px 16px',
-        color: '#2c3e50',
-        fontSize: '15px',
-        boxSizing: 'border-box',
+        color: '#334155',
+        fontSize: '14px',
         verticalAlign: 'middle'
     },
     roleBadge: {
-        backgroundColor: '#e1f5fe',
-        color: '#0288d1',
-        padding: '4px 8px',
+        backgroundColor: '#f1f5f9',
+        color: '#475569',
+        padding: '2px 8px',
         borderRadius: '4px',
         fontSize: '12px',
-        fontWeight: 'bold',
-        marginRight: '6px',
-        display: 'inline-block'
+        fontWeight: '500',
+        marginRight: '4px',
+        border: '1px solid #e2e8f0'
     },
     statusBadge: {
-        color: 'white',
-        padding: '4px 10px',
-        borderRadius: '4px',
+        padding: '2px 8px',
+        borderRadius: '12px',
         fontSize: '12px',
-        fontWeight: 'bold',
-        display: 'inline-block',
-        textAlign: 'center',
-        minWidth: '70px'
-    },
-    iconBtn: {
-        background: 'none',
-        backgroundColor: 'transparent',
-        border: 'none',
-        padding: '4px',
-        cursor: 'pointer',
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        boxSizing: 'border-box',
-        outline: 'none',
-        transition: 'transform 0.1s'
-    },
-    spinner: {
-        fontSize: '16px',
+        fontWeight: '500',
+        border: '1px solid',
         display: 'inline-block'
+    },
+    actionBtn: {
+        background: 'none',
+        border: '1px solid #cbd5e1',
+        borderRadius: '6px',
+        padding: '4px 10px',
+        cursor: 'pointer',
+        fontSize: '12px',
+        color: '#475569',
+        fontWeight: '500',
+        transition: 'all 0.15s ease'
     }
 };
