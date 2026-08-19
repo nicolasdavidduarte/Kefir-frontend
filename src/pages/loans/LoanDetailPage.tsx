@@ -1,7 +1,7 @@
 import {useState, useEffect, useCallback} from "react";
 import * as React from "react";
 import {createInstallmentPayment, fetchLoanInstallments} from "../../api/loanInstallmentsApi.ts";
-import type { LoanInstallment } from "../../types/LoanInstallment.ts";
+import type {LoanInstallment, LoanInstallmentPaymentRequest} from "../../types/LoanInstallment.ts";
 import type { Loan } from "../../types/Loan.ts";
 import LoanInstallmentTable from "../../components/loans/LoanInstallmentTable.tsx";
 import { FaArrowLeft } from "react-icons/fa";
@@ -105,7 +105,8 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
 
     const handleInstallmentPayment = async (
         loanId: number,
-        installmentNumber: number
+        installmentNumber: number,
+        loanInstallmentPaymentRequest: LoanInstallmentPaymentRequest
     ) => {
         const confirmed = window.confirm(
             `Are you sure you want to pay installment #${installmentNumber}?`
@@ -116,7 +117,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
         }
 
         try {
-            const response = await createInstallmentPayment(loanId, installmentNumber);
+            const response = await createInstallmentPayment(loanId, installmentNumber, loanInstallmentPaymentRequest);
 
             if (response && response.loanStatus) {
                 setLoan(prevLoan => ({

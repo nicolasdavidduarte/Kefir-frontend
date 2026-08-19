@@ -11,3 +11,7 @@ export type LoanInstallment = {
     createdAt: string
     updatedAt: string
 }
+
+export type LoanInstallmentPaymentRequest = {
+    paymentMethod: string
+}

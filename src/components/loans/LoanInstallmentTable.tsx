@@ -1,11 +1,11 @@
 import { useState } from "react";
 import * as React from "react";
-import type { LoanInstallment } from "../../types/LoanInstallment.ts";
+import type {LoanInstallment, LoanInstallmentPaymentRequest} from "../../types/LoanInstallment.ts";
 import { FaDollarSign } from "react-icons/fa";
 
 type Props = {
     installments: LoanInstallment[];
-    onInstallmentPayment: (loanId: number, installmentNumber: number) => void;
+    onInstallmentPayment: (loanId: number, installmentNumber: number, loanInstallmentPaymentRequest: LoanInstallmentPaymentRequest) => void;
 };
 
 export default function LoanInstallmentTable({ installments, onInstallmentPayment }: Props) {
@@ -75,7 +75,9 @@ export default function LoanInstallmentTable({ installments, onInstallmentPaymen
                             </td>
                             <td>
                                 <button style={styles.paymentButton} title="Manual payment"
-                                        onClick={() => onInstallmentPayment(inst.loanId, inst.number)}
+                                        onClick={() => onInstallmentPayment(inst.loanId, inst.number, {
+                                            paymentMethod: "HOMEBANKING"
+                                        })}
                                 >
                                     <FaDollarSign size={20}/>
                                 </button>
