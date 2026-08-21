@@ -11,6 +11,7 @@ import BankListPage from "./banks/BankListPage.tsx";
 import CurrencyListPage from "./currencies/CurrencyListPage.tsx";
 import LoanTypeListPage from "./loanTypes/LoanTypeListPage.tsx";
 import CustomerTypeListPage from "./customerTypes/CustomerTypeListPage.tsx";
+import AboutPage from "./AboutPage.tsx";
 
 type DashboardProps = {
     onLogout: () => void;
@@ -65,7 +66,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                     <span style={styles.brandTitle}>Control Panel</span>
                 </div>
 
-                <div style={styles.navSection}>
+                <div style={{ ...styles.navSection, paddingTop: '40px' }}>
                     <span style={styles.sidebarSectionTitle}>Navigation</span>
                     <nav style={styles.navMenu}>
                         <button
@@ -77,6 +78,13 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                         >
                             Overview
                         </button>
+                    </nav>
+                </div>
+
+
+                <div style={{ ...styles.navSection, paddingTop: '40px' }}>
+                    <span style={styles.sidebarSectionTitle}>Modules</span>
+                    <nav style={styles.navMenu}>
                         <button
                             style={{
                                 ...styles.moduleBtn,
@@ -116,7 +124,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                     </nav>
                 </div>
 
-                <div style={styles.navSection}>
+                <div style={{ ...styles.navSection, paddingTop: '40px' }}>
                     <span style={styles.sidebarSectionTitle}>Configuration</span>
                     <nav style={styles.navMenu}>
                         <button
@@ -158,7 +166,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                     </nav>
                 </div>
 
-                <div style={styles.navSection}>
+                <div style={{ ...styles.navSection, paddingTop: '120px' }}>
                     <span style={styles.sidebarSectionTitle}>Information</span>
                     <nav style={styles.navMenu}>
                         <button
@@ -237,6 +245,8 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                         {currentView === "currencies" && <CurrencyListPage />}
                         {currentView === "loanTypes" && <LoanTypeListPage />}
                         {currentView === "customerTypes" && <CustomerTypeListPage />}
+
+                        {currentView === "about" && <AboutPage />}
                     </div>
                 </main>
             </div>

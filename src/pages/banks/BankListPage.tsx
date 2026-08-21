@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import * as React from "react";
 import type { Bank } from "../../types/Bank.ts";
-import {fetchBanks} from "../../api/banksApi.ts";
+import { fetchBanks } from "../../api/banksApi.ts";
 import BankTable from "../../components/banks/BankTable.tsx";
 import BankDetailPage from "./BankDetailPage.tsx";
 
