@@ -10,6 +10,7 @@ import logo from "../assets/kefir_logo.png";
 import BankListPage from "./banks/BankListPage.tsx";
 import CurrencyListPage from "./currencies/CurrencyListPage.tsx";
 import LoanTypeListPage from "./loanTypes/LoanTypeListPage.tsx";
+import CustomerTypeListPage from "./customerTypes/CustomerTypeListPage.tsx";
 
 type DashboardProps = {
     onLogout: () => void;
@@ -235,6 +236,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                         {currentView === "banks" && <BankListPage />}
                         {currentView === "currencies" && <CurrencyListPage />}
                         {currentView === "loanTypes" && <LoanTypeListPage />}
+                        {currentView === "customerTypes" && <CustomerTypeListPage />}
                     </div>
                 </main>
             </div>
