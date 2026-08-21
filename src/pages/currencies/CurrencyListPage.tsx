@@ -64,7 +64,7 @@ export default function CurrencyListPage() {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentCurrency = currencies.slice(indexOfFirstItem, indexOfLastItem);
+    const currentCurrencies = currencies.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(currencies.length / itemsPerPage);
 
     return (
@@ -83,7 +83,7 @@ export default function CurrencyListPage() {
             ) : (
                 <>
                     <CurrencyTable
-                        currencies={currentCurrency}
+                        currencies={currentCurrencies}
                         onSelectCurrency={(currency) => setSelectedCurrency(currency)}
                     />
 
