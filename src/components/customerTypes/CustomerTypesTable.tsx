@@ -7,6 +7,17 @@ type Props = {
     onSelectCustomerType: (customerType: CustomerType) => void;
 };
 
+function formatDateTime(dateString: string): string {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
 export default function CustomerTypeTable({ customerTypes, onSelectCustomerType }: Props) {
     return (
         <div style={{ width: '100%', overflowX: 'auto' }} className="table-scroll-container">
@@ -17,10 +28,10 @@ export default function CustomerTypeTable({ customerTypes, onSelectCustomerType 
                 <th style={styles.th}>Name</th>
                 <th style={styles.th}>Description</th>
                 <th style={styles.th}>Enabled</th>
-                <th style={styles.th}>Created at</th>
                 <th style={styles.th}>Created by</th>
-                <th style={styles.th}>Updated at</th>
+                <th style={styles.th}>Created at</th>
                 <th style={styles.th}>Updated by</th>
+                <th style={styles.th}>Updated at</th>
             </tr>
             </thead>
             <tbody>
@@ -35,9 +46,9 @@ export default function CustomerTypeTable({ customerTypes, onSelectCustomerType 
                     <td style={{ ...styles.td }}>{customerType.description}</td>
                     <td style={{ ...styles.td }}>{customerType.enabled ? "Yes" : "No"}</td>
                     <td style={{ ...styles.td }}>{customerType.createdBy}</td>
-                    <td style={{ ...styles.td }}>{customerType.createdAt}</td>
+                    <td style={{ ...styles.td }}>{formatDateTime(customerType.createdAt)}</td>
                     <td style={{ ...styles.td }}>{customerType.updatedBy}</td>
-                    <td style={{ ...styles.td }}>{customerType.updatedAt}</td>
+                    <td style={{ ...styles.td }}>{formatDateTime(customerType.updatedAt)}</td>
                 </tr>
             ))}
             </tbody>

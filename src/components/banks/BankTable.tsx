@@ -7,6 +7,17 @@ type Props = {
     onSelectBank: (bank: Bank) => void;
 };
 
+function formatDateTime(dateString: string): string {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
 const getStatusStyle = (status: string) => {
     switch (status) {
         case "ACTIVE": return { bg: "#e6f4ea", text: "#137333", border: "#ceedd5" };
@@ -37,7 +48,7 @@ export default function BankTable({ banks, onSelectBank }: Props) {
                 >
                     <td style={styles.td}>{bank.id}</td>
                     <td style={styles.td}>{bank.name}</td>
-                    <td style={{ ...styles.td }}>{bank.createdAt}</td>
+                    <td style={{ ...styles.td }}>{formatDateTime(bank.createdAt)}</td>
                     <td style={styles.td}>
                                 <span style={{
                                     ...styles.statusBadge,
