@@ -7,12 +7,16 @@ import { useState } from "react";
 import { useHistory } from "../hooks/useHistory.ts";
 import AccountListPage from "./accounts/AccountListPage.tsx";
 import logo from "../assets/kefir_logo.png";
+import BankListPage from "./banks/BankListPage.tsx";
+import CurrencyListPage from "./currencies/CurrencyListPage.tsx";
+import LoanTypeListPage from "./loanTypes/LoanTypeListPage.tsx";
+import CustomerTypeListPage from "./customerTypes/CustomerTypeListPage.tsx";
 
 type DashboardProps = {
     onLogout: () => void;
 };
 
-type View = "history" | "users" | "customers" | "accounts" | "loans";
+type View = "history" | "users" | "customers" | "accounts" | "loans" | "customerTypes" | "banks" | "currencies" | "loanTypes" | "about" ;
 
 export default function Dashboard({ onLogout }: DashboardProps) {
     const username = getUser();
@@ -22,11 +26,16 @@ export default function Dashboard({ onLogout }: DashboardProps) {
     const navigateTo = (view: View, label: string) => {
         setCurrentView(view);
         if (view !== "history") {
-            const moduleMap: Record<string, "Users" | "Customers" | "Accounts" | "Loans"> = {
+            const moduleMap: Record<string, "Users" | "Customers" | "Accounts" | "Loans" | "CustomerTypes" | "Banks" | "Currencies" | "LoanTypes" | "About"> = {
                 users: "Users",
                 customers: "Customers",
                 accounts: "Accounts",
-                loans: "Loans"
+                loans: "Loans",
+                customerTypes: "CustomerTypes",
+                banks: "Banks",
+                currencies: "Currencies",
+                loanTypes: "LoanTypes",
+                about: "About"
             };
             logActivity(`Accessed ${label} module`, moduleMap[view]);
         }
@@ -106,6 +115,63 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                         </button>
                     </nav>
                 </div>
+
+                <div style={styles.navSection}>
+                    <span style={styles.sidebarSectionTitle}>Configuration</span>
+                    <nav style={styles.navMenu}>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "banks" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => setCurrentView("banks")}
+                        >
+                            Banks
+                        </button>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "currencies" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => setCurrentView("currencies")}
+                        >
+                            Currencies
+                        </button>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "loanTypes" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => setCurrentView("loanTypes")}
+                        >
+                            Loan Types
+                        </button>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "customerTypes" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => setCurrentView("customerTypes")}
+                        >
+                            Customer Types
+                        </button>
+                    </nav>
+                </div>
+
+                <div style={styles.navSection}>
+                    <span style={styles.sidebarSectionTitle}>Information</span>
+                    <nav style={styles.navMenu}>
+                        <button
+                            style={{
+                                ...styles.moduleBtn,
+                                ...(currentView === "about" ? styles.moduleBtnActive : {})
+                            }}
+                            onClick={() => setCurrentView("about")}
+                        >
+                            About Kefir
+                        </button>
+                        </nav>
+                </div>
             </aside>
 
             <div style={styles.mainWrapper}>
@@ -167,6 +233,10 @@ export default function Dashboard({ onLogout }: DashboardProps) {
                         {currentView === "customers" && <CustomerListPage />}
                         {currentView === "accounts" && <AccountListPage />}
                         {currentView === "loans" && <LoansList />}
+                        {currentView === "banks" && <BankListPage />}
+                        {currentView === "currencies" && <CurrencyListPage />}
+                        {currentView === "loanTypes" && <LoanTypeListPage />}
+                        {currentView === "customerTypes" && <CustomerTypeListPage />}
                     </div>
                 </main>
             </div>
