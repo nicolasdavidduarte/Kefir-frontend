@@ -1,7 +1,7 @@
-import {useState, useEffect, useCallback} from "react";
+import { useState, useEffect, useCallback } from "react";
 import * as React from "react";
-import {createInstallmentPayment, fetchLoanInstallments} from "../../api/loanInstallmentsApi.ts";
-import type {LoanInstallment, LoanInstallmentPaymentRequest} from "../../types/LoanInstallment.ts";
+import { createInstallmentPayment, fetchLoanInstallments } from "../../api/loanInstallmentsApi.ts";
+import type { LoanInstallment, LoanInstallmentPaymentRequest } from "../../types/LoanInstallment.ts";
 import type { Loan } from "../../types/Loan.ts";
 import LoanInstallmentTable from "../../components/loans/LoanInstallmentTable.tsx";
 import { FaArrowLeft } from "react-icons/fa";
@@ -19,6 +19,10 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [chargeOffReason, setChargeOffReason] = useState<string>("");
+    const [modalError, setModalError] = useState<string | null>(null);
+
     const loadInstallments = useCallback(async () => {
         return await fetchLoanInstallments(loan.id);
     }, [loan.id]);
@@ -29,7 +33,6 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
         async function load() {
             try {
                 const data = await loadInstallments();
-
                 if (!cancelled) {
                     setInstallments(data);
                 }
@@ -80,26 +83,45 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
         }
     };
 
-    const handleStatusChange = async (action: "approve" | "charge-off") => {
-        const confirmChange = window.confirm(`Are you sure you want to ${action} loan ${loan.id}?`);
-
+    const handleApprove = async () => {
+        const confirmChange = window.confirm(`Are you sure you want to approve loan ${loan.id}?`);
         if (!confirmChange) return;
 
         setLoading(true);
+        try {
+            const updatedLoan = await approveLoan(loan.id);
+            setLoan(updatedLoan);
+            const updatedInstallments = await loadInstallments();
+            setInstallments(updatedInstallments);
+        } catch (error) {
+            alert(error instanceof Error ? error.message : "An unexpected error occurred.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleConfirmChargeOff = async (e: React.SubmitEvent) => {
+        e.preventDefault();
+
+        if (!chargeOffReason.trim()) {
+            setModalError("Please provide a reason for the charge-off.");
+            return;
+        }
+
+        setLoading(true);
+        setModalError(null);
 
         try {
-            const updatedLoan =
-                action === "approve"
-                    ? await approveLoan(loan.id)
-                    : await chargeOffLoan(loan.id);
-
+            const updatedLoan = await chargeOffLoan(loan.id, chargeOffReason.trim());
             setLoan(updatedLoan);
 
             const updatedInstallments = await loadInstallments();
             setInstallments(updatedInstallments);
 
+            setIsModalOpen(false);
+            setChargeOffReason("");
         } catch (error) {
-            alert(error instanceof Error ? error.message : "An unexpected error occurred.");
+            setModalError(error instanceof Error ? error.message : "An unexpected error occurred.");
         } finally {
             setLoading(false);
         }
@@ -114,9 +136,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
             `Are you sure you want to pay installment #${installmentNumber}?`
         );
 
-        if (!confirmed) {
-            return;
-        }
+        if (!confirmed) return;
 
         try {
             const response = await createInstallmentPayment(loanId, installmentNumber, loanInstallmentPaymentRequest);
@@ -139,7 +159,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
         }
     };
 
-    if (loading) {
+    if (loading && installments.length === 0) {
         return <div style={{ padding: '20px', color: '#7f8c8d' }}>Loading installment details...</div>;
     }
 
@@ -180,7 +200,7 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     {(loan.status === "PENDING" || loan.status === "INACTIVE") && (
                         <button
                             style={styles.actionBtn}
-                            onClick={() => handleStatusChange("approve")}
+                            onClick={handleApprove}
                             disabled={loading}
                         >
                             {loading ? "Processing..." : "Approve"}
@@ -189,10 +209,13 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     {(loan.status === "ACTIVE") && (
                         <button
                             style={styles.actionBtn}
-                            onClick={() => handleStatusChange("charge-off")}
+                            onClick={() => {
+                                setModalError(null);
+                                setIsModalOpen(true);
+                            }}
                             disabled={loading}
                         >
-                            {loading ? "Processing..." : "Charge-Off"}
+                            Charge-Off
                         </button>
                     )}
                 </div>
@@ -299,6 +322,52 @@ export default function LoanDetailPage({ loan: initialLoan, onBack }: LoanDetail
                     onInstallmentPayment={handleInstallmentPayment}
                 />
             )}
+
+            {isModalOpen && (
+                <div style={styles.modalOverlay}>
+                    <div style={styles.modalCard}>
+                        <h3 style={styles.modalTitle}>Charge-Off Loan #{loan.id}</h3>
+                        <p style={styles.modalSubtext}>
+                            Please enter the reason for charging off this loan.
+                        </p>
+
+                        {modalError && (
+                            <div style={styles.errorMessage}>{modalError}</div>
+                        )}
+
+                        <form onSubmit={handleConfirmChargeOff}>
+                            <textarea
+                                style={styles.textarea}
+                                rows={4}
+                                value={chargeOffReason}
+                                onChange={(e) => setChargeOffReason(e.target.value)}
+                                placeholder="e.g. Account 180+ days past due; exhausted all internal collection efforts."
+                                required
+                            />
+                            <div style={styles.modalActions}>
+                                <button
+                                    type="button"
+                                    style={styles.cancelBtn}
+                                    onClick={() => {
+                                        setIsModalOpen(false);
+                                        setChargeOffReason("");
+                                    }}
+                                    disabled={loading}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    style={styles.confirmBtn}
+                                    disabled={loading}
+                                >
+                                    {loading ? "Processing..." : "Confirm Charge-Off"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
@@ -310,103 +379,92 @@ const styles: { [key: string]: React.CSSProperties } = {
         padding: '0',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     },
-    topNav: {
-        marginBottom: '12px'
-    },
-    headerRow: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: '20px'
-    },
-    title: {
-        margin: 0,
-        color: '#0f172a',
-        fontSize: '24px',
-        fontWeight: '700'
-    },
-    actionsGroup: {
+    topNav: { marginBottom: '12px' },
+    headerRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' },
+    title: { margin: 0, color: '#0f172a', fontSize: '24px', fontWeight: '700' },
+    actionsGroup: { display: 'flex', alignItems: 'center', gap: '12px' },
+    statusBadge: { padding: '5px 12px', borderRadius: '16px', fontSize: '13px', fontWeight: '500', border: '1px solid', textTransform: 'capitalize' },
+    backBtn: { backgroundColor: 'transparent', color: '#64748b', border: 'none', padding: '0', cursor: 'pointer', fontSize: '13px', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '6px' },
+    actionBtn: { background: 'none', border: '1px solid #cbd5e1', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer', fontSize: '13px', color: '#475569', fontWeight: '500', transition: 'all 0.15s ease' },
+    summaryCard: { backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '24px', marginBottom: '32px', width: '100%', boxSizing: 'border-box', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', textAlign: 'left' },
+    sectionTitle: { margin: '0 0 16px 0', fontSize: '12px', fontWeight: '600', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' },
+    summaryGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px 24px' },
+    summaryLabel: { display: 'block', fontSize: '11px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' },
+    summaryValue: { display: 'block', fontSize: '14px', fontWeight: '500', color: '#334155', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+    divider: { height: '1px', backgroundColor: '#f1f5f9', margin: '20px 0', border: 'none' },
+
+    modalOverlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'rgba(15, 23, 42, 0.4)',
         display: 'flex',
         alignItems: 'center',
-        gap: '12px'
+        justifyContent: 'center',
+        zIndex: 1000
     },
-    statusBadge: {
-        padding: '5px 12px',
-        borderRadius: '16px',
+    modalCard: {
+        backgroundColor: '#ffffff',
+        borderRadius: '8px',
+        padding: '24px',
+        width: '420px',
+        maxWidth: '90%',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        textAlign: 'left'
+    },
+    modalTitle: {
+        margin: '0 0 8px 0',
+        fontSize: '18px',
+        fontWeight: '600',
+        color: '#0f172a'
+    },
+    modalSubtext: {
+        margin: '0 0 16px 0',
         fontSize: '13px',
-        fontWeight: '500',
-        border: '1px solid',
-        textTransform: 'capitalize'
+        color: '#64748b'
     },
-    backBtn: {
+    textarea: {
+        width: '100%',
+        boxSizing: 'border-box',
+        borderRadius: '6px',
+        border: '1px solid #cbd5e1',
+        padding: '10px',
+        fontSize: '13px',
+        fontFamily: 'inherit',
+        resize: 'vertical',
+        marginBottom: '16px',
+        outline: 'none'
+    },
+    modalActions: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        gap: '8px'
+    },
+    cancelBtn: {
         backgroundColor: 'transparent',
-        color: '#64748b',
-        border: 'none',
-        padding: '0',
-        cursor: 'pointer',
-        fontSize: '13px',
-        fontWeight: '500',
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px'
-    },
-    actionBtn: {
-        background: 'none',
         border: '1px solid #cbd5e1',
         borderRadius: '6px',
         padding: '6px 12px',
-        cursor: 'pointer',
         fontSize: '13px',
+        fontWeight: '500',
         color: '#475569',
+        cursor: 'pointer'
+    },
+    confirmBtn: {
+        backgroundColor: '#c5221f',
+        border: '1px solid #c5221f',
+        borderRadius: '6px',
+        padding: '6px 12px',
+        fontSize: '13px',
         fontWeight: '500',
-        transition: 'all 0.15s ease'
+        color: '#ffffff',
+        cursor: 'pointer'
     },
-    summaryCard: {
-        backgroundColor: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: '8px',
-        padding: '24px',
-        marginBottom: '32px',
-        width: '100%',
-        boxSizing: 'border-box',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-        textAlign: 'left'
-    },
-    sectionTitle: {
-        margin: '0 0 16px 0',
+    errorMessage: {
+        color: '#dc2626',
         fontSize: '12px',
-        fontWeight: '600',
-        color: '#64748b',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em'
-    },
-    summaryGrid: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '16px 24px'
-    },
-    summaryLabel: {
-        display: 'block',
-        fontSize: '11px',
-        fontWeight: '600',
-        color: '#94a3b8',
-        textTransform: 'uppercase',
-        letterSpacing: '0.5px',
-        marginBottom: '4px'
-    },
-    summaryValue: {
-        display: 'block',
-        fontSize: '14px',
-        fontWeight: '500',
-        color: '#334155',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
-    },
-    divider: {
-        height: '1px',
-        backgroundColor: '#f1f5f9',
-        margin: '20px 0',
-        border: 'none'
+        marginBottom: '12px'
     }
 };

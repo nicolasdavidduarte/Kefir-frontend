@@ -20,8 +20,12 @@ export function approveLoan(id: number): Promise<Loan> {
     });
 }
 
-export function chargeOffLoan(id: number): Promise<Loan> {
-    return apiFetch<Loan>(`${loanPath}/${id}/close`, {
-        method: "PATCH"
+export function chargeOffLoan(id: number, reason: string): Promise<Loan> {
+    return apiFetch<Loan>(`${loanPath}/${id}/chargeoff`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reason })
     });
 }
