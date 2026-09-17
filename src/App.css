@@ -187,6 +187,7 @@
   width: 100%;
   overflow-x: auto;
   padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-scroll-container::-webkit-scrollbar {

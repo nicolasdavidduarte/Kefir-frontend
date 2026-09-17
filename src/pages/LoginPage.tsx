@@ -2,12 +2,14 @@ import { useState } from "react";
 import * as React from "react";
 import { login } from "../api/authApi";
 import kefirLogo from "../assets/kefir_logo.png";
+import { useViewport } from "../hooks/useViewport.ts";
 
 type LoginPageProps = {
     onLoginSuccess: () => void;
 };
 
 export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
+    const { isMobile } = useViewport();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -32,13 +34,19 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
 
     return (
         <div style={styles.pageContainer}>
-            <div style={styles.loginCard}>
+            <div style={{
+                ...styles.loginCard,
+                ...(isMobile ? styles.loginCardMobile : {})
+            }}>
 
                 <div style={styles.logoWrapper}>
                     <img
                         src={kefirLogo}
                         alt="Kefir Logo"
-                        style={styles.logoImage}
+                        style={{
+                            ...styles.logoImage,
+                            ...(isMobile ? styles.logoImageMobile : {})
+                        }}
                     />
                     <span style={styles.subtitle}>Core Banking System</span>
                 </div>
@@ -109,7 +117,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         backgroundColor: '#f8fafc',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         boxSizing: 'border-box',
-        zIndex: 9999
+        zIndex: 9999,
+        overflowY: 'auto',
+        padding: '16px'
     },
     loginCard: {
         backgroundColor: '#ffffff',
@@ -120,6 +130,13 @@ const styles: { [key: string]: React.CSSProperties } = {
         maxWidth: '380px',
         boxSizing: 'border-box',
         border: '1px solid #e2e8f0'
+    },
+    loginCardMobile: {
+        padding: '24px 20px',
+        maxWidth: '100%'
+    },
+    logoImageMobile: {
+        height: '65px'
     },
     logoWrapper: {
         display: 'flex',

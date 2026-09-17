@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+.gitignore
+.dockerignore
+*.log
+.env*
+.idea
+.vscode
+.specify
+.agents

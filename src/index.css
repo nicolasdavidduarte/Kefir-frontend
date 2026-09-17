@@ -23,6 +23,7 @@ body {
   width: 100%;
   overflow-x: auto;
   padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-scroll-container::-webkit-scrollbar {
@@ -42,4 +43,10 @@ body {
 
 .table-scroll-container::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+@media (max-width: 767px) {
+  button, input, select, a {
+    touch-action: manipulation;
+  }
 }
