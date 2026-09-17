@@ -25,7 +25,12 @@ export function removeUser(){
     localStorage.removeItem(USER)
 }
 
-function decodePayload(token: string): any {
+interface JwtPayload {
+    exp?: number;
+    [key: string]: unknown;
+}
+
+function decodePayload(token: string): JwtPayload | null {
     try {
         const base64Url = token.split(".")[1];
         if (!base64Url) return null;
@@ -38,7 +43,7 @@ function decodePayload(token: string): any {
                 .join("")
         );
 
-        return JSON.parse(jsonPayload);
+        return JSON.parse(jsonPayload) as JwtPayload;
     } catch (error) {
         console.error("JWT payload decoding error:", error);
         return null;
